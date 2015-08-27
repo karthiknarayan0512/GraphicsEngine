@@ -1,3 +1,9 @@
 *.suo
 *.opensdf
 *.sdf
+*.idb
+*.log
+*.pdb
+*.tlog
+*.obj
+*.vcxproj.user
