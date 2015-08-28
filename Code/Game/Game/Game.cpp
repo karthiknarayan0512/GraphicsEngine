@@ -14,6 +14,8 @@
 // in this example program we just use it to get error messages
 #include "Windows/WindowsFunctions.h"
 
+#include "Graphics.h"
+
 // Static Data Initialization
 //===========================
 
@@ -34,7 +36,7 @@ namespace
 	// If you don't change the name below from the default then
 	// your program could have problems when it is run at the same time on the same computer
 	// as one of your classmate's
-	const char* s_mainWindowClass_name = "[YOUR NAME HERE]'s Main Window Class";
+	const char* s_mainWindowClass_name = "Karthik Narayan's Main Window Class";
 }
 
 // Main Function
@@ -133,7 +135,7 @@ HWND CreateMainWindowHandle( const HINSTANCE i_thisInstanceOfTheProgram, const i
 	{
 		// The window's "caption"
 		// (The text that is displayed in the title bar)
-		const char* windowCaption = "[YOUR NAME HERE]'s EAE6320 Game";
+		const char* windowCaption = "Karthik Narayan's EAE6320 Game";
 		// The window's style
 		const DWORD windowStyle =
 			// "Overlapped" is basically the same as "top-level"
@@ -458,6 +460,7 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 	// (e.g. from an in-game menu)
 
 	// Enter an infinite loop that will continue until a quit message (WM_QUIT) is received from Windows
+	eae6320::Graphics::Initialize(s_mainWindow);
 	MSG message = { 0 };
 	do
 	{
@@ -485,6 +488,7 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 			// A real game might have something like the following:
 			//	someGameClass.OnNewFrame();
 			// or similar, though.)
+			eae6320::Graphics::Render();
 		}
 		else
 		{
@@ -507,6 +511,7 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 	} while ( message.message != WM_QUIT );
 
 	// The exit code for the application is stored in the WPARAM of a WM_QUIT message
+	eae6320::Graphics::ShutDown();
 	o_exitCode = static_cast<int>( message.wParam );
 
 	return true;

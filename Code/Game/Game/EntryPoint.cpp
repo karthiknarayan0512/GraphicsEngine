@@ -37,6 +37,7 @@ int WINAPI WinMain(
 	// A Windows program doesn't actually need any windows at all
 	// but in most cases there will be a single "main" window
 	// and when it is closed the program will exit
+	
 	const int exitCode = CreateMainWindowAndReturnExitCodeWhenItCloses( i_thisInstanceOfTheProgram, i_initialWindowDisplayState );
 	// Unlike standard C/C++ programs there is no standardized return value
 	// to indicate that the program "succeeded".

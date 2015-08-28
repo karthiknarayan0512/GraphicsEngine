@@ -43,4 +43,6 @@ LRESULT CALLBACK OnMessageReceived( HWND i_window, UINT i_message, WPARAM i_wPar
 bool UnregisterMainWindowClass( const HINSTANCE i_thisInstanceOfTheProgram );
 bool WaitForMainWindowToClose( int& o_exitCode );
 
+HWND ReturnMainWindowHandle();
+
 #endif	// EAE6320_WINDOWSPROGRAM_H

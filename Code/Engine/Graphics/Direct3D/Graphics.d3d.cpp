@@ -404,7 +404,7 @@ namespace
 		// Load the source code from file and compile it
 		ID3DXBuffer* compiledShader;
 		{
-			const char* sourceCodeFileName = L"data/fragmentShader.hlsl";
+			const char* sourceCodeFileName = "data/fragmentShader.hlsl";
 			const D3DXMACRO* noMacros = NULL;
 			ID3DXInclude* noIncludes = NULL;
 			const char* entryPoint = "main";
@@ -460,7 +460,7 @@ namespace
 		// Load the source code from file and compile it
 		ID3DXBuffer* compiledShader;
 		{
-			const char* sourceCodeFileName = L"data/vertexShader.hlsl";
+			const char* sourceCodeFileName = "data/vertexShader.hlsl";
 			const D3DXMACRO* noMacros = NULL;
 			ID3DXInclude* noIncludes = NULL;
 			const char* entryPoint = "main";
