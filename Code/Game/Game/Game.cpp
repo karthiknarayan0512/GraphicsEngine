@@ -479,6 +479,7 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 			hasWindowsSentAMessage = PeekMessage( &message, getMessagesFromAnyWindowBelongingToTheCurrentThread,
 				getAllMessageTypes, getAllMessageTypes, ifAMessageExistsRemoveItFromTheQueue ) == TRUE;
 		}
+		eae6320::Graphics::Render();
 		if ( !hasWindowsSentAMessage )
 		{
 			// Usually there will be no messages in the queue, and the game can run
@@ -488,7 +489,6 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 			// A real game might have something like the following:
 			//	someGameClass.OnNewFrame();
 			// or similar, though.)
-			eae6320::Graphics::Render();
 		}
 		else
 		{
