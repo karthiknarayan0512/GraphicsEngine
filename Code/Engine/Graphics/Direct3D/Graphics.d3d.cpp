@@ -9,6 +9,7 @@
 #include <d3dx9shader.h>
 #include <sstream>
 #include "../../UserOutput/UserOutput.h"
+#include "../Mesh.h"
 
 // Static Data Initialization
 //===========================
@@ -38,6 +39,11 @@ namespace
 	// An index buffer describes how to make triangles with the vertices
 	// (i.e. it defines the vertex connectivity)
 	IDirect3DIndexBuffer9* s_indexBuffer = NULL;
+
+	// A Mesh containing all the required information such as the index buffer
+	// , the vertex buffer and the vertex declaration. It will also require a 
+	// reference to the Direct3D device to make the DrawIndexedPrimitive call.
+	eae6320::Mesh* s_Mesh = NULL;
 
 	// The vertex shader is a program that operates on vertices.
 	// Its input comes from a C/C++ "draw call" and is:
@@ -71,6 +77,7 @@ namespace
 	HRESULT GetVertexProcessingUsage( DWORD& o_usage );
 	bool LoadFragmentShader();
 	bool LoadVertexShader();
+	bool CreateMesh();
 }
 
 // Interface
@@ -100,6 +107,13 @@ bool eae6320::Graphics::Initialize( const HWND i_renderingWindow )
 	{
 		goto OnError;
 	}
+
+	// Create the mesh
+	if (!CreateMesh())
+	{
+		goto OnError;
+	}
+
 	if ( !LoadVertexShader() )
 	{
 		goto OnError;
@@ -169,20 +183,9 @@ void eae6320::Graphics::Render()
 			}
 			// Render objects from the current streams
 			{
-				// We are using triangles as the "primitive" type,
-				// and we have defined the vertex buffer as a triangle list
-				// (meaning that every triangle is defined by three vertices)
-				const D3DPRIMITIVETYPE primitiveType = D3DPT_TRIANGLELIST;
-				// It's possible to start rendering primitives in the middle of the stream
-				const unsigned int indexOfFirstVertexToRender = 0;
-				const unsigned int indexOfFirstIndexToUse = 0;
-				// We are drawing a square
 				const unsigned int vertexCountToRender = 4;	// How vertices from the vertex buffer will be used?
 				const unsigned int primitiveCountToRender = 2;	// How many triangles will be drawn?
-				result = s_direct3dDevice->DrawIndexedPrimitive( primitiveType,
-					indexOfFirstVertexToRender, indexOfFirstVertexToRender, vertexCountToRender,
-					indexOfFirstIndexToUse, primitiveCountToRender );
-				assert( SUCCEEDED( result ) );
+				s_Mesh->DrawMesh(vertexCountToRender, primitiveCountToRender);
 			}
 		}
 		result = s_direct3dDevice->EndScene();
@@ -246,6 +249,9 @@ bool eae6320::Graphics::ShutDown()
 		s_direct3dInterface = NULL;
 	}
 	s_renderingWindow = NULL;
+
+	delete s_Mesh;
+	s_Mesh = NULL;
 
 	return !wereThereErrors;
 }
@@ -671,5 +677,12 @@ namespace
 			compiledShader->Release();
 		}
 		return !wereThereErrors;
+	}
+
+	bool CreateMesh()
+	{
+		s_Mesh = new eae6320::Mesh(s_vertexDeclaration, s_vertexBuffer, s_indexBuffer, s_direct3dDevice);
+		assert(s_Mesh);
+		return s_Mesh != NULL;
 	}
 }

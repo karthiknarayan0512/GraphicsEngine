@@ -2,6 +2,7 @@
 //=============
 
 #include "../Graphics.h"
+#include "../Mesh.h"
 
 #include <cassert>
 #include <cstdint>
@@ -59,6 +60,11 @@ namespace
 	// Its output is:
 	//	* The final color that the pixel should be
 	GLuint s_programId = 0;
+
+	// A Mesh containing all the required information such as the index buffer
+	// , the vertex buffer and the vertex declaration. It will also require a 
+	// reference to the Direct3D device to make the DrawIndexedPrimitive call.
+	eae6320::Mesh* s_Mesh = NULL;
 }
 
 // Helper Function Declarations
@@ -72,6 +78,7 @@ namespace
 	bool LoadAndAllocateShaderProgram( const char* i_path, void*& o_shader, size_t& o_size, std::string* o_errorMessage );
 	bool LoadFragmentShader( const GLuint i_programId );
 	bool LoadVertexShader( const GLuint i_programId );
+	bool CreateMesh();
 
 	// This helper struct exists to be able to dynamically allocate memory to get "log info"
 	// which will automatically be freed when the struct goes out of scope
@@ -115,6 +122,10 @@ bool eae6320::Graphics::Initialize( const HWND i_renderingWindow )
 	{
 		goto OnError;
 	}
+	if (!CreateMesh())
+	{
+		goto OnError;
+	}
 
 	return true;
 
@@ -154,20 +165,11 @@ void eae6320::Graphics::Render()
 		}
 		// Render objects from the current streams
 		{
-			// We are using triangles as the "primitive" type,
-			// and we have defined the vertex buffer as a triangle list
-			// (meaning that every triangle is defined by three vertices)
-			const GLenum mode = GL_TRIANGLES;
-			// We'll use 32-bit indices in this class to keep things simple
-			// (i.e. every index will be a 32 bit unsigned integer)
-			const GLenum indexType = GL_UNSIGNED_INT;
-			// It is possible to start rendering in the middle of an index buffer
-			const GLvoid* const offset = 0;
 			// We are drawing a square
 			const GLsizei primitiveCountToRender = 2;	// How many triangles will be drawn?
 			const GLsizei vertexCountPerTriangle = 3;
 			const GLsizei vertexCountToRender = primitiveCountToRender * vertexCountPerTriangle;
-			glDrawElements( mode, vertexCountToRender, indexType, offset );
+			s_Mesh->DrawMesh(vertexCountToRender, primitiveCountToRender);
 			assert( glGetError() == GL_NO_ERROR );
 		}
 	}
@@ -241,6 +243,9 @@ bool eae6320::Graphics::ShutDown()
 	}
 
 	s_renderingWindow = NULL;
+
+	delete s_Mesh;
+	s_Mesh = NULL;
 
 	return !wereThereErrors;
 }
@@ -1274,5 +1279,12 @@ namespace
 		}
 
 		return !wereThereErrors;
+	}
+
+	bool CreateMesh()
+	{
+		s_Mesh = new eae6320::Mesh(s_vertexArrayId);
+		assert(s_Mesh);
+		return s_Mesh != NULL;
 	}
 }
