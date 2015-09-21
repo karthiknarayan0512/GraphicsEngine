@@ -460,56 +460,59 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 	// (e.g. from an in-game menu)
 
 	// Enter an infinite loop that will continue until a quit message (WM_QUIT) is received from Windows
-	eae6320::Graphics::Initialize(s_mainWindow);
 	MSG message = { 0 };
-	do
+	if (!eae6320::Graphics::Initialize(s_mainWindow))
+		PostQuitMessage(-1);
+	else
 	{
-		// To send us a message, Windows will add it to a queue.
-		// Most Windows applications should wait until a message is received and then react to it.
-		// Real-time programs, though, must continually draw new images to the screen as fast as possible
-		// and only pause momentarily when there is a Windows message to deal with.
-
-		// This means that the first thing that must be done every iteration of the game loop is to "peek" at the message queue
-		// and see if there are any messages from Windows that need to be handled
-		bool hasWindowsSentAMessage;
+		do
 		{
-			HWND getMessagesFromAnyWindowBelongingToTheCurrentThread = NULL;
-			unsigned int getAllMessageTypes = 0;
-			unsigned int ifAMessageExistsRemoveItFromTheQueue = PM_REMOVE;
-			hasWindowsSentAMessage = PeekMessage( &message, getMessagesFromAnyWindowBelongingToTheCurrentThread,
-				getAllMessageTypes, getAllMessageTypes, ifAMessageExistsRemoveItFromTheQueue ) == TRUE;
-		}
-		eae6320::Graphics::Render();
-		if ( !hasWindowsSentAMessage )
-		{
-			// Usually there will be no messages in the queue, and the game can run
+			// To send us a message, Windows will add it to a queue.
+			// Most Windows applications should wait until a message is received and then react to it.
+			// Real-time programs, though, must continually draw new images to the screen as fast as possible
+			// and only pause momentarily when there is a Windows message to deal with.
 
-			// (This example program has nothing to do,
-			// and so it will just constantly run this while loop using up CPU cycles.
-			// A real game might have something like the following:
-			//	someGameClass.OnNewFrame();
-			// or similar, though.)
-		}
-		else
-		{
-			// If Windows _has_ sent a message, this iteration of the loop will handle it.
-			// Note that Windows messages will take precedence over our game functionality;
-			// this is because if we don't handle Windows messages the window can appear sluggish to the user
-			// (if s/he tries to move it, for example, but we give too much precedence to our own game code).
+			// This means that the first thing that must be done every iteration of the game loop is to "peek" at the message queue
+			// and see if there are any messages from Windows that need to be handled
+			bool hasWindowsSentAMessage;
+			{
+				HWND getMessagesFromAnyWindowBelongingToTheCurrentThread = NULL;
+				unsigned int getAllMessageTypes = 0;
+				unsigned int ifAMessageExistsRemoveItFromTheQueue = PM_REMOVE;
+				hasWindowsSentAMessage = PeekMessage(&message, getMessagesFromAnyWindowBelongingToTheCurrentThread,
+					getAllMessageTypes, getAllMessageTypes, ifAMessageExistsRemoveItFromTheQueue) == TRUE;
+			}
+			eae6320::Graphics::Render();
+			if (!hasWindowsSentAMessage)
+			{
+				// Usually there will be no messages in the queue, and the game can run
 
-			// First, the message must be "translated"
-			// (Key presses are translated into character messages)
-			TranslateMessage( &message );
+				// (This example program has nothing to do,
+				// and so it will just constantly run this while loop using up CPU cycles.
+				// A real game might have something like the following:
+				//	someGameClass.OnNewFrame();
+				// or similar, though.)
+			}
+			else
+			{
+				// If Windows _has_ sent a message, this iteration of the loop will handle it.
+				// Note that Windows messages will take precedence over our game functionality;
+				// this is because if we don't handle Windows messages the window can appear sluggish to the user
+				// (if s/he tries to move it, for example, but we give too much precedence to our own game code).
 
-			// Then, the message is sent on to the appropriate processing function.
-			// This function is specified in the lpfnWndProc field of the WNDCLASSEX struct
-			// used to register a class with Windows.
-			// In the case of the main window in this example program
-			// it will always be OnMessageReceived()
-			DispatchMessage( &message );
-		}
-	} while ( message.message != WM_QUIT );
+				// First, the message must be "translated"
+				// (Key presses are translated into character messages)
+				TranslateMessage(&message);
 
+				// Then, the message is sent on to the appropriate processing function.
+				// This function is specified in the lpfnWndProc field of the WNDCLASSEX struct
+				// used to register a class with Windows.
+				// In the case of the main window in this example program
+				// it will always be OnMessageReceived()
+				DispatchMessage(&message);
+			}
+		} while (message.message != WM_QUIT);
+	}
 	// The exit code for the application is stored in the WPARAM of a WM_QUIT message
 	eae6320::Graphics::ShutDown();
 	o_exitCode = static_cast<int>( message.wParam );

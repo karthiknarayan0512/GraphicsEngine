@@ -11,6 +11,8 @@
 #include <d3d9.h>
 #endif
 
+#include <cstdint>
+
 namespace eae6320
 {
 	class Mesh
@@ -22,26 +24,20 @@ namespace eae6320
 		// Parameterized Constructor for each platform
 #ifdef EAE6320_PLATFORM_D3D
 		// Parameterized Constructor for Direct3D
-		Mesh(IDirect3DVertexDeclaration9* i_vertexDeclaration, 
-			 IDirect3DVertexBuffer9* i_vertexBuffer,
-			IDirect3DIndexBuffer9* i_indexBuffer,
-			IDirect3DDevice9* i_direct3dDevice);
+		Mesh(IDirect3DDevice9* i_direct3dDevice);
 #endif
-
-#ifdef EAE6320_PLATFORM_GL
-		// Parameterized Constructor for OpenGL
-		Mesh(GLuint i_vertexArrayId);
-#endif
-
-
 		// Destructor for the Mesh class
 		~Mesh();
 		void DrawMesh(int vertexCountToRender, int primitiveCountToRender);
+		bool LoadMeshFromFile(const char* i_FilePath);
+		void LoadVertexAndIndicesData(float ** positions, uint8_t ** colors, uint32_t* i_indexData, int vertexCount, int triangleCount);
 
 	private:
 #ifdef EAE6320_PLATFORM_GL
 		// A vertex array encapsulates both the vertex and index data as well as the vertex format
 		GLuint m_vertexArrayId;
+
+		bool CreateVertexArray(float ** positions, uint8_t ** colors, uint32_t* i_indexData, int vertexCount);
 #endif
 
 #ifdef EAE6320_PLATFORM_D3D
@@ -54,6 +50,12 @@ namespace eae6320
 		IDirect3DIndexBuffer9* m_indexBuffer;
 
 		IDirect3DDevice9* m_direct3dDevice;
+
+		HRESULT GetVertexProcessingUsage(DWORD& o_usage);
+
+		bool CreateVertexBuffer(float ** positions, uint8_t ** colors, int vertexCount);
+
+		bool CreateIndexBuffer(uint32_t* i_indexData, const unsigned int triangleCount);
 #endif
 	};
 }

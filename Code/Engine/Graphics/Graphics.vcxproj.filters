@@ -29,5 +29,6 @@
     <ClCompile Include="OpenGL\Mesh.gl.cpp">
       <Filter>OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="Mesh.cpp" />
   </ItemGroup>
 </Project>
