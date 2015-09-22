@@ -3,20 +3,6 @@
 
 #include <cassert>
 
-// This struct determines the layout of the data that the CPU will send to the GPU
-struct sVertex
-{
-	// POSITION
-	// 2 floats == 8 bytes
-	// Offset = 0
-	float x, y;
-	// COLOR0
-	// 4 uint8_ts == 4 bytes
-	// Offset = 8
-	uint8_t b, g, r, a;	// Direct3D expects the byte layout of a color to be different from what you might expect
-};
-
-
 // Initialize all member variables
 eae6320::Mesh::Mesh() : 
 	m_vertexDeclaration(NULL),
@@ -56,7 +42,6 @@ eae6320::Mesh::~Mesh()
 		}
 
 		m_direct3dDevice->Release();
-		m_direct3dDevice = NULL;
 	}
 }
 
@@ -308,7 +293,7 @@ bool eae6320::Mesh::CreateIndexBuffer(uint32_t* i_indexData, const unsigned int 
 			// which vertex you have assigned to which spot in your vertex buffer
 			// (also remember to maintain the correct handedness for the triangle winding order).
 
-			for (int i = 0; i < triangleCount * 3; i+=3)
+			for (size_t i = 0; i < triangleCount * 3; i+=3)
 			{
 				indexData[i] = i_indexData[i];
 				indexData[i + 1] = i_indexData[i + 2];

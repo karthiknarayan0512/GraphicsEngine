@@ -39,6 +39,21 @@ namespace eae6320
 
 		bool CreateVertexArray(float ** positions, uint8_t ** colors, uint32_t* i_indexData, int vertexCount);
 #endif
+		struct sVertex
+		{
+			// POSITION
+			// 2 floats == 8 bytes
+			// Offset = 0
+			float x, y;
+			// COLOR0
+			// 4 uint8_ts == 4 bytes
+			// Offset = 8
+#ifdef EAE6320_PLATFORM_GL
+			uint8_t r, g, b, a;
+#elif defined EAE6320_PLATFORM_D3D
+			uint8_t b, g, r, a;	// Direct3D expects the byte layout of a color to be different from what you might expect
+#endif
+		};
 
 #ifdef EAE6320_PLATFORM_D3D
 		IDirect3DVertexDeclaration9* m_vertexDeclaration;

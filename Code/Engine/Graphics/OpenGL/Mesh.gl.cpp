@@ -5,18 +5,6 @@
 #include <sstream>
 
 // This struct determines the layout of the data that the CPU will send to the GPU
-struct sVertex
-{
-	// POSITION
-	// 2 floats == 8 bytes
-	// Offset = 0
-	float x, y;
-	// COLOR0
-	// 4 uint8_ts == 4 bytes
-	// Offset = 8
-	uint8_t r, g, b, a;	// Direct3D expects the byte layout of a color to be different from what you might expect
-};
-
 // Initialize all member variables
 eae6320::Mesh::Mesh() :
 	m_vertexArrayId(0)
