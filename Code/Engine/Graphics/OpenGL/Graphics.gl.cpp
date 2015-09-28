@@ -49,6 +49,7 @@ namespace
 	// , the vertex buffer and the vertex declaration. It will also require a 
 	// reference to the Direct3D device to make the DrawIndexedPrimitive call.
 	eae6320::Mesh* s_Mesh = NULL;
+	eae6320::Mesh* s_TriangleMesh = NULL;
 }
 
 // Helper Function Declarations
@@ -61,7 +62,7 @@ namespace
 	bool LoadAndAllocateShaderProgram( const char* i_path, void*& o_shader, size_t& o_size, std::string* o_errorMessage );
 	bool LoadFragmentShader( const GLuint i_programId );
 	bool LoadVertexShader( const GLuint i_programId );
-	bool CreateMesh();
+	bool CreateMeshes();
 
 	// This helper struct exists to be able to dynamically allocate memory to get "log info"
 	// which will automatically be freed when the struct goes out of scope
@@ -100,7 +101,7 @@ bool eae6320::Graphics::Initialize( const HWND i_renderingWindow )
 	{
 		goto OnError;
 	}
-	if (!CreateMesh())
+	if (!CreateMeshes())
 	{
 		goto OnError;
 	}
@@ -139,11 +140,18 @@ void eae6320::Graphics::Render()
 		// Render objects from the current streams
 		{
 			// We are drawing a square
-			const GLsizei primitiveCountToRender = 2;	// How many triangles will be drawn?
-			const GLsizei vertexCountPerTriangle = 3;
-			const GLsizei vertexCountToRender = primitiveCountToRender * vertexCountPerTriangle;
+			GLsizei primitiveCountToRender = 2;	// How many triangles will be drawn?
+			GLsizei vertexCountPerTriangle = 3;
+			GLsizei vertexCountToRender = primitiveCountToRender * vertexCountPerTriangle;
 			s_Mesh->DrawMesh(vertexCountToRender, primitiveCountToRender);
 			assert( glGetError() == GL_NO_ERROR );
+
+			// We are drawing a triangle
+			primitiveCountToRender = 1;	// How many triangles will be drawn?
+			vertexCountPerTriangle = 3;
+			vertexCountToRender = primitiveCountToRender * vertexCountPerTriangle;
+			s_TriangleMesh->DrawMesh(vertexCountToRender, primitiveCountToRender);
+			assert(glGetError() == GL_NO_ERROR);
 		}
 	}
 
@@ -901,10 +909,18 @@ namespace
 		return !wereThereErrors;
 	}
 
-	bool CreateMesh()
+	bool CreateMeshes()
 	{
 		s_Mesh = new eae6320::Mesh();
 		assert(s_Mesh);
-		return s_Mesh->LoadMeshFromFile("data/Mesh.lua");
+		s_TriangleMesh = new eae6320::Mesh();
+		assert(s_TriangleMesh);
+		
+		if (!s_Mesh->LoadMeshFromFile("data/Mesh.lua"))
+			return false;
+		if (!s_TriangleMesh->LoadMeshFromFile("data/Triangle.lua"))
+			return false;
+
+		return true;
 	}
 }

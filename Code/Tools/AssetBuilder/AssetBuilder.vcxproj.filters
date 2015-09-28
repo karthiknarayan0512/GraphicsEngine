@@ -13,7 +13,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\Assets\Scripts\BuildAssets.lua">
+    <None Include="..\..\..\Scripts\AssetsToBuild.lua">
+      <Filter>Scripts</Filter>
+    </None>
+    <None Include="..\..\..\Scripts\BuildAssets.lua">
       <Filter>Scripts</Filter>
     </None>
   </ItemGroup>

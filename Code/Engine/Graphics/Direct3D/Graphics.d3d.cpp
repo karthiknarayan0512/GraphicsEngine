@@ -24,6 +24,7 @@ namespace
 	// , the vertex buffer and the vertex declaration. It will also require a 
 	// reference to the Direct3D device to make the DrawIndexedPrimitive call.
 	eae6320::Mesh* s_Mesh = NULL;
+	eae6320::Mesh* s_TriangleMesh = NULL;
 
 	// The vertex shader is a program that operates on vertices.
 	// Its input comes from a C/C++ "draw call" and is:
@@ -54,7 +55,7 @@ namespace
 	bool CreateInterface();
 	bool LoadFragmentShader();
 	bool LoadVertexShader();
-	bool CreateMesh();
+	bool CreateMeshes();
 }
 
 // Interface
@@ -76,7 +77,7 @@ bool eae6320::Graphics::Initialize( const HWND i_renderingWindow )
 	}
 
 	// Create the mesh
-	if (!CreateMesh())
+	if (!CreateMeshes())
 	{
 		goto OnError;
 	}
@@ -135,9 +136,12 @@ void eae6320::Graphics::Render()
 
 			// Render objects from the current streams
 			{
-				const unsigned int vertexCountToRender = 4;	// How vertices from the vertex buffer will be used?
-				const unsigned int primitiveCountToRender = 2;	// How many triangles will be drawn?
+				unsigned int vertexCountToRender = 4;	// How vertices from the vertex buffer will be used?
+				unsigned int primitiveCountToRender = 2;	// How many triangles will be drawn?
 				s_Mesh->DrawMesh(vertexCountToRender, primitiveCountToRender);
+				vertexCountToRender = 3;	// How vertices from the vertex buffer will be used?
+				primitiveCountToRender = 1;	// How many triangles will be drawn?
+				s_TriangleMesh->DrawMesh(vertexCountToRender, primitiveCountToRender);
 			}
 		}
 		result = s_direct3dDevice->EndScene();
@@ -366,11 +370,18 @@ namespace
 		return !wereThereErrors;
 	}
 
-	bool CreateMesh()
+	bool CreateMeshes()
 	{
 		s_Mesh = new eae6320::Mesh(s_direct3dDevice);
 		assert(s_Mesh);
+		s_TriangleMesh = new eae6320::Mesh(s_direct3dDevice);
+		assert(s_TriangleMesh);
 
-		return s_Mesh->LoadMeshFromFile("data/Mesh.lua");
+		if (!s_Mesh->LoadMeshFromFile("data/Mesh.lua"))
+			return false;
+		if (!s_TriangleMesh->LoadMeshFromFile("data/Triangle.lua"))
+			return false;
+
+		return true;
 	}
 }
