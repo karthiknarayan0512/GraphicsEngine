@@ -482,7 +482,8 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 				hasWindowsSentAMessage = PeekMessage(&message, getMessagesFromAnyWindowBelongingToTheCurrentThread,
 					getAllMessageTypes, getAllMessageTypes, ifAMessageExistsRemoveItFromTheQueue) == TRUE;
 			}
-			eae6320::Graphics::Render();
+			if(s_mainWindow != NULL)
+				eae6320::Graphics::Render();
 			if (!hasWindowsSentAMessage)
 			{
 				// Usually there will be no messages in the queue, and the game can run
