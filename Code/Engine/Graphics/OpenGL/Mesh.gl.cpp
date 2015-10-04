@@ -52,12 +52,12 @@ void eae6320::Mesh::DrawMesh(int vertexCountToRender, int primitiveCountToRender
 	assert(glGetError() == GL_NO_ERROR);
 }
 
-void eae6320::Mesh::LoadVertexAndIndicesData(float ** positions, uint8_t ** colors, uint32_t* i_indexData, int vertexCount, int triangleCount)
+void eae6320::Mesh::LoadVertexAndIndicesData(sVertex* vertices, uint32_t* i_indexData, int vertexCount, int triangleCount)
 {
-	CreateVertexArray(positions, colors, i_indexData, vertexCount);
+	CreateVertexArray(vertices, i_indexData, vertexCount);
 }
 
-bool eae6320::Mesh::CreateVertexArray(float ** positions, uint8_t ** colors, uint32_t* i_indexData, int vertexCount)
+bool eae6320::Mesh::CreateVertexArray(sVertex *vertices, uint32_t* i_indexData, int vertexCount)
 {
 	bool wereThereErrors = false;
 	GLuint vertexBufferId = 0;
@@ -146,46 +146,14 @@ bool eae6320::Mesh::CreateVertexArray(float ** positions, uint8_t ** colors, uin
 
 			for (int i = 0; i < vertexCount; i++)
 			{
-				vertexData[i].x = positions[i][0];
-				vertexData[i].y = positions[i][1];
-				// Red
-				vertexData[i].r = colors[i][0] * 255;
-				vertexData[i].g = colors[i][1] * 255;
-				vertexData[i].b = colors[i][2] * 255;
+				vertexData[i].x = vertices[i].x;
+				vertexData[i].y = vertices[i].y;
+
+				vertexData[i].r = vertices[i].r * 255;
+				vertexData[i].g = vertices[i].g * 255;
+				vertexData[i].b = vertices[i].b * 255;
 				vertexData[i].a = 255;
 			}
-
-			//vertexData[0].x = 0.0f;
-			//vertexData[0].y = 0.0f;
-			//// Red
-			//vertexData[0].r = 255;
-			//vertexData[0].g = 0;
-			//vertexData[0].b = 0;
-			//vertexData[0].a = 255;
-
-			//vertexData[1].x = 1.0f;
-			//vertexData[1].y = 0.0f;
-			//// Red
-			//vertexData[1].r = 0;
-			//vertexData[1].g = 0;
-			//vertexData[1].b = 255;
-			//vertexData[1].a = 255;
-
-			//vertexData[2].x = 1.0f;
-			//vertexData[2].y = 1.0f;
-			//// Red
-			//vertexData[2].r = 0;
-			//vertexData[2].g = 255;
-			//vertexData[2].b = 0;
-			//vertexData[2].a = 255;
-
-			//vertexData[3].x = 0.0f;
-			//vertexData[3].y = 1.0f;
-			//// Red
-			//vertexData[3].r = 255;
-			//vertexData[3].g = 255;
-			//vertexData[3].b = 0;
-			//vertexData[3].a = 255;
 		}
 		glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(sVertex), reinterpret_cast<GLvoid*>(vertexData),
 			// Our code will only ever write to the buffer
@@ -335,14 +303,6 @@ bool eae6320::Mesh::CreateVertexArray(float ** positions, uint8_t ** colors, uin
 			// Triangle 0
 			for (int i = 0; i < triangleCount * vertexCountPerTriangle; i++)
 				indexData[i] = i_indexData[i];
-			//indexData[0] = 0;
-			//indexData[1] = 1;
-			//indexData[2] = 2;
-
-			//// Triangle 1
-			//indexData[3] = 0;
-			//indexData[4] = 2;
-			//indexData[5] = 3;
 		}
 
 		const GLsizeiptr bufferSize = triangleCount * vertexCountPerTriangle * sizeof(uint32_t);

@@ -79,9 +79,9 @@ void eae6320::Mesh::DrawMesh(int vertexCountToRender, int primitiveCountToRender
 	assert(SUCCEEDED(result));
 }
 
-void eae6320::Mesh::LoadVertexAndIndicesData(float ** positions, uint8_t ** colors, uint32_t* i_indexData, int vertexCount, int triangleCount)
+void eae6320::Mesh::LoadVertexAndIndicesData(sVertex* vertices, uint32_t* i_indexData, int vertexCount, int triangleCount)
 {
-	CreateVertexBuffer(positions, colors, vertexCount);
+	CreateVertexBuffer(vertices, vertexCount);
 	CreateIndexBuffer(i_indexData, triangleCount);
 }
 
@@ -102,7 +102,7 @@ HRESULT eae6320::Mesh::GetVertexProcessingUsage(DWORD& o_usage)
 	return result;
 }
 
-bool eae6320::Mesh::CreateVertexBuffer(float ** positions, uint8_t ** colors, int vertexCount)
+bool eae6320::Mesh::CreateVertexBuffer(sVertex* vertices, int vertexCount)
 {
 	// The usage tells Direct3D how this vertex buffer will be used
 	DWORD usage = 0;
@@ -210,12 +210,12 @@ bool eae6320::Mesh::CreateVertexBuffer(float ** positions, uint8_t ** colors, in
 			// Experiment with other values to see what happens!
 			for (int i = 0; i < vertexCount; i++)
 			{
-				vertexData[i].x = positions[i][0];
-				vertexData[i].y = positions[i][1];
-				// Red
-				vertexData[i].r = colors[i][0] * 255;
-				vertexData[i].g = colors[i][1] * 255;
-				vertexData[i].b = colors[i][2] * 255;
+				vertexData[i].x = vertices[i].x;
+				vertexData[i].y = vertices[i].y;
+
+				vertexData[i].r = vertices[i].r * 255;
+				vertexData[i].g = vertices[i].g * 255;
+				vertexData[i].b = vertices[i].b * 255;
 				vertexData[i].a = 255;
 			}
 		}
