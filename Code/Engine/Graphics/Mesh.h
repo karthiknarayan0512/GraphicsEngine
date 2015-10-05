@@ -52,7 +52,7 @@ namespace eae6320
 		// A vertex array encapsulates both the vertex and index data as well as the vertex format
 		GLuint m_vertexArrayId;
 
-		bool CreateVertexArray(sVertex *vertices, uint32_t* i_indexData, int vertexCount);
+		bool CreateVertexArray(sVertex *vertices, uint32_t* i_indexData, int vertexCount, int triangleCount);
 #endif
 
 #ifdef EAE6320_PLATFORM_D3D

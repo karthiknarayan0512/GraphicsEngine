@@ -5,7 +5,6 @@
 
 #include <cassert>
 #include <cstdint>
-#include <d3d9.h>
 #include <d3dx9shader.h>
 #include <sstream>
 #include "../../UserOutput/UserOutput.h"
@@ -44,6 +43,11 @@ namespace
 
 // Interface
 //==========
+
+IDirect3DDevice9* eae6320::Graphics::getDirect3DDevice()
+{
+	return s_direct3dDevice;
+}
 
 bool eae6320::Graphics::Initialize( const HWND i_renderingWindow )
 {
@@ -234,7 +238,7 @@ namespace
 
 	bool CreateEffect()
 	{
-		s_Effect = new eae6320::Effect(s_direct3dDevice);
+		s_Effect = new eae6320::Effect();
 		assert(s_Effect);
 
 		return s_Effect->CreateEffect("data/vertex.shader", "data/fragment.shader");

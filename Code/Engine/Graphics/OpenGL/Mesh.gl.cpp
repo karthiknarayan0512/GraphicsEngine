@@ -54,10 +54,10 @@ void eae6320::Mesh::DrawMesh(int vertexCountToRender, int primitiveCountToRender
 
 void eae6320::Mesh::LoadVertexAndIndicesData(sVertex* vertices, uint32_t* i_indexData, int vertexCount, int triangleCount)
 {
-	CreateVertexArray(vertices, i_indexData, vertexCount);
+	CreateVertexArray(vertices, i_indexData, vertexCount, triangleCount);
 }
 
-bool eae6320::Mesh::CreateVertexArray(sVertex *vertices, uint32_t* i_indexData, int vertexCount)
+bool eae6320::Mesh::CreateVertexArray(sVertex *vertices, uint32_t* i_indexData, int vertexCount, int triangleCount)
 {
 	bool wereThereErrors = false;
 	GLuint vertexBufferId = 0;
@@ -286,10 +286,9 @@ bool eae6320::Mesh::CreateVertexArray(sVertex *vertices, uint32_t* i_indexData, 
 	}
 	// Allocate space and copy the triangle data into the index buffer
 	{
-		// We are drawing a square
-		const unsigned int triangleCount = 2;	// How many triangles does a square have?
 		const unsigned int vertexCountPerTriangle = 3;
-		uint32_t indexData[triangleCount * vertexCountPerTriangle];
+		const unsigned int indexCount = triangleCount * vertexCountPerTriangle;
+		uint32_t *indexData = new uint32_t[indexCount];
 		// Fill in the data for the triangle
 		{
 			// EAE6320_TODO:
@@ -301,7 +300,7 @@ bool eae6320::Mesh::CreateVertexArray(sVertex *vertices, uint32_t* i_indexData, 
 			// (also remember to maintain the correct handedness for the triangle winding order).
 
 			// Triangle 0
-			for (int i = 0; i < triangleCount * vertexCountPerTriangle; i++)
+			for (size_t i = 0; i < indexCount; i++)
 				indexData[i] = i_indexData[i];
 		}
 

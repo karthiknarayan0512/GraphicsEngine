@@ -27,7 +27,7 @@ bool eae6320::Mesh::LoadMeshFromFile(const char* i_FilePath)
 	// Get vertexCount
 	verticesCount = *reinterpret_cast<int *>(buffer);
 
-	// Get positions and colors
+	// Get vertices
 	vertices = reinterpret_cast<sVertex *>(buffer + sizeof(verticesCount));
 
 	//Write indices count

@@ -19,9 +19,6 @@ namespace eae6320
 		void SetEffect();
 
 		~Effect();
-#ifdef EAE6320_PLATFORM_D3D
-		Effect(IDirect3DDevice9* i_direct3dDevice);
-#endif
 
 	private:
 		bool LoadVertexShader(const char *i_vertexShaderFile);
@@ -32,8 +29,6 @@ namespace eae6320
 		IDirect3DVertexShader9* m_vertexShader;
 
 		IDirect3DPixelShader9* m_fragmentShader;
-
-		IDirect3DDevice9* m_direct3dDevice;
 
 #elif defined EAE6320_PLATFORM_GL
 		GLuint m_programID;

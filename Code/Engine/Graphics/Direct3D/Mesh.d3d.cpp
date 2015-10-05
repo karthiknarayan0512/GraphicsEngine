@@ -161,7 +161,6 @@ bool eae6320::Mesh::CreateVertexBuffer(sVertex* vertices, int vertexCount)
 
 	// Create a vertex buffer
 	{
-		// We are drawing one square
 		const unsigned int bufferSize = vertexCount * sizeof(sVertex);
 		// We will define our own vertex format
 		const DWORD useSeparateVertexDeclaration = 0;

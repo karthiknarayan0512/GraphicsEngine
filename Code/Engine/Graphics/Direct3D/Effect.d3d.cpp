@@ -8,28 +8,17 @@
 
 namespace eae6320
 {
-	Effect::Effect(IDirect3DDevice9* i_direct3dDevice) :
-		m_direct3dDevice(i_direct3dDevice)
-	{
-
-	}
-
 	Effect::~Effect()
 	{
-		if (m_direct3dDevice)
+		if (m_vertexShader)
 		{
-			if (m_vertexShader)
-			{
-				m_vertexShader->Release();
-				m_vertexShader = NULL;
-			}
-			if (m_fragmentShader)
-			{
-				m_fragmentShader->Release();
-				m_fragmentShader = NULL;
-			}
-
-			m_direct3dDevice->Release();
+			m_vertexShader->Release();
+			m_vertexShader = NULL;
+		}
+		if (m_fragmentShader)
+		{
+			m_fragmentShader->Release();
+			m_fragmentShader = NULL;
 		}
 	}
 
@@ -78,10 +67,14 @@ namespace eae6320
 				return false;
 			}
 		}
+
+		//Get the Direct3D device
+		IDirect3DDevice9* direct3DDevice = Graphics::getDirect3DDevice();
+
 		// Create the vertex shader object
 		bool wereThereErrors = false;
 		{
-			HRESULT result = m_direct3dDevice->CreateVertexShader(reinterpret_cast<DWORD*>(compiledShader->GetBufferPointer()),
+			HRESULT result = direct3DDevice->CreateVertexShader(reinterpret_cast<DWORD*>(compiledShader->GetBufferPointer()),
 				&m_vertexShader);
 			if (FAILED(result))
 			{
@@ -138,10 +131,14 @@ namespace eae6320
 				return false;
 			}
 		}
+
+		//Get the Direct3D device
+		IDirect3DDevice9* direct3DDevice = Graphics::getDirect3DDevice();
+
 		// Create the fragment shader object
 		bool wereThereErrors = false;
 		{
-			HRESULT result = m_direct3dDevice->CreatePixelShader(reinterpret_cast<DWORD*>(compiledShader->GetBufferPointer()),
+			HRESULT result = direct3DDevice->CreatePixelShader(reinterpret_cast<DWORD*>(compiledShader->GetBufferPointer()),
 				&m_fragmentShader);
 			if (FAILED(result))
 			{
@@ -155,11 +152,14 @@ namespace eae6320
 
 	void Effect::SetEffect()
 	{
+		//Get the Direct3D device
+		IDirect3DDevice9* direct3DDevice = Graphics::getDirect3DDevice();
+
 		HRESULT result;
-		result = m_direct3dDevice->SetVertexShader(m_vertexShader);
+		result = direct3DDevice->SetVertexShader(m_vertexShader);
 		assert(SUCCEEDED(result));
 
-		result = m_direct3dDevice->SetPixelShader(m_fragmentShader);
+		result = direct3DDevice->SetPixelShader(m_fragmentShader);
 		assert(SUCCEEDED(result));
 	}
 
