@@ -2,8 +2,7 @@
 //=============
 
 #include "../Graphics.h"
-#include "../Mesh.h"
-#include "../Effect.h"
+#include "../Renderable.h"
 
 #include <cassert>
 #include <cstdint>
@@ -25,13 +24,11 @@ namespace
 	HDC s_deviceContext = NULL;
 	HGLRC s_openGlRenderingContext = NULL;
 
-	eae6320::Effect *s_Effect;
+	// A list of input controlled renderables;
+	eae6320::Renderable *s_UserControlledObjects;
 
-	// A Mesh containing all the required information such as the index buffer
-	// , the vertex buffer and the vertex declaration. It will also require a 
-	// reference to the Direct3D device to make the DrawIndexedPrimitive call.
-	eae6320::Mesh* s_Mesh = NULL;
-	eae6320::Mesh* s_TriangleMesh = NULL;
+	// A list of static renderables;
+	eae6320::Renderable *s_StaticObjects;
 }
 
 // Helper Function Declarations
@@ -39,12 +36,8 @@ namespace
 
 namespace
 {
-	bool CreateProgram();
 	bool CreateRenderingContext();
-	bool LoadAndAllocateShaderProgram( const char* i_path, void*& o_shader, size_t& o_size, std::string* o_errorMessage );
-	bool CreateEffect();
-	bool CreateMeshes();
-
+	bool CreateRenderables();
 	// This helper struct exists to be able to dynamically allocate memory to get "log info"
 	// which will automatically be freed when the struct goes out of scope
 	struct sLogInfo
@@ -57,6 +50,12 @@ namespace
 
 // Interface
 //==========
+
+eae6320::Renderable* eae6320::Graphics::getUserControlledRenderables(int &i_length)
+{
+	i_length = 1;
+	return s_UserControlledObjects;
+}
 
 bool eae6320::Graphics::Initialize( const HWND i_renderingWindow )
 {
@@ -78,12 +77,7 @@ bool eae6320::Graphics::Initialize( const HWND i_renderingWindow )
 		}
 	}
 
-	if (!CreateEffect())
-	{
-		goto OnError;
-	}
-
-	if (!CreateMeshes())
+	if (!CreateRenderables())
 	{
 		goto OnError;
 	}
@@ -114,26 +108,10 @@ void eae6320::Graphics::Render()
 
 	// The actual function calls that draw geometry
 	{
-		// Set the vertex and fragment shaders
-		{
-			s_Effect->SetEffect();
-		}
-		// Render objects from the current streams
-		{
-			// We are drawing a square
-			GLsizei primitiveCountToRender = 2;	// How many triangles will be drawn?
-			GLsizei vertexCountPerTriangle = 3;
-			GLsizei vertexCountToRender = primitiveCountToRender * vertexCountPerTriangle;
-			s_Mesh->DrawMesh(vertexCountToRender, primitiveCountToRender);
-			assert( glGetError() == GL_NO_ERROR );
-
-			// We are drawing a triangle
-			primitiveCountToRender = 1;	// How many triangles will be drawn?
-			vertexCountPerTriangle = 3;
-			vertexCountToRender = primitiveCountToRender * vertexCountPerTriangle;
-			s_TriangleMesh->DrawMesh(vertexCountToRender, primitiveCountToRender);
-			assert(glGetError() == GL_NO_ERROR);
-		}
+		for (int i = 0; i < 1; i++)
+			s_UserControlledObjects[i].Render();
+		for (int i = 0; i < 2; i++)
+			s_StaticObjects[i].Render();
 	}
 
 	// Everything has been drawn to the "back buffer", which is just an image in memory.
@@ -151,10 +129,6 @@ bool eae6320::Graphics::ShutDown()
 
 	if ( s_openGlRenderingContext != NULL )
 	{
-		delete s_Effect;
-		delete s_Mesh;
-		s_Mesh = NULL;
-
 		if ( wglMakeCurrent( s_deviceContext, NULL ) != FALSE )
 		{
 			if ( wglDeleteContext( s_openGlRenderingContext ) == FALSE )
@@ -256,26 +230,31 @@ namespace
 
 		return true;
 	}
-
-	bool CreateEffect()
+	
+	bool CreateRenderables()
 	{
-		s_Effect = new eae6320::Effect();
-		assert(s_Effect);
+		s_UserControlledObjects = new eae6320::Renderable[1];
+		for (int i = 0; i < 1; i++)
+		{
+			if (!s_UserControlledObjects[i].m_Mesh.LoadMeshFromFile("data/Mesh.lua"))
+				return false;
+			if (!s_UserControlledObjects[i].m_Effect.CreateEffect("data/vertex.shader", "data/fragment.shader"))
+				return false;
+		}
 
-		return s_Effect->CreateEffect("data/vertex.shader", "data/fragment.shader");
-	}
+		s_StaticObjects = new eae6320::Renderable[2];
+		for (int i = 0; i < 2; i++)
+		{
+			if (!s_StaticObjects[i].m_Mesh.LoadMeshFromFile("data/Triangle.lua"))
+				return false;
+			if (!s_StaticObjects[i].m_Effect.CreateEffect("data/vertex.shader", "data/fragment.shader"))
+				return false;
+		}
+		s_StaticObjects[0].m_positionOffset.x = -0.75;
+		s_StaticObjects[0].m_positionOffset.y = 0.75;
 
-	bool CreateMeshes()
-	{
-		s_Mesh = new eae6320::Mesh();
-		assert(s_Mesh);
-		s_TriangleMesh = new eae6320::Mesh();
-		assert(s_TriangleMesh);
-		
-		if (!s_Mesh->LoadMeshFromFile("data/Mesh.lua"))
-			return false;
-		if (!s_TriangleMesh->LoadMeshFromFile("data/Triangle.lua"))
-			return false;
+		s_StaticObjects[1].m_positionOffset.x = 0.75;
+		s_StaticObjects[1].m_positionOffset.y = -0.75;
 
 		return true;
 	}

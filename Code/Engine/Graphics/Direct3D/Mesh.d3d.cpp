@@ -1,5 +1,6 @@
 #include "../Mesh.h"
 #include "../../UserOutput/UserOutput.h"
+#include "..\Graphics.h"
 
 #include <cassert>
 
@@ -7,21 +8,20 @@
 eae6320::Mesh::Mesh() : 
 	m_vertexDeclaration(NULL),
 	m_vertexBuffer(NULL),
-	m_indexBuffer(NULL),
-	m_direct3dDevice(NULL)
+	m_indexBuffer(NULL)
 {
 }
 
 eae6320::Mesh::Mesh(IDirect3DDevice9* i_direct3dDevice) : 
 	m_vertexDeclaration(NULL),
 	m_vertexBuffer(NULL),
-	m_indexBuffer(NULL),
-	m_direct3dDevice(i_direct3dDevice)
+	m_indexBuffer(NULL)
 {
 }
 
 eae6320::Mesh::~Mesh()
 {
+	IDirect3DDevice9* m_direct3dDevice = Graphics::getDirect3DDevice();
 	if (m_direct3dDevice)
 	{
 		if (m_vertexBuffer)
@@ -45,8 +45,9 @@ eae6320::Mesh::~Mesh()
 	}
 }
 
-void eae6320::Mesh::DrawMesh(int vertexCountToRender, int primitiveCountToRender)
+void eae6320::Mesh::DrawMesh()
 {
+	IDirect3DDevice9* m_direct3dDevice = Graphics::getDirect3DDevice();
 	HRESULT result;
 	// Bind a specific vertex buffer to the device as a data source
 	{
@@ -74,8 +75,8 @@ void eae6320::Mesh::DrawMesh(int vertexCountToRender, int primitiveCountToRender
 	const unsigned int indexOfFirstIndexToUse = 0;
 	// We are drawing a square
 	result = m_direct3dDevice->DrawIndexedPrimitive(primitiveType,
-		indexOfFirstVertexToRender, indexOfFirstVertexToRender, (UINT)vertexCountToRender,
-		indexOfFirstIndexToUse, (UINT)primitiveCountToRender);
+		indexOfFirstVertexToRender, indexOfFirstVertexToRender, (UINT)m_verticesCount,
+		indexOfFirstIndexToUse, (UINT)m_indicesCount);
 	assert(SUCCEEDED(result));
 }
 
@@ -87,6 +88,7 @@ void eae6320::Mesh::LoadVertexAndIndicesData(sVertex* vertices, uint32_t* i_inde
 
 HRESULT eae6320::Mesh::GetVertexProcessingUsage(DWORD& o_usage)
 {
+	IDirect3DDevice9* m_direct3dDevice = Graphics::getDirect3DDevice();
 	D3DDEVICE_CREATION_PARAMETERS deviceCreationParameters;
 	const HRESULT result = m_direct3dDevice->GetCreationParameters(&deviceCreationParameters);
 	if (SUCCEEDED(result))
@@ -104,6 +106,7 @@ HRESULT eae6320::Mesh::GetVertexProcessingUsage(DWORD& o_usage)
 
 bool eae6320::Mesh::CreateVertexBuffer(sVertex* vertices, int vertexCount)
 {
+	IDirect3DDevice9* m_direct3dDevice = Graphics::getDirect3DDevice();
 	// The usage tells Direct3D how this vertex buffer will be used
 	DWORD usage = 0;
 	{
@@ -234,6 +237,7 @@ bool eae6320::Mesh::CreateVertexBuffer(sVertex* vertices, int vertexCount)
 
 bool eae6320::Mesh::CreateIndexBuffer(uint32_t* i_indexData, const unsigned int triangleCount)
 {
+	IDirect3DDevice9* m_direct3dDevice = Graphics::getDirect3DDevice();
 	// The usage tells Direct3D how this vertex buffer will be used
 	DWORD usage = 0;
 	{

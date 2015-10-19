@@ -43,11 +43,13 @@ namespace eae6320
 #endif
 		// Destructor for the Mesh class
 		~Mesh();
-		void DrawMesh(int vertexCountToRender, int primitiveCountToRender);
+		void DrawMesh();
 		bool LoadMeshFromFile(const char* i_FilePath);
 		void LoadVertexAndIndicesData(sVertex* vertices, uint32_t* i_indexData, int vertexCount, int triangleCount);
 
 	private:
+		int m_verticesCount;
+		int m_indicesCount;
 #ifdef EAE6320_PLATFORM_GL
 		// A vertex array encapsulates both the vertex and index data as well as the vertex format
 		GLuint m_vertexArrayId;
@@ -63,8 +65,6 @@ namespace eae6320
 		// An index buffer describes how to make triangles with the vertices
 		// (i.e. it defines the vertex connectivity)
 		IDirect3DIndexBuffer9* m_indexBuffer;
-
-		IDirect3DDevice9* m_direct3dDevice;
 
 		HRESULT GetVertexProcessingUsage(DWORD& o_usage);
 

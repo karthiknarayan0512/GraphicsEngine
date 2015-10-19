@@ -31,6 +31,11 @@ namespace eae6320
 		}
 	}
 
+	void Effect::SetPositionOffset(float* i_positionOffset)
+	{
+		glUniform2fv(m_location, 1, i_positionOffset);
+	}
+
 	bool Effect::LoadAndAllocateShaderProgram(const char* i_path, void*& o_shader, size_t& o_size, std::string* o_errorMessage)
 	{
 		bool wereThereErrors = false;
@@ -653,6 +658,8 @@ namespace eae6320
 				return false;
 			}
 		}
+
+		m_location = glGetUniformLocation(m_programID, "g_position_offset");
 
 		return true;
 	}

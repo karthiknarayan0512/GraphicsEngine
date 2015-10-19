@@ -8,8 +8,6 @@
 #include <d3dx9shader.h>
 #include <sstream>
 #include "../../UserOutput/UserOutput.h"
-#include "../Mesh.h"
-#include "../Effect.h"
 
 // Static Data Initialization
 //===========================
@@ -20,14 +18,11 @@ namespace
 	IDirect3D9* s_direct3dInterface = NULL;
 	IDirect3DDevice9* s_direct3dDevice = NULL;
 
-	// A Mesh containing all the required information such as the index buffer
-	// , the vertex buffer and the vertex declaration. It will also require a 
-	// reference to the Direct3D device to make the DrawIndexedPrimitive call.
-	eae6320::Mesh* s_Mesh = NULL;
-	eae6320::Mesh* s_TriangleMesh = NULL;
+	// A list of input controlled renderables;
+	eae6320::Renderable *s_UserControlledObjects;
 
-	// An Effect containing both the vertex and fragment shader information
-	eae6320::Effect* s_Effect;
+	// A list of static renderables;
+	eae6320::Renderable *s_StaticObjects;
 }
 
 // Helper Function Declarations
@@ -37,8 +32,7 @@ namespace
 {
 	bool CreateDevice();
 	bool CreateInterface();
-	bool CreateMeshes();
-	bool CreateEffect();
+	bool CreateRenderables();
 }
 
 // Interface
@@ -47,6 +41,12 @@ namespace
 IDirect3DDevice9* eae6320::Graphics::getDirect3DDevice()
 {
 	return s_direct3dDevice;
+}
+
+eae6320::Renderable* eae6320::Graphics::getUserControlledRenderables(int &i_length)
+{
+	i_length = 1;
+	return s_UserControlledObjects;
 }
 
 bool eae6320::Graphics::Initialize( const HWND i_renderingWindow )
@@ -65,12 +65,7 @@ bool eae6320::Graphics::Initialize( const HWND i_renderingWindow )
 	}
 
 	// Create the mesh
-	if (!CreateMeshes())
-	{
-		goto OnError;
-	}
-
-	if (!CreateEffect())
+	if (!CreateRenderables())
 	{
 		goto OnError;
 	}
@@ -110,20 +105,10 @@ void eae6320::Graphics::Render()
 		HRESULT result = s_direct3dDevice->BeginScene();
 		assert( SUCCEEDED( result ) );
 		{
-			// Set the shaders
-			{
-				s_Effect->SetEffect();
-			}
-
-			// Render objects from the current streams
-			{
-				unsigned int vertexCountToRender = 4;	// How vertices from the vertex buffer will be used?
-				unsigned int primitiveCountToRender = 2;	// How many triangles will be drawn?
-				s_Mesh->DrawMesh(vertexCountToRender, primitiveCountToRender);
-				vertexCountToRender = 3;	// How vertices from the vertex buffer will be used?
-				primitiveCountToRender = 1;	// How many triangles will be drawn?
-				s_TriangleMesh->DrawMesh(vertexCountToRender, primitiveCountToRender);
-			}
+			for (int i = 0; i < 1; i++)
+				s_UserControlledObjects[i].Render();
+			for (int i = 0; i < 2; i++)
+				s_StaticObjects[i].Render();
 		}
 		result = s_direct3dDevice->EndScene();
 		assert( SUCCEEDED( result ) );
@@ -150,10 +135,6 @@ bool eae6320::Graphics::ShutDown()
 	{
 		if ( s_direct3dDevice )
 		{
-			delete s_Effect;
-			delete s_Mesh;
-			s_Mesh = NULL;
-
 			s_direct3dDevice->Release();
 			s_direct3dDevice = NULL;
 		}
@@ -219,28 +200,5 @@ namespace
 			eae6320::UserOutput::Print( "DirectX failed to create a Direct3D9 interface" );
 			return false;
 		}
-	}
-
-	bool CreateMeshes()
-	{
-		s_Mesh = new eae6320::Mesh(s_direct3dDevice);
-		assert(s_Mesh);
-		s_TriangleMesh = new eae6320::Mesh(s_direct3dDevice);
-		assert(s_TriangleMesh);
-
-		if (!s_Mesh->LoadMeshFromFile("data/Mesh.lua"))
-			return false;
-		if (!s_TriangleMesh->LoadMeshFromFile("data/Triangle.lua"))
-			return false;
-
-		return true;
-	}
-
-	bool CreateEffect()
-	{
-		s_Effect = new eae6320::Effect();
-		assert(s_Effect);
-
-		return s_Effect->CreateEffect("data/vertex.shader", "data/fragment.shader");
 	}
 }

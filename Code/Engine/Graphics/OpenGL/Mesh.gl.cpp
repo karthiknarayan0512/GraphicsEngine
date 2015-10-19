@@ -30,7 +30,7 @@ eae6320::Mesh::~Mesh()
 	}
 }
 
-void eae6320::Mesh::DrawMesh(int vertexCountToRender, int primitiveCountToRender)
+void eae6320::Mesh::DrawMesh()
 {
 	// Bind a specific vertex buffer to the device as a data source
 	{
@@ -48,7 +48,7 @@ void eae6320::Mesh::DrawMesh(int vertexCountToRender, int primitiveCountToRender
 	// It is possible to start rendering in the middle of an index buffer
 	const GLvoid* const offset = 0;
 	// We are drawing a square
-	glDrawElements(mode, vertexCountToRender, indexType, offset);
+	glDrawElements(mode, m_verticesCount * m_indicesCount, indexType, offset);
 	assert(glGetError() == GL_NO_ERROR);
 }
 

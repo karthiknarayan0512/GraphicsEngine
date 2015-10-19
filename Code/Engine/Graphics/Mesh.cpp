@@ -18,28 +18,26 @@ bool eae6320::Mesh::LoadMeshFromFile(const char* i_FilePath)
 	meshBinary.read(buffer, length);
 
 	sVertex *vertices = NULL;
-	int verticesCount = 0;
 
 	// Get indices data
 	uint32_t* indexData = NULL;
-	int indicesCount = 0;
 
 	// Get vertexCount
-	verticesCount = *reinterpret_cast<int *>(buffer);
+	m_verticesCount = *reinterpret_cast<int *>(buffer);
 
 	// Get vertices
-	vertices = reinterpret_cast<sVertex *>(buffer + sizeof(verticesCount));
+	vertices = reinterpret_cast<sVertex *>(buffer + sizeof(m_verticesCount));
 
 	//Write indices count
-	indicesCount = *reinterpret_cast<int *>(buffer + sizeof(verticesCount) + 
-											verticesCount * sizeof(sVertex));
+	m_indicesCount = *reinterpret_cast<int *>(buffer + sizeof(m_verticesCount) +
+		m_verticesCount * sizeof(sVertex));
 
 	// Write index array
-	indexData = reinterpret_cast<uint32_t*>(buffer + sizeof(verticesCount) +
-											verticesCount * sizeof(sVertex) +
-											sizeof(indicesCount));
+	indexData = reinterpret_cast<uint32_t*>(buffer + sizeof(m_verticesCount) +
+		m_verticesCount * sizeof(sVertex) +
+											sizeof(m_indicesCount));
 
-	LoadVertexAndIndicesData(vertices, indexData, verticesCount, indicesCount);
+	LoadVertexAndIndicesData(vertices, indexData, m_verticesCount, m_indicesCount);
 
 	delete buffer;
 	meshBinary.close();

@@ -9,8 +9,10 @@
 //=============
 
 #include "../Windows/Includes.h"
-
+#include "Renderable.h"
+#ifdef EAE6320_PLATFORM_D3D
 #include <d3d9.h>
+#endif
 
 // Interface
 //==========
@@ -22,6 +24,8 @@ namespace eae6320
 		bool Initialize( const HWND i_renderingWindow );
 		void Render();
 		bool ShutDown();
+
+		Renderable* getUserControlledRenderables(int &i_length);
 #ifdef EAE6320_PLATFORM_D3D
 		IDirect3DDevice9* getDirect3DDevice();
 #endif

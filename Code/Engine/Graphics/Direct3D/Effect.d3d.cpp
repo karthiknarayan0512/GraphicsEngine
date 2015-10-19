@@ -38,11 +38,11 @@ namespace eae6320
 			const char* profile = "vs_3_0";
 			const DWORD noFlags = 0;
 			ID3DXBuffer* errorMessages = NULL;
-			ID3DXConstantTable** noConstants = NULL;
 			HRESULT result = D3DXCompileShaderFromFile(sourceCodeFileName, defines, noIncludes, entryPoint, profile, noFlags,
-				&compiledShader, &errorMessages, noConstants);
+				&compiledShader, &errorMessages, &m_vertexShaderConstantTable);
 			if (SUCCEEDED(result))
 			{
+				m_positionOffset = m_vertexShaderConstantTable->GetConstantByName(NULL, "g_position_offset");
 				if (errorMessages)
 				{
 					errorMessages->Release();
@@ -160,6 +160,14 @@ namespace eae6320
 		assert(SUCCEEDED(result));
 
 		result = direct3DDevice->SetPixelShader(m_fragmentShader);
+		assert(SUCCEEDED(result));
+
+	}
+
+	void Effect::SetPositionOffset(float* i_positionOffset)
+	{
+		IDirect3DDevice9* direct3DDevice = Graphics::getDirect3DDevice();
+		HRESULT result = m_vertexShaderConstantTable->SetFloatArray(direct3DDevice, m_positionOffset, i_positionOffset, 2);
 		assert(SUCCEEDED(result));
 	}
 

@@ -16,6 +16,9 @@
 
 #include "Graphics.h"
 
+#include "..\Time\Time.h"
+#include "..\UserInput\UserInput.h"
+
 // Static Data Initialization
 //===========================
 
@@ -482,11 +485,58 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 				hasWindowsSentAMessage = PeekMessage(&message, getMessagesFromAnyWindowBelongingToTheCurrentThread,
 					getAllMessageTypes, getAllMessageTypes, ifAMessageExistsRemoveItFromTheQueue) == TRUE;
 			}
-			if(s_mainWindow != NULL)
-				eae6320::Graphics::Render();
 			if (!hasWindowsSentAMessage)
 			{
 				// Usually there will be no messages in the queue, and the game can run
+				eae6320::Time::OnNewFrame();
+
+				// The following is an array of two floats,
+				// but defined as a struct so that I can reference them with the human-readable "x" and "y"
+				// rather than the less-descriptive [0] and [1]:
+				struct
+				{
+					float x, y;
+				} offset;
+				offset.x = offset.y = 0.0f;
+				{
+					// Get the direction
+					{
+						if (eae6320::UserInput::IsKeyPressed(VK_LEFT))
+						{
+							offset.x -= 1.0f;
+						}
+						if (eae6320::UserInput::IsKeyPressed(VK_RIGHT))
+						{
+							offset.x += 1.0f;
+						}
+						if (eae6320::UserInput::IsKeyPressed(VK_UP))
+						{
+							offset.y += 1.0f;
+						}
+						if (eae6320::UserInput::IsKeyPressed(VK_DOWN))
+						{
+							offset.y -= 1.0f;
+						}
+					}
+					// Get the speed
+					const float unitsPerSecond = 1.0f;	// This is arbitrary
+					const float unitsToMove = unitsPerSecond * eae6320::Time::GetSecondsElapsedThisFrame();	// This makes the speed frame-rate-independent
+					// Normalize the offset
+					offset.x *= unitsToMove;
+					offset.y *= unitsToMove;
+				}
+
+				int length;
+				eae6320::Renderable *userControlledRenderables = eae6320::Graphics::getUserControlledRenderables(length);
+				
+				for (int i = 0; i < length; i++)
+				{
+					userControlledRenderables->m_positionOffset.x += offset.x;
+					userControlledRenderables->m_positionOffset.y += offset.y;
+				}
+
+				if (s_mainWindow != NULL)
+					eae6320::Graphics::Render();
 
 				// (This example program has nothing to do,
 				// and so it will just constantly run this while loop using up CPU cycles.
