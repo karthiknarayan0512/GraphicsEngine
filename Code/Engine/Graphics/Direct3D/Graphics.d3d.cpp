@@ -201,4 +201,32 @@ namespace
 			return false;
 		}
 	}
+	
+	bool CreateRenderables()
+	{
+		s_UserControlledObjects = new eae6320::Renderable[1];
+		for (int i = 0; i < 1; i++)
+		{
+			if (!s_UserControlledObjects[i].m_Mesh.LoadMeshFromFile("data/Mesh.lua"))
+				return false;
+			if (!s_UserControlledObjects[i].m_Effect.CreateEffect("data/vertex.shader", "data/fragment.shader"))
+				return false;
+		}
+
+		s_StaticObjects = new eae6320::Renderable[2];
+		for (int i = 0; i < 2; i++)
+		{
+			if (!s_StaticObjects[i].m_Mesh.LoadMeshFromFile("data/Triangle.lua"))
+				return false;
+			if (!s_StaticObjects[i].m_Effect.CreateEffect("data/vertex.shader", "data/fragment.shader"))
+				return false;
+		}
+		s_StaticObjects[0].m_positionOffset.x = -0.75;
+		s_StaticObjects[0].m_positionOffset.y = 0.75;
+
+		s_StaticObjects[1].m_positionOffset.x = 0.75;
+		s_StaticObjects[1].m_positionOffset.y = -0.75;
+
+		return true;
+	}
 }
