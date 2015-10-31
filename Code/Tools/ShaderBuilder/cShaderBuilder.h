@@ -1,5 +1,9 @@
-#ifndef EAE6320_CGENERICBUILDER_H
-#define EAE6320_CGENERICBUILDER_H
+/*
+	This class builds shaders
+*/
+
+#ifndef EAE6320_CSHADERBUILDER_H
+#define EAE6320_CSHADERBUILDER_H
 
 // Header Files
 //=============
@@ -11,7 +15,7 @@
 
 namespace eae6320
 {
-	class cMeshBuilder : public cbBuilder
+	class cShaderBuilder : public cbBuilder
 	{
 		// Interface
 		//==========
@@ -25,4 +29,4 @@ namespace eae6320
 	};
 }
 
-#endif	// EAE6320_CMESHBUILDER_H
+#endif	// EAE6320_CSHADERBUILDER_H

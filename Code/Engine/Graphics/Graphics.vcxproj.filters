@@ -17,6 +17,7 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="Renderable.h" />
+    <ClInclude Include="Includes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Direct3D\Graphics.d3d.cpp">

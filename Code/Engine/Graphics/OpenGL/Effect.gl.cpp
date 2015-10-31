@@ -3,6 +3,7 @@
 #include "..\..\Windows\Functions.h"
 
 #include <sstream>
+#include <fstream>
 #include <cassert>
 
 namespace eae6320
@@ -204,11 +205,9 @@ namespace eae6320
 			}
 			// Set the source code into the shader
 			{
-				const GLsizei shaderSourceCount = 3;
+				const GLsizei shaderSourceCount = 1;
 				const GLchar* shaderSources[] =
 				{
-					"#version 330// The version of GLSL to use must come first\n",
-					"#define EAE6320_PLATFORM_GL\n",
 					reinterpret_cast<GLchar*>(shaderSource)
 				};
 				const GLint* sourcesAreNullTerminated = NULL;
@@ -402,11 +401,9 @@ namespace eae6320
 			}
 			// Set the source code into the shader
 			{
-				const GLsizei shaderSourceCount = 3;
+				const GLsizei shaderSourceCount = 1;
 				const GLchar* shaderSources[] =
 				{
-					"#version 330// The version of GLSL to use must come first\n",
-					"#define EAE6320_PLATFORM_GL\n",
 					reinterpret_cast<GLchar*>(shaderSource)
 				};
 				const GLint* sourcesAreNullTerminated = NULL;
@@ -664,8 +661,30 @@ namespace eae6320
 		return true;
 	}
 
-	bool Effect::CreateEffect(const char *i_vertexShaderFile, const char *i_fragmentShaderfile)
+	bool Effect::CreateEffect(const char *i_shaderBinaryFile)
 	{
+		std::ifstream effectBinary(i_shaderBinaryFile, std::ofstream::binary);
+
+		effectBinary.seekg(0, effectBinary.end);
+		int length = (int)effectBinary.tellg();
+		effectBinary.seekg(0, effectBinary.beg);
+
+		char * buffer = new char[length];
+		effectBinary.read(buffer, length);
+
+		char* i_vertexShaderFile = new char[strlen(buffer) + 1];
+		memcpy_s(i_vertexShaderFile, strlen(buffer), buffer, strlen(buffer));
+		i_vertexShaderFile[strlen(buffer)] = '\0';
+
+		effectBinary.seekg(strlen(i_vertexShaderFile) + 1, effectBinary.beg);
+		effectBinary.read(buffer, length - strlen(i_vertexShaderFile) - 1);
+
+		char* i_fragmentShaderfile = new char[strlen(buffer) + 1];
+		memcpy_s(i_fragmentShaderfile, strlen(buffer), buffer, strlen(buffer));
+		i_fragmentShaderfile[strlen(buffer)] = '\0';
+
+		effectBinary.close();		
+		
 		return CreateProgram(i_vertexShaderFile, i_fragmentShaderfile);
 	}
 }

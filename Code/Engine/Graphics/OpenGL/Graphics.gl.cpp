@@ -11,6 +11,7 @@
 #include <gl/GLU.h>
 #include <string>
 #include <sstream>
+#include <fstream>
 #include "../../UserOutput/UserOutput.h"
 #include "../../Windows/Functions.h"
 #include "../../../External/OpenGlExtensions/OpenGlExtensions.h"
@@ -238,7 +239,7 @@ namespace
 		{
 			if (!s_UserControlledObjects[i].m_Mesh.LoadMeshFromFile("data/Mesh.lua"))
 				return false;
-			if (!s_UserControlledObjects[i].m_Effect.CreateEffect("data/vertex.shader", "data/fragment.shader"))
+			if (!s_UserControlledObjects[i].m_Effect.CreateEffect("data/Effect.lua"))
 				return false;
 		}
 
@@ -247,7 +248,7 @@ namespace
 		{
 			if (!s_StaticObjects[i].m_Mesh.LoadMeshFromFile("data/Triangle.lua"))
 				return false;
-			if (!s_StaticObjects[i].m_Effect.CreateEffect("data/vertex.shader", "data/fragment.shader"))
+			if (!s_StaticObjects[i].m_Effect.CreateEffect("data/Effect.lua"))
 				return false;
 		}
 		s_StaticObjects[0].m_positionOffset.x = -0.75;

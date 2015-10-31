@@ -222,8 +222,6 @@ bool eae6320::cMeshBuilder::Build( const std::vector<std::string>& )
 	vertexCount = reinterpret_cast<char *>(&verticesCount);
 	meshBinary.write(vertexCount, sizeof(verticesCount));
 
-	//::MessageBox(NULL, "", "", MB_OK);
-
 	// Write vertices
 	char *verticesBuffer = NULL;
 	verticesBuffer = reinterpret_cast<char *>(vertices);

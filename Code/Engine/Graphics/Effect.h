@@ -16,7 +16,7 @@ namespace eae6320
 	class Effect
 	{
 	public:
-		bool CreateEffect(const char *i_vertexShaderFile, const char *i_fragmentShaderfile);
+		bool CreateEffect(const char *i_shaderBinaryFile);
 		void SetEffect();
 		void SetPositionOffset(float* i_positionOffset);
 

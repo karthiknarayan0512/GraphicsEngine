@@ -40,7 +40,7 @@ end
 -- Function Definitions
 --=====================
 
-local function BuildAsset( i_relativeSourcePath, i_relativeDestPath, i_builderFileName, i_FileName )
+local function BuildAsset( i_relativeSourcePath, i_relativeDestPath, i_builderFileName, i_FileName, i_optionalArguments )
 	-- Get the absolute paths to the source and target
 	local path_source = s_AuthoredAssetDir .. i_relativeSourcePath .. i_FileName
 	local path_target = s_BuiltAssetDir .. i_relativeDestPath .. i_FileName
@@ -103,7 +103,7 @@ local function BuildAsset( i_relativeSourcePath, i_relativeDestPath, i_builderFi
 			local arguments = "\"" .. path_source .. "\" \"" .. path_target .. "\""
 			-- If you create a mechanism so that some asset types could include extra arguments
 			-- you would concatenate them here, something like:
-			-- arguments = arguments .. " " .. i_optionalArguments
+			arguments = arguments .. " " .. i_optionalArguments
 			-- IMPORTANT NOTE:
 			-- If you need to debug a builder you can put print statements here to
 			-- find out what the exact command line should be.
@@ -163,8 +163,9 @@ local function BuildAssets( i_assetsToBuild )
 		local assets = assetValue.assets;
 		local source = assetValue.source;
 		local destination = assetValue.destination;
+		local optionalArguments = assetValue.optionalArguments;
 		for i, asset in ipairs( assets ) do
-			if not BuildAsset( source, destination, buildTool, asset ) then
+			if not BuildAsset( source, destination, buildTool, asset, optionalArguments ) then
 				error( "Build Asset failed" )
 				-- If there's an error then the asset build should fail,
 				-- but we can still try to build any remaining assets

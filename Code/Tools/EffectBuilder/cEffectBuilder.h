@@ -1,5 +1,5 @@
-#ifndef EAE6320_CGENERICBUILDER_H
-#define EAE6320_CGENERICBUILDER_H
+#ifndef EFFECTBUILDER_H
+#define EFFECTBUILDER_H
 
 // Header Files
 //=============
@@ -11,7 +11,7 @@
 
 namespace eae6320
 {
-	class cMeshBuilder : public cbBuilder
+	class cEffectBuilder : public cbBuilder
 	{
 		// Interface
 		//==========
@@ -21,8 +21,8 @@ namespace eae6320
 		// Build
 		//------
 
-		virtual bool Build( const std::vector<std::string>& i_arguments );
+		virtual bool Build(const std::vector<std::string>& i_arguments);
 	};
 }
 
-#endif	// EAE6320_CMESHBUILDER_H
+#endif	// EFFECTBUILDER_H
