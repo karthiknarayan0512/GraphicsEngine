@@ -40,7 +40,7 @@ end
 -- Function Definitions
 --=====================
 
-local function BuildAsset( i_relativeSourcePath, i_relativeDestPath, i_builderFileName, i_FileName, i_optionalArguments )
+local function BuildAsset( i_relativeSourcePath, i_relativeDestPath, i_builderFileName, i_FileName, i_optionalArguments, i_index, i_dependencies )
 	-- Get the absolute paths to the source and target
 	local path_source = s_AuthoredAssetDir .. i_relativeSourcePath .. i_FileName
 	local path_target = s_BuiltAssetDir .. i_relativeDestPath .. i_FileName
@@ -69,6 +69,29 @@ local function BuildAsset( i_relativeSourcePath, i_relativeDestPath, i_builderFi
 	end
 
 	-- Decide if the target needs to be built
+	local shouldDependenciesBeBuilt
+	do
+		if i_dependencies then
+			for i, dependency in ipairs(i_dependencies) do
+				local path_dependency_source = s_AuthoredAssetDir .. i_relativeSourcePath .. dependency
+				local path_dependency_target = s_BuiltAssetDir .. i_relativeDestPath .. dependency
+				-- The simplest reason a target should be built is if it doesn't exist
+				local doesTargetExist = DoesFileExist( path_dependency_target )
+				if doesTargetExist then
+					-- Even if the target exists it may be out-of-date.
+					-- If the source has been modified more recently than the target
+					-- then the target should be re-built.
+					local lastWriteTime_source = GetLastWriteTime( path_dependency_source )
+					local lastWriteTime_target = GetLastWriteTime( path_dependency_target )
+					shouldDependenciesBeBuilt = lastWriteTime_source > lastWriteTime_target
+				else
+					shouldDependenciesBeBuilt = true;
+				end
+				if shouldDependenciesBeBuilt == true then break end
+			end
+		end
+	end
+
 	local shouldTargetBeBuilt
 	do
 		-- The simplest reason a target should be built is if it doesn't exist
@@ -85,6 +108,9 @@ local function BuildAsset( i_relativeSourcePath, i_relativeDestPath, i_builderFi
 				-- the builder may have changed which could cause different output
 				local lastWriteTime_builder = GetLastWriteTime( path_builder )
 				shouldTargetBeBuilt = lastWriteTime_builder > lastWriteTime_target
+				if not shouldTargetBeBuilt and i_dependencies then
+					shouldTargetBeBuilt = shouldDependenciesBeBuilt
+				end
 			end
 		else
 			shouldTargetBeBuilt = true;
@@ -103,7 +129,9 @@ local function BuildAsset( i_relativeSourcePath, i_relativeDestPath, i_builderFi
 			local arguments = "\"" .. path_source .. "\" \"" .. path_target .. "\""
 			-- If you create a mechanism so that some asset types could include extra arguments
 			-- you would concatenate them here, something like:
-			arguments = arguments .. " " .. i_optionalArguments
+			if i_optionalArguments then
+				arguments = arguments .. " " .. i_optionalArguments[i_index]
+			end
 			-- IMPORTANT NOTE:
 			-- If you need to debug a builder you can put print statements here to
 			-- find out what the exact command line should be.
@@ -164,8 +192,9 @@ local function BuildAssets( i_assetsToBuild )
 		local source = assetValue.source;
 		local destination = assetValue.destination;
 		local optionalArguments = assetValue.optionalArguments;
+		local dependencies = assetValue.dependencies;
 		for i, asset in ipairs( assets ) do
-			if not BuildAsset( source, destination, buildTool, asset, optionalArguments ) then
+			if not BuildAsset( source, destination, buildTool, asset, optionalArguments, i, dependencies ) then
 				error( "Build Asset failed" )
 				-- If there's an error then the asset build should fail,
 				-- but we can still try to build any remaining assets

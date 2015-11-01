@@ -10,9 +10,18 @@ return
 		},
 		source = "",
 		destination = "",
-		optionalArguments = "",
 	},
-	shaders =
+	dependencies = 
+	{
+		buildTool = "GenericBuilder.exe",
+		assets = 
+		{
+			"shaders.inc",
+		},
+		source = "",
+		destination = "",	
+	},
+	shaderinfo =
 	{
 		buildTool = "EffectBuilder.exe",
 		assets = 
@@ -21,28 +30,25 @@ return
 		},
 		source = "",
 		destination = "",
-		optionalArguments = "",
 	},
-	vertexshader = 
+	shaders = 
 	{
 		buildTool = "ShaderBuilder.exe",
 		assets = 
 		{
 			"vertex.shader",
+			"fragment.shader"
 		},
 		source = "",
 		destination = "",
-		optionalArguments = "vertex",
-	},
-	fragmentshader = 
-	{
-		buildTool = "ShaderBuilder.exe",
-		assets = 
+		optionalArguments = 
 		{
-			"fragment.shader",
+			"vertex",
+			"fragment"
 		},
-		source = "",
-		destination = "",
-		optionalArguments = "fragment",
-	}
+		dependencies = 
+		{
+			"shaders.inc",
+		}
+	},
 }

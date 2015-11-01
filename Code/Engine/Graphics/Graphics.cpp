@@ -71,10 +71,6 @@ void eae6320::Graphics::Render()
 
 bool eae6320::Graphics::ShutDown()
 {
-	delete s_StaticObjects;
-
-	delete s_UserControlledObjects;
-
 	return Context::Shutdown();
 }
 
