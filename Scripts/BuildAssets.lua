@@ -74,15 +74,14 @@ local function BuildAsset( i_relativeSourcePath, i_relativeDestPath, i_builderFi
 		if i_dependencies then
 			for i, dependency in ipairs(i_dependencies) do
 				local path_dependency_source = s_AuthoredAssetDir .. i_relativeSourcePath .. dependency
-				local path_dependency_target = s_BuiltAssetDir .. i_relativeDestPath .. dependency
 				-- The simplest reason a target should be built is if it doesn't exist
-				local doesTargetExist = DoesFileExist( path_dependency_target )
+				local doesTargetExist = DoesFileExist( path_target )
 				if doesTargetExist then
 					-- Even if the target exists it may be out-of-date.
 					-- If the source has been modified more recently than the target
 					-- then the target should be re-built.
 					local lastWriteTime_source = GetLastWriteTime( path_dependency_source )
-					local lastWriteTime_target = GetLastWriteTime( path_dependency_target )
+					local lastWriteTime_target = GetLastWriteTime( path_target )
 					shouldDependenciesBeBuilt = lastWriteTime_source > lastWriteTime_target
 				else
 					shouldDependenciesBeBuilt = true;
@@ -108,15 +107,15 @@ local function BuildAsset( i_relativeSourcePath, i_relativeDestPath, i_builderFi
 				-- the builder may have changed which could cause different output
 				local lastWriteTime_builder = GetLastWriteTime( path_builder )
 				shouldTargetBeBuilt = lastWriteTime_builder > lastWriteTime_target
-				if not shouldTargetBeBuilt and i_dependencies then
+				if i_dependencies then
 					shouldTargetBeBuilt = shouldDependenciesBeBuilt
 				end
 			end
+			
 		else
 			shouldTargetBeBuilt = true;
 		end
 	end
-
 	-- Build the target if necessary
 	if shouldTargetBeBuilt then
 		-- Create the target directory if necessary
