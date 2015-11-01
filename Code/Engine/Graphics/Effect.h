@@ -13,39 +13,42 @@
 
 namespace eae6320
 {
-	class Effect
+	namespace Graphics
 	{
-	public:
-		bool CreateEffect(const char *i_shaderBinaryFile);
-		void SetEffect();
-		void SetPositionOffset(float* i_positionOffset);
+		class Effect
+		{
+		public:
+			bool CreateEffect(const char *i_shaderBinaryFile);
+			void SetEffect();
+			void SetPositionOffset(float* i_positionOffset);
 
-		~Effect();
+			~Effect();
 
-	private:
-		bool LoadVertexShader(const char *i_vertexShaderFile);
+		private:
+			bool LoadVertexShader(const char *i_vertexShaderFile);
 
-		bool LoadFragmentShader(const char *i_fragmentShaderfile);
+			bool LoadFragmentShader(const char *i_fragmentShaderfile);
 
 #ifdef EAE6320_PLATFORM_D3D
-		IDirect3DVertexShader9* m_vertexShader;
+			IDirect3DVertexShader9* m_vertexShader;
 
-		IDirect3DPixelShader9* m_fragmentShader;
+			IDirect3DPixelShader9* m_fragmentShader;
 
-		D3DXHANDLE m_positionOffset;
+			D3DXHANDLE m_positionOffset;
 
-		ID3DXConstantTable* m_vertexShaderConstantTable;
+			ID3DXConstantTable* m_vertexShaderConstantTable;
 
 #elif defined EAE6320_PLATFORM_GL
-		GLuint m_location;
+			GLuint m_location;
 
-		GLuint m_programID;
+			GLuint m_programID;
 
-		bool LoadAndAllocateShaderProgram(const char* i_path, void*& o_shader, size_t& o_size, std::string* o_errorMessage);
+			bool LoadAndAllocateShaderProgram(const char* i_path, void*& o_shader, size_t& o_size, std::string* o_errorMessage);
 
-		bool CreateProgram(const char *i_vertexShaderFile, const char *i_fragmentShaderfile);
+			bool CreateProgram(const char *i_vertexShaderFile, const char *i_fragmentShaderfile);
 #endif
-	};
+		};
+	}
 }
 
 #endif

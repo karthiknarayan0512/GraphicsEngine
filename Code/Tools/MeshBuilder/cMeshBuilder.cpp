@@ -17,7 +17,7 @@
 // Build
 //------
 
-void GetVerticesFromMeshFile(lua_State* luaState, eae6320::Mesh::sVertex *& vertices, int& verticesCount)
+void GetVerticesFromMeshFile(lua_State* luaState, eae6320::Graphics::Mesh::sVertex *& vertices, int& verticesCount)
 {
 	// Right now the asset table is at -1.
 	// After the following table operation it will be at -2
@@ -30,7 +30,7 @@ void GetVerticesFromMeshFile(lua_State* luaState, eae6320::Mesh::sVertex *& vert
 	if (lua_istable(luaState, -1))
 	{
 		verticesCount = luaL_len(luaState, -1);
-		vertices = new eae6320::Mesh::sVertex[verticesCount];
+		vertices = new eae6320::Graphics::Mesh::sVertex[verticesCount];
 
 		// Get Vertex Data
 		for (int i = 1; i <= verticesCount; ++i)
@@ -202,7 +202,7 @@ bool eae6320::cMeshBuilder::Build( const std::vector<std::string>& )
 		}
 	}
 
-	Mesh::sVertex *vertices;
+	Graphics::Mesh::sVertex *vertices;
 	int verticesCount = 0;
 
 	//::MessageBox(NULL, "", "", MB_OK);
@@ -225,7 +225,7 @@ bool eae6320::cMeshBuilder::Build( const std::vector<std::string>& )
 	// Write vertices
 	char *verticesBuffer = NULL;
 	verticesBuffer = reinterpret_cast<char *>(vertices);
-	meshBinary.write(verticesBuffer, verticesCount * sizeof(Mesh::sVertex));
+	meshBinary.write(verticesBuffer, verticesCount * sizeof(Graphics::Mesh::sVertex));
 
 	//Write indices count
 	char *indexCount = NULL;

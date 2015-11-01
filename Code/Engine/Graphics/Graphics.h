@@ -26,9 +26,6 @@ namespace eae6320
 		bool ShutDown();
 
 		Renderable* getUserControlledRenderables(int &i_length);
-#ifdef EAE6320_PLATFORM_D3D
-		IDirect3DDevice9* getDirect3DDevice();
-#endif
 	}
 }
 

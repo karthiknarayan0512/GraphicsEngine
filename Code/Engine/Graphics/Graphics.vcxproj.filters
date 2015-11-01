@@ -18,14 +18,9 @@
     <ClInclude Include="Effect.h" />
     <ClInclude Include="Renderable.h" />
     <ClInclude Include="Includes.h" />
+    <ClInclude Include="Context.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Direct3D\Graphics.d3d.cpp">
-      <Filter>Direct3D</Filter>
-    </ClCompile>
-    <ClCompile Include="OpenGL\Graphics.gl.cpp">
-      <Filter>OpenGL</Filter>
-    </ClCompile>
     <ClCompile Include="Direct3D\Mesh.d3d.cpp">
       <Filter>Direct3D</Filter>
     </ClCompile>
@@ -40,5 +35,12 @@
       <Filter>OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="Renderable.cpp" />
+    <ClCompile Include="Direct3D\Context.d3d.cpp">
+      <Filter>Direct3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics.cpp" />
+    <ClCompile Include="OpenGL\Context.gl.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

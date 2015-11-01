@@ -2,13 +2,16 @@
 
 namespace eae6320
 {
-	void Renderable::Render()
+	namespace Graphics
 	{
-		m_Effect.SetEffect();
+		void Renderable::Render()
+		{
+			m_Effect.SetEffect();
 
-		float positionOffset[2] = { m_positionOffset.x, m_positionOffset.y };
-		m_Effect.SetPositionOffset(positionOffset);
+			float positionOffset[2] = { m_positionOffset.x, m_positionOffset.y };
+			m_Effect.SetPositionOffset(positionOffset);
 
-		m_Mesh.DrawMesh();
+			m_Mesh.DrawMesh();
+		}
 	}
 }

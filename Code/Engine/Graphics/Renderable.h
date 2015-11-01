@@ -7,15 +7,18 @@
 
 namespace eae6320
 {
-	class Renderable
+	namespace Graphics
 	{
-	public:
-		Mesh m_Mesh;
-		Effect m_Effect;
-		Math::cVector m_positionOffset;
+		class Renderable
+		{
+		public:
+			Mesh m_Mesh;
+			Effect m_Effect;
+			Math::cVector m_positionOffset;
 
-		void Render();
-	};
+			void Render();
+		};
+	}
 }
 
 #endif

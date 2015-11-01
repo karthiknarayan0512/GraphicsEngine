@@ -527,7 +527,7 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 				}
 
 				int length;
-				eae6320::Renderable *userControlledRenderables = eae6320::Graphics::getUserControlledRenderables(length);
+				eae6320::Graphics::Renderable *userControlledRenderables = eae6320::Graphics::getUserControlledRenderables(length);
 				
 				for (int i = 0; i < length; i++)
 				{
