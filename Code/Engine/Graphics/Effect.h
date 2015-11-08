@@ -1,6 +1,8 @@
 #ifndef EFFECT_H
 #define EFFECT_H
 
+#include "../Math/cMatrix_transformation.h"
+#include "Camera.h"
 #ifdef EAE6320_PLATFORM_GL
 #include "../../External/OpenGlExtensions/OpenGlExtensions.h"
 #include <gl/GLU.h>
@@ -20,7 +22,7 @@ namespace eae6320
 		public:
 			bool CreateEffect(const char *i_shaderBinaryFile);
 			void SetEffect();
-			void SetPositionOffset(float* i_positionOffset);
+			void SetTransforms(Math::cMatrix_transformation i_localToWorldTransform, Camera &i_Camera);
 
 			~Effect();
 
@@ -34,12 +36,16 @@ namespace eae6320
 
 			IDirect3DPixelShader9* m_fragmentShader;
 
-			D3DXHANDLE m_positionOffset;
+			D3DXHANDLE m_LocalToWorldTransform;
+			D3DXHANDLE m_WorldToViewTransform;
+			D3DXHANDLE m_ViewToScreenTransform;
 
 			ID3DXConstantTable* m_vertexShaderConstantTable;
 
 #elif defined EAE6320_PLATFORM_GL
-			GLuint m_location;
+			GLuint m_LocalToWorldTransform;
+			GLuint m_WorldToViewTransform;
+			GLuint m_ViewToScreenTransform;
 
 			GLuint m_programID;
 

@@ -496,8 +496,9 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 				struct
 				{
 					float x, y;
-				} offset;
+				} offset, cameraOffset;
 				offset.x = offset.y = 0.0f;
+				cameraOffset.x = cameraOffset.y = 0.0f;
 				{
 					// Get the direction
 					{
@@ -517,6 +518,22 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 						{
 							offset.y -= 1.0f;
 						}
+						if (eae6320::UserInput::IsKeyPressed(0x41))
+						{
+							cameraOffset.x -= 1.0f;
+						}
+						if (eae6320::UserInput::IsKeyPressed(0x44))
+						{
+							cameraOffset.x += 1.0f;
+						}
+						if (eae6320::UserInput::IsKeyPressed(0x57))
+						{
+							cameraOffset.y += 1.0f;
+						}
+						if (eae6320::UserInput::IsKeyPressed(0x53))
+						{
+							cameraOffset.y -= 1.0f;
+						}
 					}
 					// Get the speed
 					const float unitsPerSecond = 1.0f;	// This is arbitrary
@@ -524,6 +541,8 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 					// Normalize the offset
 					offset.x *= unitsToMove;
 					offset.y *= unitsToMove;
+					cameraOffset.x *= unitsToMove;
+					cameraOffset.y *= unitsToMove;
 				}
 
 				int length;
@@ -531,9 +550,12 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 				
 				for (int i = 0; i < length; i++)
 				{
-					userControlledRenderables->m_positionOffset.x += offset.x;
-					userControlledRenderables->m_positionOffset.y += offset.y;
+					userControlledRenderables->m_position.x += offset.x;
+					userControlledRenderables->m_position.y += offset.y;
 				}
+
+				eae6320::Graphics::Camera *userCamera = eae6320::Graphics::getCamera();
+				userCamera->UpdateCameraPosition(cameraOffset.x, cameraOffset.y);
 
 				if (s_mainWindow != NULL)
 					eae6320::Graphics::Render();

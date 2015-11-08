@@ -19,6 +19,7 @@
     <ClInclude Include="Renderable.h" />
     <ClInclude Include="Includes.h" />
     <ClInclude Include="Context.h" />
+    <ClInclude Include="Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Direct3D\Mesh.d3d.cpp">
@@ -42,5 +43,6 @@
     <ClCompile Include="OpenGL\Context.gl.cpp">
       <Filter>OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp" />
   </ItemGroup>
 </Project>

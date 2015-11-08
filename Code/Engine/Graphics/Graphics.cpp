@@ -9,6 +9,9 @@
 
 namespace
 {
+	// User Controlled Camera
+	eae6320::Graphics::Camera *s_Camera;
+
 	// A list of input controlled renderables;
 	eae6320::Graphics::Renderable *s_UserControlledObjects;
 
@@ -22,6 +25,7 @@ namespace
 namespace
 {
 	bool CreateRenderables();
+	bool CreateCamera();
 }
 
 // Interface
@@ -33,6 +37,11 @@ eae6320::Graphics::Renderable* eae6320::Graphics::getUserControlledRenderables(i
 	return s_UserControlledObjects;
 }
 
+eae6320::Graphics::Camera* eae6320::Graphics::getCamera()
+{
+	return s_Camera;
+}
+
 bool eae6320::Graphics::Initialize( const HWND i_renderingWindow )
 {
 	if (!Context::Initialize(i_renderingWindow))
@@ -40,6 +49,9 @@ bool eae6320::Graphics::Initialize( const HWND i_renderingWindow )
 
 	// Create the renderables
 	if (!CreateRenderables())
+		goto OnError;
+
+	if (!CreateCamera())
 		goto OnError;
 
 	return true;
@@ -59,9 +71,9 @@ void eae6320::Graphics::Render()
 		Context::BeginRender();
 		{
 			for (int i = 0; i < 1; i++)
-				s_UserControlledObjects[i].Render();
-			for (int i = 0; i < 2; i++)
-				s_StaticObjects[i].Render();
+				s_UserControlledObjects[i].Render(*s_Camera);
+			for (int i = 0; i < 1; i++)
+				s_StaticObjects[i].Render(*s_Camera);
 		}
 		Context::EndRender();
 	}
@@ -84,26 +96,27 @@ namespace
 		s_UserControlledObjects = new eae6320::Graphics::Renderable[1];
 		for (int i = 0; i < 1; i++)
 		{
-			if (!s_UserControlledObjects[i].m_Mesh.LoadMeshFromFile("data/Mesh.lua"))
+			if (!s_UserControlledObjects[i].m_Mesh.LoadMeshFromFile("data/Box.lua"))
 				return false;
 			if (!s_UserControlledObjects[i].m_Effect.CreateEffect("data/Effect.lua"))
 				return false;
 		}
 
-		s_StaticObjects = new eae6320::Graphics::Renderable[2];
-		for (int i = 0; i < 2; i++)
+		s_StaticObjects = new eae6320::Graphics::Renderable[1];
+		for (int i = 0; i < 1; i++)
 		{
-			if (!s_StaticObjects[i].m_Mesh.LoadMeshFromFile("data/Triangle.lua"))
+			if (!s_StaticObjects[i].m_Mesh.LoadMeshFromFile("data/Floor.lua"))
 				return false;
 			if (!s_StaticObjects[i].m_Effect.CreateEffect("data/Effect.lua"))
 				return false;
 		}
-		s_StaticObjects[0].m_positionOffset.x = -0.75;
-		s_StaticObjects[0].m_positionOffset.y = 0.75;
-
-		s_StaticObjects[1].m_positionOffset.x = 0.75;
-		s_StaticObjects[1].m_positionOffset.y = -0.75;
 
 		return true;
+	}
+
+	bool CreateCamera()
+	{
+		s_Camera = new eae6320::Graphics::Camera();
+		return s_Camera != NULL;
 	}
 }

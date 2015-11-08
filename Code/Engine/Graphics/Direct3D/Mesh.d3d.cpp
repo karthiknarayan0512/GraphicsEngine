@@ -138,14 +138,14 @@ namespace eae6320
 					// Stream 0
 
 					// POSITION
-					// 2 floats == 8 bytes
+					// 3 floats == 12 bytes
 					// Offset = 0
-					{ 0, 0, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 },
+					{ 0, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 },
 
 					// COLOR0
 					// D3DCOLOR == 4 bytes
-					// Offset = 8
-					{ 0, 8, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0 },
+					// Offset = 12
+					{ 0, 12, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0 },
 
 					// The following marker signals the end of the vertex declaration
 					D3DDECL_END()
@@ -219,6 +219,7 @@ namespace eae6320
 					{
 						vertexData[i].x = vertices[i].x;
 						vertexData[i].y = vertices[i].y;
+						vertexData[i].z = vertices[i].z;
 
 						vertexData[i].r = vertices[i].r * 255;
 						vertexData[i].g = vertices[i].g * 255;

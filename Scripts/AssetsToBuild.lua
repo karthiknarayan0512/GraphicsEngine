@@ -5,8 +5,10 @@ return
 		buildTool = "MeshBuilder.exe",
 		assets = 
 		{
-			"Mesh.lua",
-			"Triangle.lua",
+			-- "Mesh.lua",
+			-- "Triangle.lua",
+			"Box.lua",
+			"Floor.lua",
 		},
 		source = "",
 		destination = "",

@@ -1,6 +1,9 @@
 #include "..\Effect.h"
 #include "..\..\UserOutput\UserOutput.h"
 #include "..\..\Windows\Functions.h"
+#include "..\..\Math\cQuaternion.h"
+#include "..\..\Math\cVector.h"
+#include "..\..\Math\Functions.h"
 
 #include <sstream>
 #include <fstream>
@@ -34,9 +37,22 @@ namespace eae6320
 			}
 		}
 
-		void Effect::SetPositionOffset(float* i_positionOffset)
+		void Effect::SetTransforms(Math::cMatrix_transformation i_localToWorldTransform, Camera &i_Camera)
 		{
-			glUniform2fv(m_location, 1, i_positionOffset);
+			const GLboolean dontTranspose = false; // Matrices are already in the correct format
+			const GLsizei uniformCountToSet = 1;
+			glUniformMatrix4fv(m_LocalToWorldTransform, uniformCountToSet, dontTranspose, reinterpret_cast<const GLfloat*>(&i_localToWorldTransform));
+
+			Math::cMatrix_transformation i_WorldToViewTransform;
+			Math::cQuaternion worldToViewCameraOrientation;
+			i_WorldToViewTransform = Math::cMatrix_transformation::CreateWorldToViewTransform(worldToViewCameraOrientation, i_Camera.getCameraPosition());
+			glUniformMatrix4fv(m_WorldToViewTransform, uniformCountToSet, dontTranspose, reinterpret_cast<const GLfloat*>(&i_WorldToViewTransform));
+
+			Math::cMatrix_transformation i_ViewToScreenTransform;
+			float i_FOV_y = Math::ConvertDegreesToRadians(60);
+			float i_aspectRatio = (float)800 / 600;
+			i_ViewToScreenTransform = Math::cMatrix_transformation::CreateViewToScreenTransform(i_FOV_y, i_aspectRatio, 0.1F, 100.0F);
+			glUniformMatrix4fv(m_ViewToScreenTransform, uniformCountToSet, dontTranspose, reinterpret_cast<const GLfloat*>(&i_ViewToScreenTransform));
 		}
 
 		bool Effect::LoadAndAllocateShaderProgram(const char* i_path, void*& o_shader, size_t& o_size, std::string* o_errorMessage)
@@ -658,7 +674,9 @@ namespace eae6320
 				}
 			}
 
-			m_location = glGetUniformLocation(m_programID, "g_position_offset");
+			m_LocalToWorldTransform = glGetUniformLocation(m_programID, "g_transform_localToWorld");
+			m_WorldToViewTransform = glGetUniformLocation(m_programID, "g_transform_worldToView");
+			m_ViewToScreenTransform = glGetUniformLocation(m_programID, "g_transform_viewToScreen");
 
 			return true;
 		}

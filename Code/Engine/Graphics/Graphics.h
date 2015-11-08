@@ -10,6 +10,7 @@
 
 #include "../Windows/Includes.h"
 #include "Renderable.h"
+#include "Camera.h"
 #ifdef EAE6320_PLATFORM_D3D
 #include <d3d9.h>
 #endif
@@ -26,6 +27,7 @@ namespace eae6320
 		bool ShutDown();
 
 		Renderable* getUserControlledRenderables(int &i_length);
+		Camera* getCamera();
 	}
 }
 

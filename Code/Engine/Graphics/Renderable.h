@@ -4,6 +4,8 @@
 #include "Mesh.h"
 #include "Effect.h"
 #include "..\Math\cVector.h"
+#include "..\Math\cQuaternion.h"
+#include "Camera.h"
 
 namespace eae6320
 {
@@ -14,9 +16,10 @@ namespace eae6320
 		public:
 			Mesh m_Mesh;
 			Effect m_Effect;
-			Math::cVector m_positionOffset;
+			Math::cVector m_position;
+			Math::cQuaternion m_orientation;
 
-			void Render();
+			void Render(Camera &i_Camera);
 		};
 	}
 }

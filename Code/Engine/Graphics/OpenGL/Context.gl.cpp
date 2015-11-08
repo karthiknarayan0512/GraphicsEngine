@@ -42,6 +42,7 @@ namespace eae6320
 							desiredPixelFormat.dwFlags = PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW | PFD_DOUBLEBUFFER;
 							desiredPixelFormat.iPixelType = PFD_TYPE_RGBA;
 							desiredPixelFormat.cColorBits = 32;
+							desiredPixelFormat.cDepthBits = 16;
 							desiredPixelFormat.iLayerType = PFD_MAIN_PLANE;
 						}
 						// Get the ID of the desired pixel format
@@ -107,6 +108,19 @@ namespace eae6320
 					}
 				}
 
+				// Enable culling
+				glEnable(GL_CULL_FACE);
+				assert(glGetError() == GL_NO_ERROR);
+
+				glEnable(GL_DEPTH_TEST);
+				assert(glGetError() == GL_NO_ERROR);
+
+				glDepthMask(GL_TRUE);
+				assert(glGetError() == GL_NO_ERROR);
+
+				glDepthFunc(GL_LEQUAL);
+				assert(glGetError() == GL_NO_ERROR);
+
 				return true;
 			}
 
@@ -121,7 +135,7 @@ namespace eae6320
 					assert(glGetError() == GL_NO_ERROR);
 					// In addition to the color, "depth" and "stencil" can also be cleared,
 					// but for now we only care about color
-					const GLbitfield clearColor = GL_COLOR_BUFFER_BIT;
+					const GLbitfield clearColor = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
 					glClear(clearColor);
 					assert(glGetError() == GL_NO_ERROR);
 				}

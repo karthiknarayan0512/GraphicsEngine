@@ -54,6 +54,12 @@ void GetVerticesFromMeshFile(lua_State* luaState, eae6320::Graphics::Mesh::sVert
 				f = (float)lua_tonumber(luaState, -1);
 				vertices[i - 1].y = f;
 				lua_pop(luaState, 1);
+
+				lua_pushinteger(luaState, 3);
+				lua_gettable(luaState, -2);
+				f = (float)lua_tonumber(luaState, -1);
+				vertices[i - 1].z = f;
+				lua_pop(luaState, 1);
 			}
 			lua_pop(luaState, 1);
 
@@ -205,7 +211,6 @@ bool eae6320::cMeshBuilder::Build( const std::vector<std::string>& )
 	Graphics::Mesh::sVertex *vertices;
 	int verticesCount = 0;
 
-	//::MessageBox(NULL, "", "", MB_OK);
 	GetVerticesFromMeshFile(luaState, vertices, verticesCount);
 
 	// Get indices data

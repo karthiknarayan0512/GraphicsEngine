@@ -152,6 +152,7 @@ namespace eae6320
 					{
 						vertexData[i].x = vertices[i].x;
 						vertexData[i].y = vertices[i].y;
+						vertexData[i].z = vertices[i].z;
 
 						vertexData[i].r = vertices[i].r * 255;
 						vertexData[i].g = vertices[i].g * 255;
@@ -179,11 +180,11 @@ namespace eae6320
 				GLvoid* offset = 0;
 
 				// Position (0)
-				// 2 floats == 8 bytes
+				// 3 floats == 12 bytes
 				// Offset = 0
 				{
 					const GLuint vertexElementLocation = 0;
-					const GLint elementCount = 2;
+					const GLint elementCount = 3;
 					const GLboolean notNormalized = GL_FALSE;	// The given floats should be used as-is
 					glVertexAttribPointer(vertexElementLocation, elementCount, GL_FLOAT, notNormalized, stride, offset);
 					const GLenum errorCode = glGetError();
@@ -217,7 +218,7 @@ namespace eae6320
 				}
 				// Color (1)
 				// 4 uint8_ts == 4 bytes
-				// Offset = 8
+				// Offset = 12
 				{
 					const GLuint vertexElementLocation = 1;
 					const GLint elementCount = 4;
