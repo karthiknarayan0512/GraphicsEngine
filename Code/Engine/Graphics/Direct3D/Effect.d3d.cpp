@@ -110,22 +110,19 @@ namespace eae6320
 		void Effect::SetTransforms(Math::cMatrix_transformation i_localToWorldTransform, Camera &i_Camera)
 		{
 			IDirect3DDevice9* direct3DDevice = Context::getDirect3DDevice();
-
 			HRESULT result = m_vertexShaderConstantTable->SetMatrixTranspose(direct3DDevice, m_LocalToWorldTransform,
 				reinterpret_cast<const D3DXMATRIX*>(&i_localToWorldTransform));
 			assert(SUCCEEDED(result));
 
 			Math::cMatrix_transformation i_WorldToViewTransform;
-			Math::cQuaternion worldToViewCameraOrientation;
-			i_WorldToViewTransform = Math::cMatrix_transformation::CreateWorldToViewTransform(worldToViewCameraOrientation, i_Camera.getCameraPosition());
+			i_WorldToViewTransform = Math::cMatrix_transformation::CreateWorldToViewTransform(i_Camera.getCameraOrientation(), i_Camera.getCameraPosition());
 			result = m_vertexShaderConstantTable->SetMatrixTranspose(direct3DDevice, m_WorldToViewTransform,
 				reinterpret_cast<const D3DXMATRIX*>(&i_WorldToViewTransform));
 			assert(SUCCEEDED(result));
 
 			Math::cMatrix_transformation i_ViewToScreenTransform;
 			float i_FOV_y = Math::ConvertDegreesToRadians(60);
-			float i_aspectRatio = (float) 800 / 600;
-			i_ViewToScreenTransform = Math::cMatrix_transformation::CreateViewToScreenTransform(i_FOV_y, i_aspectRatio, 0.1F, 100.0F);
+			i_ViewToScreenTransform = Math::cMatrix_transformation::CreateViewToScreenTransform(i_FOV_y, Context::getAspectRatio(), 0.1F, 100.0F);
 			result = m_vertexShaderConstantTable->SetMatrixTranspose(direct3DDevice, m_ViewToScreenTransform,
 				reinterpret_cast<const D3DXMATRIX*>(&i_ViewToScreenTransform));
 			assert(SUCCEEDED(result));

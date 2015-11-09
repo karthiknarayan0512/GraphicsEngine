@@ -17,6 +17,17 @@ namespace eae6320
 
 		namespace Context
 		{
+			float getAspectRatio()
+			{
+				RECT renderingWindow;
+				GetWindowRect(s_renderingWindow, &renderingWindow);
+
+				int screenWidth = renderingWindow.right - renderingWindow.left;
+				int screenHeight = renderingWindow.bottom - renderingWindow.top;
+
+				return static_cast<float>(screenWidth / screenHeight);
+			}
+
 			bool CreateDevice()
 			{
 				const UINT useDefaultDevice = D3DADAPTER_DEFAULT;
