@@ -528,11 +528,11 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 						}
 						if (eae6320::UserInput::IsKeyPressed(0x57))
 						{
-							cameraOffset.y += 1.0f;
+							cameraOffset.y -= 1.0f;
 						}
 						if (eae6320::UserInput::IsKeyPressed(0x53))
 						{
-							cameraOffset.y -= 1.0f;
+							cameraOffset.y += 1.0f;
 						}
 					}
 					// Get the speed

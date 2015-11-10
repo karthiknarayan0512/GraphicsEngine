@@ -20,6 +20,17 @@ namespace eae6320
 
 		namespace Context
 		{
+			float getAspectRatio()
+			{
+				RECT renderingWindow;
+				GetWindowRect(s_renderingWindow, &renderingWindow);
+
+				float screenWidth = static_cast<float>(renderingWindow.right - renderingWindow.left);
+				float screenHeight = static_cast<float>(renderingWindow.bottom - renderingWindow.top);
+
+				return static_cast<float>(screenWidth / screenHeight);
+			}
+
 			bool CreateRenderingContext()
 			{
 				// A "device context" can be thought of an abstraction that Windows uses

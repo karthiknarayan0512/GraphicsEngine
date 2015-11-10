@@ -4,11 +4,15 @@ namespace eae6320
 {
 	namespace Graphics
 	{
-		void Camera::UpdateCameraPosition(float &i_positionOffset_x, float &i_positionOffset_y)
+		Camera::Camera(float i_x, float i_y, float i_z) :
+			m_Position(i_x, i_y, i_z)
+		{
+		}
+		void Camera::UpdateCameraPosition(float &i_positionOffset_x, float &i_positionOffset_z)
 		{
 			m_Position.x += i_positionOffset_x;
-			m_Position.y += i_positionOffset_y;
-			m_Position.z = 10.0;
+			m_Position.z += i_positionOffset_z;
+			m_Position.y = 0.0;
 		}
 	}
 }

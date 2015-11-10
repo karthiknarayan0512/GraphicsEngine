@@ -116,7 +116,7 @@ namespace
 
 	bool CreateCamera()
 	{
-		s_Camera = new eae6320::Graphics::Camera();
+		s_Camera = new eae6320::Graphics::Camera(0, 0, 10);
 		return s_Camera != NULL;
 	}
 }

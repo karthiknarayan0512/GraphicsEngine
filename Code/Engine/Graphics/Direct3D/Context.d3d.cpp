@@ -22,8 +22,8 @@ namespace eae6320
 				RECT renderingWindow;
 				GetWindowRect(s_renderingWindow, &renderingWindow);
 
-				int screenWidth = renderingWindow.right - renderingWindow.left;
-				int screenHeight = renderingWindow.bottom - renderingWindow.top;
+				float screenWidth = static_cast<float>(renderingWindow.right - renderingWindow.left);
+				float screenHeight = static_cast<float>(renderingWindow.bottom - renderingWindow.top);
 
 				return static_cast<float>(screenWidth / screenHeight);
 			}

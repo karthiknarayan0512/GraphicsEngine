@@ -4,6 +4,7 @@
 #include "..\..\Math\cQuaternion.h"
 #include "..\..\Math\cVector.h"
 #include "..\..\Math\Functions.h"
+#include "..\Context.h"
 
 #include <sstream>
 #include <fstream>
@@ -50,7 +51,7 @@ namespace eae6320
 
 			Math::cMatrix_transformation i_ViewToScreenTransform;
 			float i_FOV_y = Math::ConvertDegreesToRadians(60);
-			float i_aspectRatio = (float)800 / 600;
+			float i_aspectRatio = Context::getAspectRatio();
 			i_ViewToScreenTransform = Math::cMatrix_transformation::CreateViewToScreenTransform(i_FOV_y, i_aspectRatio, 0.1F, 100.0F);
 			glUniformMatrix4fv(m_ViewToScreenTransform, uniformCountToSet, dontTranspose, reinterpret_cast<const GLfloat*>(&i_ViewToScreenTransform));
 		}
