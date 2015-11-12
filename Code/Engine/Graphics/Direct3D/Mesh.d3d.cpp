@@ -186,7 +186,7 @@ namespace eae6320
 			// Fill the vertex buffer with the triangle's vertices
 			{
 				// Before the vertex buffer can be changed it must be "locked"
-				sVertex* vertexData;
+				sVertex* vertexData = new sVertex[vertexCount];
 				{
 					const unsigned int lockEntireBuffer = 0;
 					const DWORD useDefaultLockingBehavior = 0;
@@ -215,17 +215,7 @@ namespace eae6320
 					// To make white you should use (255, 255, 255), to make black (0, 0, 0).
 					// To make pure red you would use the max for R and nothing for G and B, so (1, 0, 0).
 					// Experiment with other values to see what happens!
-					for (int i = 0; i < vertexCount; i++)
-					{
-						vertexData[i].x = vertices[i].x;
-						vertexData[i].y = vertices[i].y;
-						vertexData[i].z = vertices[i].z;
-
-						vertexData[i].r = vertices[i].r * 255;
-						vertexData[i].g = vertices[i].g * 255;
-						vertexData[i].b = vertices[i].b * 255;
-						vertexData[i].a = 255;
-					}
+					memcpy(vertexData, vertices, sizeof(sVertex) * vertexCount);
 				}
 				// The buffer must be "unlocked" before it can be used
 				{
@@ -280,7 +270,7 @@ namespace eae6320
 			// Fill the index buffer with the triangles' connectivity data
 			{
 				// Before the index buffer can be changed it must be "locked"
-				uint32_t* indexData;
+				uint32_t* indexData = new uint32_t[triangleCount];
 				{
 					const unsigned int lockEntireBuffer = 0;
 					const DWORD useDefaultLockingBehavior = 0;
@@ -301,13 +291,8 @@ namespace eae6320
 					// The order of indices is important, but the correct order will depend on
 					// which vertex you have assigned to which spot in your vertex buffer
 					// (also remember to maintain the correct handedness for the triangle winding order).
+					memcpy(indexData, i_indexData, triangleCount * 3 * sizeof(uint32_t));
 
-					for (size_t i = 0; i < triangleCount * 3; i += 3)
-					{
-						indexData[i] = i_indexData[i];
-						indexData[i + 1] = i_indexData[i + 2];
-						indexData[i + 2] = i_indexData[i + 1];
-					}
 				}
 				// The buffer must be "unlocked" before it can be used
 				{

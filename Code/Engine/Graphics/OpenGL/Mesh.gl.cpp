@@ -147,18 +147,7 @@ namespace eae6320
 					// To make white you should use (255, 255, 255), to make black (0, 0, 0).
 					// To make pure red you would use the max for R and nothing for G and B, so (1, 0, 0).
 					// Experiment with other values to see what happens!
-
-					for (int i = 0; i < vertexCount; i++)
-					{
-						vertexData[i].x = vertices[i].x;
-						vertexData[i].y = vertices[i].y;
-						vertexData[i].z = vertices[i].z;
-
-						vertexData[i].r = vertices[i].r * 255;
-						vertexData[i].g = vertices[i].g * 255;
-						vertexData[i].b = vertices[i].b * 255;
-						vertexData[i].a = 255;
-					}
+					memcpy(vertexData, vertices, sizeof(sVertex) * vertexCount);
 				}
 				glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(sVertex), reinterpret_cast<GLvoid*>(vertexData),
 					// Our code will only ever write to the buffer
@@ -303,10 +292,7 @@ namespace eae6320
 					// The order of indices is important, but the correct order will depend on
 					// which vertex you have assigned to which spot in your vertex buffer
 					// (also remember to maintain the correct handedness for the triangle winding order).
-
-					// Triangle 0
-					for (size_t i = 0; i < indexCount; i++)
-						indexData[i] = i_indexData[i];
+					memcpy(indexData, i_indexData, triangleCount * vertexCountPerTriangle * sizeof(uint32_t));
 				}
 
 				const GLsizeiptr bufferSize = triangleCount * vertexCountPerTriangle * sizeof(uint32_t);

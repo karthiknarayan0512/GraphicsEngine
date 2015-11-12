@@ -70,26 +70,26 @@ void GetVerticesFromMeshFile(lua_State* luaState, eae6320::Graphics::Mesh::sVert
 			{
 				lua_pushinteger(luaState, 1);
 				lua_gettable(luaState, -2);
-				uint8_t f = (uint8_t)lua_tointeger(luaState, -1);
-				vertices[i - 1].r = f;
+				float f = static_cast<float>(lua_tonumber(luaState, -1));
+				vertices[i - 1].r = static_cast<uint8_t>(f * 255 + 0.5f);
 				lua_pop(luaState, 1);
 
 				lua_pushinteger(luaState, 2);
 				lua_gettable(luaState, -2);
-				f = (uint8_t)lua_tointeger(luaState, -1);
-				vertices[i - 1].g = f;
+				f = static_cast<float>(lua_tonumber(luaState, -1));
+				vertices[i - 1].g = static_cast<uint8_t>(f * 255 + 0.5f);
 				lua_pop(luaState, 1);
 
 				lua_pushinteger(luaState, 3);
 				lua_gettable(luaState, -2);
-				f = (uint8_t)lua_tointeger(luaState, -1);
-				vertices[i - 1].b = f;
+				f = static_cast<float>(lua_tonumber(luaState, -1));
+				vertices[i - 1].b = static_cast<uint8_t>(f * 255 + 0.5f);
 				lua_pop(luaState, 1);
 
 				lua_pushinteger(luaState, 4);
 				lua_gettable(luaState, -2);
-				f = (uint8_t)lua_tointeger(luaState, -1);
-				vertices[i - 1].a = f;
+				f = static_cast<float>(lua_tonumber(luaState, -1));
+				vertices[i - 1].a = static_cast<uint8_t>(f * 255 + 0.5f);
 				lua_pop(luaState, 1);
 			}
 
@@ -123,7 +123,16 @@ void GetIndicesFromMeshFile(lua_State* luaState, uint32_t*& indexData, int &indi
 					indexData = new uint32_t[indicesCount  * indexCount];
 				for (int j = 1; j <= indexCount; j++)
 				{
+#ifdef EAE6320_PLATFORM_D3D
+					if (j == 2)
+						lua_pushinteger(luaState, 3);
+					else if (j == 3)
+						lua_pushinteger(luaState, 2);
+					else
+						lua_pushinteger(luaState, 1);
+#else
 					lua_pushinteger(luaState, j);
+#endif
 					lua_gettable(luaState, -2);
 					uint32_t f = (uint32_t)lua_tointeger(luaState, -1);
 					indexData[index++] = f;
