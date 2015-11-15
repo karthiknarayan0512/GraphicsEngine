@@ -105,6 +105,54 @@ namespace eae6320
 			result = direct3DDevice->SetPixelShader(m_fragmentShader);
 			assert(SUCCEEDED(result));
 
+			uint8_t alpha = 1 << 0;
+			uint8_t	depthTest = 1 << 1;
+			uint8_t depthwrite = 1 << 2;
+
+			// Set alpha transparency
+			if (m_renderStates & alpha)
+			{
+				result = direct3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+				assert(SUCCEEDED(result));
+
+				result = direct3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+				assert(SUCCEEDED(result));
+
+				result = direct3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+				assert(SUCCEEDED(result));
+			}
+			else
+			{
+				result = direct3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+				assert(SUCCEEDED(result));
+			}
+
+			// Set depth testing
+			if (m_renderStates & depthTest)
+			{
+				result = direct3DDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
+				assert(SUCCEEDED(result));
+
+				result = direct3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+				assert(SUCCEEDED(result));
+			}
+			else
+			{
+				result = direct3DDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
+				assert(SUCCEEDED(result));
+			}
+
+			// Set depth writing
+			if (m_renderStates & depthwrite)
+			{
+				result = direct3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+				assert(SUCCEEDED(result));
+			}
+			else
+			{
+				result = direct3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+				assert(SUCCEEDED(result));
+			}
 		}
 
 		void Effect::SetTransforms(Math::cMatrix_transformation i_localToWorldTransform, Camera &i_Camera)
@@ -143,12 +191,15 @@ namespace eae6320
 			memcpy_s(i_vertexShaderFile, strlen(buffer), buffer, strlen(buffer));
 			i_vertexShaderFile[strlen(buffer)] = '\0';
 
-			effectBinary.seekg(strlen(i_vertexShaderFile) + 1, effectBinary.beg);
-			effectBinary.read(buffer, length - strlen(i_vertexShaderFile) - 1);
+			buffer += strlen(buffer) + 1;
 
 			char* i_fragmentShaderfile = new char[strlen(buffer) + 1];
 			memcpy_s(i_fragmentShaderfile, strlen(buffer), buffer, strlen(buffer));
 			i_fragmentShaderfile[strlen(buffer)] = '\0';
+
+			buffer += strlen(buffer) + 1;
+
+			m_renderStates = static_cast<uint8_t>(*buffer);
 
 			effectBinary.close();
 

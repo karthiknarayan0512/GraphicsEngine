@@ -96,11 +96,51 @@ bool eae6320::cEffectBuilder::Build(const std::vector<std::string>&)
 	const char *shaderPath = lua_tostring(luaState, -1);
 	lua_pop(luaState, 1);
 
+	// Get the render states
+	const char* const renderStateskey = "renderStates";
+	lua_pushstring(luaState, renderStateskey);
+	lua_gettable(luaState, -2);
+
+	// Default render state - 
+	// transparency = false
+	// depth testing = true
+	// depth writing = true
+	// DW DT AT
+	// 1  1  0
+	uint8_t renderStates = 6;
+	const char* renderState;
+	if (lua_istable(luaState, -1))
+	{
+		// Get the alpha transparency value
+		const char* const alphaTransparencykey = "alpha_transparency";
+		lua_pushstring(luaState, alphaTransparencykey);
+		lua_gettable(luaState, -2);
+
+		renderStates |= lua_toboolean(luaState, -1) << 0;
+		lua_pop(luaState, 1);
+
+		const char* const depthTestingkey = "depth_testing";
+		lua_pushstring(luaState, depthTestingkey);
+		lua_gettable(luaState, -2);
+
+		renderStates |= lua_toboolean(luaState, -1) << 1;
+		lua_pop(luaState, 1);
+
+		const char* const depthWritingkey = "depth_writing";
+		lua_pushstring(luaState, depthWritingkey);
+		lua_gettable(luaState, -2);
+
+		renderStates |= lua_toboolean(luaState, -1) << 2;
+		lua_pop(luaState, 1);
+	}
+	renderState = reinterpret_cast<const char *>(&renderStates);
+
+	lua_pop(luaState, 1);
+
 	std::ofstream effectBinary(m_path_target, std::ofstream::binary);
-	effectBinary.write(vertexPath, strlen(vertexPath));
-	effectBinary.write("\0", 1);
-	effectBinary.write(shaderPath, strlen(shaderPath));
-	effectBinary.write("\0", 1);
+	effectBinary.write(vertexPath, strlen(vertexPath) + 1);
+	effectBinary.write(shaderPath, strlen(shaderPath) + 1);
+	effectBinary.write(renderState, sizeof(uint8_t));
 
 	effectBinary.close();
 

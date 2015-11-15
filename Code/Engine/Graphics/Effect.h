@@ -13,6 +13,8 @@
 #include <d3dx9shader.h>
 #endif
 
+#include <stdint.h>
+
 namespace eae6320
 {
 	namespace Graphics
@@ -30,6 +32,8 @@ namespace eae6320
 			bool LoadVertexShader(const char *i_vertexShaderFile);
 
 			bool LoadFragmentShader(const char *i_fragmentShaderfile);
+
+			uint8_t m_renderStates;
 
 #ifdef EAE6320_PLATFORM_D3D
 			IDirect3DVertexShader9* m_vertexShader;

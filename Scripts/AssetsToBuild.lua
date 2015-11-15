@@ -5,10 +5,10 @@ return
 		buildTool = "MeshBuilder.exe",
 		assets = 
 		{
-			-- "Mesh.lua",
-			-- "Triangle.lua",
-			"Box.lua",
+			"Football.lua",
 			"Floor.lua",
+			"Pipe.lua",
+			"Dodec.lua"
 		},
 		source = "",
 		destination = "",
@@ -29,6 +29,7 @@ return
 		assets = 
 		{
 			"Effect.lua",
+			"TransparentEffect.lua"
 		},
 		source = "",
 		destination = "",
@@ -39,13 +40,15 @@ return
 		assets = 
 		{
 			"vertex.shader",
-			"fragment.shader"
+			"fragment.shader",
+			"transparent.shader",
 		},
 		source = "",
 		destination = "",
 		optionalArguments = 
 		{
 			"vertex",
+			"fragment",
 			"fragment"
 		},
 		dependencies = 

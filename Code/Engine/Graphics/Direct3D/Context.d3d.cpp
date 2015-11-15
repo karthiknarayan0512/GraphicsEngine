@@ -94,15 +94,6 @@ namespace eae6320
 					return false;
 				}
 
-				HRESULT result = s_direct3dDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
-				assert(SUCCEEDED(result));
-				
-				result = s_direct3dDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
-				assert(SUCCEEDED(result));
-
-				result = s_direct3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
-				assert(SUCCEEDED(result));
-
 				return true;
 			}
 

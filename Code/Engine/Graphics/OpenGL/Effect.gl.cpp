@@ -567,6 +567,52 @@ namespace eae6320
 		{
 			glUseProgram(m_programID);
 			assert(glGetError() == GL_NO_ERROR);
+
+			uint8_t alpha = 1 << 0;
+			uint8_t	depthTest = 1 << 1;
+			uint8_t depthwrite = 1 << 2;
+
+			// Set alpha transparency
+			if (m_renderStates & alpha)
+			{
+				glEnable(GL_BLEND);
+				assert(glGetError() == GL_NO_ERROR);
+
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				assert(glGetError() == GL_NO_ERROR);
+			}
+			else
+			{
+				glDisable(GL_BLEND);
+				assert(glGetError() == GL_NO_ERROR);
+			}
+
+			// Set depth testing
+			if (m_renderStates & depthTest)
+			{
+				glEnable(GL_DEPTH_TEST);
+				assert(glGetError() == GL_NO_ERROR);
+
+				glDepthFunc(GL_LEQUAL);
+				assert(glGetError() == GL_NO_ERROR);
+			}
+			else
+			{
+				glDisable(GL_DEPTH_TEST);
+				assert(glGetError() == GL_NO_ERROR);
+			}
+
+			// Set depth writing
+			if (m_renderStates & depthwrite)
+			{
+				glDepthMask(GL_TRUE);
+				assert(glGetError() == GL_NO_ERROR);
+			}
+			else
+			{
+				glDepthMask(GL_FALSE);
+				assert(glGetError() == GL_NO_ERROR);
+			}
 		}
 
 		bool Effect::CreateProgram(const char *i_vertexShaderFile, const char *i_fragmentShaderfile)
@@ -697,12 +743,17 @@ namespace eae6320
 			memcpy_s(i_vertexShaderFile, strlen(buffer), buffer, strlen(buffer));
 			i_vertexShaderFile[strlen(buffer)] = '\0';
 
-			effectBinary.seekg(strlen(i_vertexShaderFile) + 1, effectBinary.beg);
-			effectBinary.read(buffer, length - strlen(i_vertexShaderFile) - 1);
+			buffer += strlen(buffer) + 1;
 
 			char* i_fragmentShaderfile = new char[strlen(buffer) + 1];
 			memcpy_s(i_fragmentShaderfile, strlen(buffer), buffer, strlen(buffer));
 			i_fragmentShaderfile[strlen(buffer)] = '\0';
+
+			buffer += strlen(buffer) + 1;
+
+			m_renderStates = static_cast<uint8_t>(*buffer);
+
+			effectBinary.close();
 
 			effectBinary.close();
 

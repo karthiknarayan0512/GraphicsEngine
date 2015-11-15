@@ -15,8 +15,11 @@ namespace
 	// A list of input controlled renderables;
 	eae6320::Graphics::Renderable *s_UserControlledObjects;
 
-	// A list of static renderables;
-	eae6320::Graphics::Renderable *s_StaticObjects;
+	// A list of static opaque renderables;
+	eae6320::Graphics::Renderable *s_StaticOpaqueObjects;
+
+	// A list of static transparent renderables;
+	eae6320::Graphics::Renderable *s_StaticTransparentObjects;
 }
 
 // Helper Function Declarations
@@ -72,8 +75,10 @@ void eae6320::Graphics::Render()
 		{
 			for (int i = 0; i < 1; i++)
 				s_UserControlledObjects[i].Render(*s_Camera);
+			for (int i = 0; i < 2; i++)
+				s_StaticOpaqueObjects[i].Render(*s_Camera);
 			for (int i = 0; i < 1; i++)
-				s_StaticObjects[i].Render(*s_Camera);
+				s_StaticTransparentObjects[i].Render(*s_Camera);
 		}
 		Context::EndRender();
 	}
@@ -96,18 +101,34 @@ namespace
 		s_UserControlledObjects = new eae6320::Graphics::Renderable[1];
 		for (int i = 0; i < 1; i++)
 		{
-			if (!s_UserControlledObjects[i].m_Mesh.LoadMeshFromFile("data/Box.lua"))
+			if (!s_UserControlledObjects[i].m_Mesh.LoadMeshFromFile("data/Football.lua"))
 				return false;
 			if (!s_UserControlledObjects[i].m_Effect.CreateEffect("data/Effect.lua"))
 				return false;
+			s_UserControlledObjects[i].m_position.z = -2.0f;
+			s_UserControlledObjects[i].m_position.x = -1.0f;
 		}
 
-		s_StaticObjects = new eae6320::Graphics::Renderable[1];
+		s_StaticOpaqueObjects = new eae6320::Graphics::Renderable[2];
+		{
+			if (!s_StaticOpaqueObjects[0].m_Mesh.LoadMeshFromFile("data/Floor.lua"))
+				return false;
+			if (!s_StaticOpaqueObjects[0].m_Effect.CreateEffect("data/Effect.lua"))
+				return false;
+			if (!s_StaticOpaqueObjects[1].m_Mesh.LoadMeshFromFile("data/Dodec.lua"))
+				return false;
+			if (!s_StaticOpaqueObjects[1].m_Effect.CreateEffect("data/Effect.lua"))
+				return false;
+			s_StaticOpaqueObjects[1].m_position.z = 2.0f;
+			s_StaticOpaqueObjects[1].m_position.x = 2.0f;
+		}
+
+		s_StaticTransparentObjects = new eae6320::Graphics::Renderable[1];
 		for (int i = 0; i < 1; i++)
 		{
-			if (!s_StaticObjects[i].m_Mesh.LoadMeshFromFile("data/Floor.lua"))
+			if (!s_StaticTransparentObjects[i].m_Mesh.LoadMeshFromFile("data/Pipe.lua"))
 				return false;
-			if (!s_StaticObjects[i].m_Effect.CreateEffect("data/Effect.lua"))
+			if (!s_StaticTransparentObjects[i].m_Effect.CreateEffect("data/TransparentEffect.lua"))
 				return false;
 		}
 
