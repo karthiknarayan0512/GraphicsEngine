@@ -120,7 +120,7 @@ namespace
 			if (!s_StaticOpaqueObjects[1].m_Effect.CreateEffect("data/Effect.lua"))
 				return false;
 			s_StaticOpaqueObjects[1].m_position.z = 2.0f;
-			s_StaticOpaqueObjects[1].m_position.x = 2.0f;
+			s_StaticOpaqueObjects[1].m_position.x = 1.5f;
 		}
 
 		s_StaticTransparentObjects = new eae6320::Graphics::Renderable[1];

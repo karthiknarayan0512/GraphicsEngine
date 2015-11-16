@@ -116,21 +116,27 @@ bool eae6320::cEffectBuilder::Build(const std::vector<std::string>&)
 		lua_pushstring(luaState, alphaTransparencykey);
 		lua_gettable(luaState, -2);
 
-		renderStates |= lua_toboolean(luaState, -1) << 0;
+		if (lua_isboolean(luaState, -1))
+			renderStates |= lua_toboolean(luaState, -1) << 0;
+
 		lua_pop(luaState, 1);
 
 		const char* const depthTestingkey = "depth_testing";
 		lua_pushstring(luaState, depthTestingkey);
 		lua_gettable(luaState, -2);
 
-		renderStates |= lua_toboolean(luaState, -1) << 1;
+		if(lua_isboolean(luaState, -1))
+			renderStates |= lua_toboolean(luaState, -1) << 1;
+
 		lua_pop(luaState, 1);
 
 		const char* const depthWritingkey = "depth_writing";
 		lua_pushstring(luaState, depthWritingkey);
 		lua_gettable(luaState, -2);
 
-		renderStates |= lua_toboolean(luaState, -1) << 2;
+		if (lua_isboolean(luaState, -1))
+			renderStates |= lua_toboolean(luaState, -1) << 2;
+
 		lua_pop(luaState, 1);
 	}
 	renderState = reinterpret_cast<const char *>(&renderStates);

@@ -133,7 +133,7 @@ namespace eae6320
 				result = direct3DDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
 				assert(SUCCEEDED(result));
 
-				result = direct3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+				result = direct3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
 				assert(SUCCEEDED(result));
 			}
 			else
@@ -145,7 +145,7 @@ namespace eae6320
 			// Set depth writing
 			if (m_renderStates & depthwrite)
 			{
-				result = direct3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+				result = direct3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 				assert(SUCCEEDED(result));
 			}
 			else
