@@ -6,6 +6,6 @@ return
 	{
 		alpha_transparency = true,
 		depth_testing = true,
-		depth_writing = true,
+		depth_writing = false,
 	}
 }

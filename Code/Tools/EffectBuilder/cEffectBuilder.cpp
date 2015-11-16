@@ -9,6 +9,7 @@
 
 #include "../../Engine/Windows/Functions.h"
 #include "../../External/Lua/Includes.h"
+#include "../../Engine/Graphics/Effect.h"
 
 bool eae6320::cEffectBuilder::Build(const std::vector<std::string>&)
 {
@@ -107,7 +108,7 @@ bool eae6320::cEffectBuilder::Build(const std::vector<std::string>&)
 	// depth writing = true
 	// DW DT AT
 	// 1  1  0
-	uint8_t renderStates = 6;
+	uint8_t renderStates = (1 << DEPTH_WRITING) | (1 << DEPTH_TESTING);
 	const char* renderState;
 	if (lua_istable(luaState, -1))
 	{
@@ -117,7 +118,7 @@ bool eae6320::cEffectBuilder::Build(const std::vector<std::string>&)
 		lua_gettable(luaState, -2);
 
 		if (lua_isboolean(luaState, -1))
-			renderStates |= lua_toboolean(luaState, -1) << 0;
+			renderStates |= lua_toboolean(luaState, -1) << ALPHA_TRANSPARENCY;
 
 		lua_pop(luaState, 1);
 
@@ -126,7 +127,7 @@ bool eae6320::cEffectBuilder::Build(const std::vector<std::string>&)
 		lua_gettable(luaState, -2);
 
 		if(lua_isboolean(luaState, -1))
-			renderStates |= lua_toboolean(luaState, -1) << 1;
+			renderStates |= lua_toboolean(luaState, -1) << DEPTH_TESTING;
 
 		lua_pop(luaState, 1);
 
@@ -135,7 +136,7 @@ bool eae6320::cEffectBuilder::Build(const std::vector<std::string>&)
 		lua_gettable(luaState, -2);
 
 		if (lua_isboolean(luaState, -1))
-			renderStates |= lua_toboolean(luaState, -1) << 2;
+			renderStates |= lua_toboolean(luaState, -1) << DEPTH_WRITING;
 
 		lua_pop(luaState, 1);
 	}

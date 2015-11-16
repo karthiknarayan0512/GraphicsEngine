@@ -105,9 +105,9 @@ namespace eae6320
 			result = direct3DDevice->SetPixelShader(m_fragmentShader);
 			assert(SUCCEEDED(result));
 
-			uint8_t alpha = 1 << 0;
-			uint8_t	depthTest = 1 << 1;
-			uint8_t depthwrite = 1 << 2;
+			uint8_t alpha = 1 << ALPHA_TRANSPARENCY;
+			uint8_t	depthTest = 1 << DEPTH_TESTING;
+			uint8_t depthwrite = 1 << DEPTH_WRITING;
 
 			// Set alpha transparency
 			if (m_renderStates & alpha)

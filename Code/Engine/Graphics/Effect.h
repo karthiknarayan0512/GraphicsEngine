@@ -15,6 +15,10 @@
 
 #include <stdint.h>
 
+#define ALPHA_TRANSPARENCY 1
+#define DEPTH_TESTING 2
+#define DEPTH_WRITING 3
+
 namespace eae6320
 {
 	namespace Graphics
