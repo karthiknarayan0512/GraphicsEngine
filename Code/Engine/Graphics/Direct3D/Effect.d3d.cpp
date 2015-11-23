@@ -26,6 +26,16 @@ namespace eae6320
 			}
 		}
 
+		Effect::tUniformHandle Effect::getUniformHandle(ShaderTypes::eShaderType i_ShaderType, const char * i_uniformName)
+		{
+			if (i_ShaderType == ShaderTypes::Fragment)
+				return m_fragmentShaderConstantTable->GetConstantByName(NULL, i_uniformName);
+			else if (i_ShaderType == ShaderTypes::Vertex)
+				return m_vertexShaderConstantTable->GetConstantByName(NULL, i_uniformName);
+			else
+				return NULL;
+		}
+
 		bool Effect::LoadVertexShader(const char *i_vertexShaderFile)
 		{
 			// Load the source code from file
@@ -90,6 +100,9 @@ namespace eae6320
 					wereThereErrors = true;
 				}
 			}
+
+			D3DXGetShaderConstantTable(reinterpret_cast<const DWORD*>(buffer), &m_fragmentShaderConstantTable);
+
 			return !wereThereErrors;
 		}
 
@@ -152,6 +165,19 @@ namespace eae6320
 			{
 				result = direct3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 				assert(SUCCEEDED(result));
+			}
+		}
+
+		void Effect::SetUniforms(ShaderTypes::eShaderType i_ShaderType, tUniformHandle i_uniformHandle, float* i_values, uint8_t i_valueCountToSet)
+		{
+			IDirect3DDevice9* direct3DDevice = Context::getDirect3DDevice();
+			if (i_ShaderType == ShaderTypes::Fragment)
+			{
+				m_fragmentShaderConstantTable->SetFloatArray(direct3DDevice, i_uniformHandle, i_values, i_valueCountToSet);
+			}
+			else if (i_ShaderType == ShaderTypes::Vertex)
+			{
+				m_vertexShaderConstantTable->SetFloatArray(direct3DDevice, i_uniformHandle, i_values, i_valueCountToSet);
 			}
 		}
 

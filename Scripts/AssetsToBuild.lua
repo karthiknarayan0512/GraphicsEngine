@@ -56,4 +56,18 @@ return
 			"shaders.inc",
 		}
 	},
+	materials =
+	{
+		buildTool = "MaterialBuilder.exe",
+		assets = 
+		{
+			"TransparentShaderMaterial_almostsemi.lua",
+			"TransparentShaderMaterial_semi.lua",
+			"OpaqueShaderMaterial.lua",
+			"OpaqueShaderMaterial_blue.lua",
+			"OpaqueShaderMaterial_red.lua",
+		},
+		source = "",
+		destination = "",
+	}
 }

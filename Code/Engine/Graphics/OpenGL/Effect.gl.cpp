@@ -38,6 +38,39 @@ namespace eae6320
 			}
 		}
 
+		Effect::tUniformHandle Effect::getUniformHandle(ShaderTypes::eShaderType i_ShaderType, const char * i_uniformName)
+		{
+			GLint location = glGetUniformLocation(m_programID, i_uniformName);
+			assert(glGetError() == GL_NO_ERROR);
+
+			return location;
+		}
+
+		void Effect::SetUniforms(ShaderTypes::eShaderType i_ShaderType, tUniformHandle i_uniformHandle, float* i_values, uint8_t i_valueCountToSet)
+		{
+			switch (i_valueCountToSet)
+			{
+			case 1:
+			{
+				glUniform1fv(i_uniformHandle, 1, i_values);
+				float *values = new float[i_valueCountToSet];
+				glGetUniformfv(m_programID, i_uniformHandle, values);
+				break;
+			}
+				
+			case 2:
+				glUniform2fv(i_uniformHandle, 1, i_values);
+				break;
+			case 3:
+				glUniform3fv(i_uniformHandle, 1, i_values);
+				break;
+			case 4:
+				glUniform4fv(i_uniformHandle, 1, i_values);
+				break;
+			}
+			assert(glGetError() == GL_NO_ERROR);
+		}
+
 		void Effect::SetTransforms(Math::cMatrix_transformation i_localToWorldTransform, Camera &i_Camera)
 		{
 			const GLboolean dontTranspose = false; // Matrices are already in the correct format
@@ -568,9 +601,9 @@ namespace eae6320
 			glUseProgram(m_programID);
 			assert(glGetError() == GL_NO_ERROR);
 
-			uint8_t alpha = 1 << 0;
-			uint8_t	depthTest = 1 << 1;
-			uint8_t depthwrite = 1 << 2;
+			uint8_t alpha = 1 << ALPHA_TRANSPARENCY;
+			uint8_t	depthTest = 1 << DEPTH_TESTING;
+			uint8_t depthwrite = 1 << DEPTH_WRITING;
 
 			// Set alpha transparency
 			if (m_renderStates & alpha)

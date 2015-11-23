@@ -3,6 +3,7 @@
 
 #include "../Math/cMatrix_transformation.h"
 #include "Camera.h"
+#include "Includes.h"
 #ifdef EAE6320_PLATFORM_GL
 #include "../../External/OpenGlExtensions/OpenGlExtensions.h"
 #include <gl/GLU.h>
@@ -26,9 +27,18 @@ namespace eae6320
 		class Effect
 		{
 		public:
+#if defined( EAE6320_PLATFORM_D3D )
+			typedef const char* tUniformHandle;
+#elif defined( EAE6320_PLATFORM_GL )
+			typedef GLint tUniformHandle;
+#endif
 			bool CreateEffect(const char *i_shaderBinaryFile);
 			void SetEffect();
 			void SetTransforms(Math::cMatrix_transformation i_localToWorldTransform, Camera &i_Camera);
+
+			void SetUniforms(ShaderTypes::eShaderType i_ShaderType, tUniformHandle i_uniformHandle, float* i_values, uint8_t i_valueCountToSet);
+
+			tUniformHandle getUniformHandle(ShaderTypes::eShaderType i_ShaderType, const char * i_uniformName);
 
 			~Effect();
 
@@ -39,22 +49,19 @@ namespace eae6320
 
 			uint8_t m_renderStates;
 
+			tUniformHandle m_LocalToWorldTransform;
+			tUniformHandle m_WorldToViewTransform;
+			tUniformHandle m_ViewToScreenTransform;
 #ifdef EAE6320_PLATFORM_D3D
 			IDirect3DVertexShader9* m_vertexShader;
 
 			IDirect3DPixelShader9* m_fragmentShader;
 
-			D3DXHANDLE m_LocalToWorldTransform;
-			D3DXHANDLE m_WorldToViewTransform;
-			D3DXHANDLE m_ViewToScreenTransform;
 
 			ID3DXConstantTable* m_vertexShaderConstantTable;
+			ID3DXConstantTable* m_fragmentShaderConstantTable;
 
 #elif defined EAE6320_PLATFORM_GL
-			GLuint m_LocalToWorldTransform;
-			GLuint m_WorldToViewTransform;
-			GLuint m_ViewToScreenTransform;
-
 			GLuint m_programID;
 
 			bool LoadAndAllocateShaderProgram(const char* i_path, void*& o_shader, size_t& o_size, std::string* o_errorMessage);

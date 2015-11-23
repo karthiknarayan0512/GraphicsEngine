@@ -6,6 +6,9 @@
 
 // Entry Point
 //============
+// Color
+uniform vec3 g_color;
+uniform float g_alpha_modifier;
 
 #if defined( EAE6320_PLATFORM_GL )
 // Input
@@ -48,6 +51,7 @@ void main(
 	// (where color is represented by 4 floats representing "RGBA" == "Red/Green/Blue/Alpha")
 	{
 		o_color = i_color;
+		o_color.rgb *= g_color;
+		o_color.a *= g_alpha_modifier;
 	}
-	o_color.a *= 0.5;
 }

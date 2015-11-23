@@ -7,10 +7,8 @@ namespace eae6320
 	{
 		void Renderable::Render(Camera &i_Camera)
 		{
-			m_Effect.SetEffect();
-
 			Math::cMatrix_transformation i_localToWorldTransform(m_orientation, m_position);
-			m_Effect.SetTransforms(i_localToWorldTransform, i_Camera);
+			m_Material.SetMaterial(i_localToWorldTransform, i_Camera);
 
 			m_Mesh.DrawMesh();
 		}
