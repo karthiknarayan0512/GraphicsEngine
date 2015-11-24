@@ -130,7 +130,7 @@ bool eae6320::cMaterialBuilder::Build(const std::vector<std::string>& i_argument
 
 			materialBinary.write(uniformName, strlen(uniformName) + 1);
 
-			uniforms[i].uniformHandle = NULL;
+			uniforms[i-1].uniformHandle = NULL;
 
 			const char* const valueskey = "values";
 			lua_pushstring(luaState, valueskey);
@@ -138,14 +138,14 @@ bool eae6320::cMaterialBuilder::Build(const std::vector<std::string>& i_argument
 
 			if (lua_istable(luaState, -1))
 			{
-				uniforms[i].valueCountToSet = luaL_len(luaState, -1);
+				uniforms[i-1].valueCountToSet = luaL_len(luaState, -1);
 
-				for (uint8_t j = 1; j <= uniforms[i].valueCountToSet; j++)
+				for (uint8_t j = 1; j <= uniforms[i-1].valueCountToSet; j++)
 				{
 					lua_pushinteger(luaState, j);
 					lua_gettable(luaState, -2);
 
-					uniforms[i].values[j - 1] = static_cast<float>(lua_tonumber(luaState, -1));
+					uniforms[i-1].values[j - 1] = static_cast<float>(lua_tonumber(luaState, -1));
 					lua_pop(luaState, 1);
 				}
 			}
@@ -157,14 +157,14 @@ bool eae6320::cMaterialBuilder::Build(const std::vector<std::string>& i_argument
 			lua_gettable(luaState, -2);
 
 			if (strcmp(lua_tostring(luaState, -1), "fragment") == 0)
-				uniforms[i].shaderType = eae6320::Graphics::ShaderTypes::Fragment;
+				uniforms[i-1].shaderType = eae6320::Graphics::ShaderTypes::Fragment;
 			else if (strcmp(lua_tostring(luaState, -1), "vertex") == 0)
-				uniforms[i].shaderType = eae6320::Graphics::ShaderTypes::Vertex;
+				uniforms[i-1].shaderType = eae6320::Graphics::ShaderTypes::Vertex;
 
 			lua_pop(luaState, 1);
 
 			char *uniformsBuffer = NULL;
-			uniformsBuffer = reinterpret_cast<char *>(&uniforms[i]);
+			uniformsBuffer = reinterpret_cast<char *>(&uniforms[i-1]);
 			materialBinary.write(uniformsBuffer, sizeof(Graphics::Material::sParameterToSet));
 
 			lua_pop(luaState, 1);
