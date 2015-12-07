@@ -36,6 +36,20 @@ void eae6320::Graphics::Material::LoadMaterial(const char *i_materialPath)
 		m_Uniforms[i].uniformHandle = m_Effect.getUniformHandle(ShaderTypes::Fragment, uniformName);
 		buffer += sizeof(sParameterToSet);
 	}
+
+	m_TextureCount = *reinterpret_cast<uint8_t *>(buffer);
+
+	buffer += sizeof(m_TextureCount);
+	m_Textures = new Texture[m_TextureCount];
+
+	for (uint8_t i = 0; i < m_TextureCount; i++)
+	{
+		m_Textures[i].SetSamplerID(m_Effect.getSamplerID(buffer));
+
+		buffer += strlen(buffer) + 1;
+
+		m_Textures[i].LoadTexture(buffer);
+	}
 }
 
 void eae6320::Graphics::Material::SetMaterial(Math::cMatrix_transformation i_localToWorldTransform, Camera &i_Camera)
@@ -45,5 +59,8 @@ void eae6320::Graphics::Material::SetMaterial(Math::cMatrix_transformation i_loc
 
 	for (uint8_t i = 0; i < m_UniformCount; i++)
 		m_Effect.SetUniforms(m_Uniforms[i].shaderType, m_Uniforms[i].uniformHandle, m_Uniforms[i].values, m_Uniforms[i].valueCountToSet);
+
+	for (uint8_t i = 0; i < m_TextureCount; i++)
+		m_Textures[i].SetTexture(i + 1);
 }
 	

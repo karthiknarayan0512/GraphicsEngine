@@ -18,6 +18,9 @@
 // Transformation function
 #define Transform( float4, float4x4 ) mul(float4, float4x4)
 
+// Texture samlping function
+#define texture2D( sampler, texcoords ) tex2D( sampler, texcoords )
+
 #elif defined( EAE6320_PLATFORM_GL )
 
 // The version of GLSL to use must come first
@@ -37,6 +40,9 @@
 
 //Transformation function
 #define Transform( float4, float4x4 ) float4 * float4x4
+
+// Texture samlping function
+#define tex2D( sampler, texcoords ) texture2D( sampler, texcoords )
 
 #define o_position gl_Position
 

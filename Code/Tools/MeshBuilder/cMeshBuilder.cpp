@@ -66,6 +66,7 @@ void GetVerticesFromMeshFile(lua_State* luaState, eae6320::Graphics::Mesh::sVert
 			const char* const colorkey = "color";
 			lua_pushstring(luaState, colorkey);
 			lua_gettable(luaState, -2);
+
 			if (lua_istable(luaState, -1))
 			{
 				lua_pushinteger(luaState, 1);
@@ -92,6 +93,25 @@ void GetVerticesFromMeshFile(lua_State* luaState, eae6320::Graphics::Mesh::sVert
 				vertices[i - 1].a = static_cast<uint8_t>(f * 255 + 0.5f);
 				lua_pop(luaState, 1);
 			}
+			lua_pop(luaState, 1);
+
+			const char* const texcoordskey = "texcoords";
+			lua_pushstring(luaState, texcoordskey);
+			lua_gettable(luaState, -2);
+
+			if (lua_istable(luaState, -1))
+			{
+				lua_pushinteger(luaState, 1);
+				lua_gettable(luaState, -2);
+				vertices[i - 1].u = static_cast<float>(lua_tonumber(luaState, -1));
+				lua_pop(luaState, 1);
+
+				lua_pushinteger(luaState, 2);
+				lua_gettable(luaState, -2);
+				vertices[i - 1].v = static_cast<float>(lua_tonumber(luaState, -1));
+				lua_pop(luaState, 1);
+			}
+
 
 			lua_pop(luaState, 1);
 			lua_pop(luaState, 1);

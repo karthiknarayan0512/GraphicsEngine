@@ -27,11 +27,6 @@ namespace eae6320
 		class Effect
 		{
 		public:
-#if defined( EAE6320_PLATFORM_D3D )
-			typedef const char* tUniformHandle;
-#elif defined( EAE6320_PLATFORM_GL )
-			typedef GLint tUniformHandle;
-#endif
 			bool CreateEffect(const char *i_shaderBinaryFile);
 			void SetEffect();
 			void SetTransforms(Math::cMatrix_transformation i_localToWorldTransform, Camera &i_Camera);
@@ -39,6 +34,8 @@ namespace eae6320
 			void SetUniforms(ShaderTypes::eShaderType i_ShaderType, tUniformHandle i_uniformHandle, float* i_values, uint8_t i_valueCountToSet);
 
 			tUniformHandle getUniformHandle(ShaderTypes::eShaderType i_ShaderType, const char * i_uniformName);
+
+			SamplerID getSamplerID(const char * i_samplerUniformName);
 
 			~Effect();
 

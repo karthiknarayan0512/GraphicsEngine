@@ -5,8 +5,15 @@ return
 	{
 		{
 			name = "g_color",
-			values = {0, 0, 0.2},
+			values = {0, 0, 1},
 			shaderType = "fragment"
 		}
 	},
+	textures =
+	{
+		{
+			samplerName = "textureSampler",
+			path = "data/Brick.jpg"
+		}
+	}
 }

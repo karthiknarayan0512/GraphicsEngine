@@ -38,7 +38,12 @@ namespace eae6320
 			}
 		}
 
-		Effect::tUniformHandle Effect::getUniformHandle(ShaderTypes::eShaderType i_ShaderType, const char * i_uniformName)
+		SamplerID Effect::getSamplerID(const char * i_samplerUniformName)
+		{
+			return getUniformHandle(ShaderTypes::Fragment, i_samplerUniformName);
+		}
+
+		tUniformHandle Effect::getUniformHandle(ShaderTypes::eShaderType i_ShaderType, const char * i_uniformName)
 		{
 			GLint location = glGetUniformLocation(m_programID, i_uniformName);
 			assert(glGetError() == GL_NO_ERROR);

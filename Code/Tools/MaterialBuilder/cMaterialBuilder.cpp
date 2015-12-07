@@ -103,12 +103,11 @@ bool eae6320::cMaterialBuilder::Build(const std::vector<std::string>& i_argument
 	lua_pushstring(luaState, uniformskey);
 	lua_gettable(luaState, -2);
 
-	uint8_t uniformsCount;
 	Graphics::Material::sParameterToSet *uniforms;
 	
 	if (lua_istable(luaState, -1))
 	{
-		uniformsCount = luaL_len(luaState, -1);
+		uint8_t uniformsCount = luaL_len(luaState, -1);
 		uniforms = new Graphics::Material::sParameterToSet[uniformsCount];
 
 		// Write the uniform count
@@ -166,6 +165,49 @@ bool eae6320::cMaterialBuilder::Build(const std::vector<std::string>& i_argument
 			char *uniformsBuffer = NULL;
 			uniformsBuffer = reinterpret_cast<char *>(&uniforms[i-1]);
 			materialBinary.write(uniformsBuffer, sizeof(Graphics::Material::sParameterToSet));
+
+			lua_pop(luaState, 1);
+		}
+	}
+
+	lua_pop(luaState, 1);
+
+	// Get textures table
+	const char* const texturesKey = "textures";
+	lua_pushstring(luaState, texturesKey);
+	lua_gettable(luaState, -2);
+
+	if (lua_istable(luaState, -1))
+	{
+		uint8_t texturesCount = luaL_len(luaState, -1);
+
+		// Write the uniform count
+		char *textureCount = NULL;
+		textureCount = reinterpret_cast<char *>(&texturesCount);
+		materialBinary.write(textureCount, sizeof(texturesCount));
+
+		for (uint8_t i = 0; i < texturesCount; i++)
+		{
+			lua_pushinteger(luaState, i + 1);
+			lua_gettable(luaState, -2);
+
+			const char* const samplerNameKey = "samplerName";
+			lua_pushstring(luaState, samplerNameKey);
+			lua_gettable(luaState, -2);
+
+			const char *samplerPath = lua_tostring(luaState, -1);
+			materialBinary.write(samplerPath, strlen(samplerPath) + 1);
+
+			lua_pop(luaState, 1);
+
+			const char* const texturePathKey = "path";
+			lua_pushstring(luaState, texturePathKey);
+			lua_gettable(luaState, -2);
+
+			const char *texturePath = lua_tostring(luaState, -1);
+			materialBinary.write(texturePath, strlen(texturePath) + 1);
+
+			lua_pop(luaState, 1);
 
 			lua_pop(luaState, 1);
 		}

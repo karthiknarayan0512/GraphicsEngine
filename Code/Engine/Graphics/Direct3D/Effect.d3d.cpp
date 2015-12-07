@@ -26,7 +26,14 @@ namespace eae6320
 			}
 		}
 
-		Effect::tUniformHandle Effect::getUniformHandle(ShaderTypes::eShaderType i_ShaderType, const char * i_uniformName)
+		SamplerID Effect::getSamplerID(const char * i_samplerUniformName)
+		{
+			tUniformHandle samplerhandle = getUniformHandle(ShaderTypes::Fragment, i_samplerUniformName);
+			
+			return m_fragmentShaderConstantTable->GetSamplerIndex(samplerhandle);
+		}
+
+		tUniformHandle Effect::getUniformHandle(ShaderTypes::eShaderType i_ShaderType, const char * i_uniformName)
 		{
 			if (i_ShaderType == ShaderTypes::Fragment)
 				return m_fragmentShaderConstantTable->GetConstantByName(NULL, i_uniformName);

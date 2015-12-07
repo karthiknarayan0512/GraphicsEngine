@@ -4,19 +4,23 @@ return
 	{
 		{
 			position = { -5, -1, -5},
-			color = { 1, 1, 1, 1}
+			color = { 1, 1, 1, 1},
+			texcoords = { 0, 1},
 		},
 		{
 			position = { 5, -1, -5},
-			color = { 1, 1, 1, 1}
+			color = { 1, 1, 1, 1},
+			texcoords = { 1, 1},
 		},
 		{
 			position = { -5, -1, 5},
-			color = { 1, 1, 1, 1}
+			color = { 1, 1, 1, 1},
+			texcoords = { 0, 0},
 		},
 		{
 			position = { 5, -1, 5},
-			color = { 1, 1, 1, 1}
+			color = { 1, 1, 1, 1},
+			texcoords = { 1, 0},
 		},
 	},
 	

@@ -9,6 +9,7 @@
 // Color
 uniform vec3 g_color;
 uniform float g_alpha_modifier;
+uniform sampler2D textureSampler;
 
 #if defined( EAE6320_PLATFORM_GL )
 // Input
@@ -18,6 +19,7 @@ uniform float g_alpha_modifier;
 // will be interpolated across the triangle and given as input to the fragment shader
 
 layout( location = 0 ) in vec4 i_color;
+layout( location = 1 ) in float2 i_texcoords;
 
 // Output
 //=======
@@ -37,6 +39,7 @@ void main(
 	// will be interpolated across the triangle and given as input to the fragment shader
 
 	in float4 i_color : COLOR0,
+	in float2 i_texcoords : TEXCOORD0,
 
 	// Output
 	//=======
@@ -50,8 +53,8 @@ void main(
 	// Set the fragment to the interpolated color that originated as per-vertex data
 	// (where color is represented by 4 floats representing "RGBA" == "Red/Green/Blue/Alpha")
 	{
-		o_color = i_color;
-		o_color.rgb *= g_color;
-		o_color.a *= g_alpha_modifier;
+		o_color = tex2D(textureSampler, i_texcoords);
+		o_color.rgb *= i_color.rgb * g_color;
+		o_color.a *= i_color.a * g_alpha_modifier;
 	}
 }

@@ -78,7 +78,7 @@ void eae6320::Graphics::Render()
 		{
 			for (int i = 0; i < 1; i++)
 				s_UserControlledObjects[i].Render(*s_Camera);
-			for (int i = 0; i < 4; i++)
+			for (int i = 0; i < 5; i++)
 				s_StaticOpaqueObjects[i].Render(*s_Camera);
 			for (int i = 0; i < 2; i++)
 				s_StaticTransparentObjects[i].Render(*s_Camera);
@@ -104,7 +104,7 @@ namespace
 		s_UserControlledObjects = new eae6320::Graphics::Renderable[1];
 		for (int i = 0; i < 1; i++)
 		{
-			if (!s_UserControlledObjects[i].m_Mesh.LoadMeshFromFile("data/Football.lua"))
+			if (!s_UserControlledObjects[i].m_Mesh.LoadMeshFromFile("data/Box.lua"))
 				return false;
 			s_UserControlledObjects[i].m_Material.LoadMaterial("data/OpaqueShaderMaterial.lua");
 				
@@ -113,48 +113,52 @@ namespace
 			s_UserControlledObjects[i].m_position.x = -1.0f;
 		}
 
-		s_StaticOpaqueObjects = new eae6320::Graphics::Renderable[4];
+		s_StaticOpaqueObjects = new eae6320::Graphics::Renderable[5];
 		{
 			if (!s_StaticOpaqueObjects[0].m_Mesh.LoadMeshFromFile("data/Floor.lua"))
 				return false;
 			s_StaticOpaqueObjects[0].m_Material.LoadMaterial("data/OpaqueShaderMaterial.lua");
 				
-			if (!s_StaticOpaqueObjects[1].m_Mesh.LoadMeshFromFile("data/Dodec.lua"))
+			if (!s_StaticOpaqueObjects[1].m_Mesh.LoadMeshFromFile("data/Sphere.lua"))
 				return false;
-			s_StaticOpaqueObjects[1].m_Material.LoadMaterial("data/OpaqueShaderMaterial.lua");
-				
-			s_StaticOpaqueObjects[1].m_position.z = 2.0f;
+			s_StaticOpaqueObjects[1].m_Material.LoadMaterial("data/OpaqueShaderMaterial_blue.lua");
+
 			s_StaticOpaqueObjects[1].m_position.x = 1.5f;
-			s_StaticOpaqueObjects[1].m_position.y = 3.0f;
 
-			if (!s_StaticOpaqueObjects[2].m_Mesh.LoadMeshFromFile("data/Pipe.lua"))
+			if (!s_StaticOpaqueObjects[2].m_Mesh.LoadMeshFromFile("data/Sphere.lua"))
 				return false;
-			s_StaticOpaqueObjects[2].m_Material.LoadMaterial("data/OpaqueShaderMaterial_blue.lua");
+			s_StaticOpaqueObjects[2].m_Material.LoadMaterial("data/OpaqueShaderMaterial_red.lua");
 
-			s_StaticOpaqueObjects[2].m_position.z = 1.0f;
-			s_StaticOpaqueObjects[2].m_position.x = 1.5f;
+			s_StaticOpaqueObjects[2].m_position.x = 3.5f;
 
-			if (!s_StaticOpaqueObjects[3].m_Mesh.LoadMeshFromFile("data/Pipe.lua"))
+			if (!s_StaticOpaqueObjects[3].m_Mesh.LoadMeshFromFile("data/Plane.lua"))
 				return false;
-			s_StaticOpaqueObjects[3].m_Material.LoadMaterial("data/OpaqueShaderMaterial_red.lua");
+			s_StaticOpaqueObjects[3].m_Material.LoadMaterial("data/OpaqueShaderMaterial_eae6320Image.lua");
 
-			s_StaticOpaqueObjects[3].m_position.z = 1.0f;
-			s_StaticOpaqueObjects[3].m_position.x = 3.5f;
+			s_StaticOpaqueObjects[3].m_position.z = 0.0f;
+			s_StaticOpaqueObjects[3].m_position.x = -4.0f;
+			s_StaticOpaqueObjects[3].m_position.y = -4.0f;
+
+			if (!s_StaticOpaqueObjects[4].m_Mesh.LoadMeshFromFile("data/Plane.lua"))
+				return false;
+			s_StaticOpaqueObjects[4].m_Material.LoadMaterial("data/OpaqueShaderMaterial_alphaImage.lua");
+
+			s_StaticOpaqueObjects[4].m_position.z = 0.0f;
+			s_StaticOpaqueObjects[4].m_position.x = 4.0f;
+			s_StaticOpaqueObjects[4].m_position.y = -4.0f;
 		}
 
 		s_StaticTransparentObjects = new eae6320::Graphics::Renderable[2];
 
-		if (!s_StaticTransparentObjects[0].m_Mesh.LoadMeshFromFile("data/Pipe.lua"))
+		if (!s_StaticTransparentObjects[0].m_Mesh.LoadMeshFromFile("data/Sphere.lua"))
 			return false;
 		s_StaticTransparentObjects[0].m_Material.LoadMaterial("data/TransparentShaderMaterial_semi.lua");
 		s_StaticTransparentObjects[0].m_position.x = -3.0f;
-		s_StaticTransparentObjects[0].m_position.z = 1.0f;
 
-		if (!s_StaticTransparentObjects[1].m_Mesh.LoadMeshFromFile("data/Pipe.lua"))
+		if (!s_StaticTransparentObjects[1].m_Mesh.LoadMeshFromFile("data/Sphere.lua"))
 			return false;
 		s_StaticTransparentObjects[1].m_Material.LoadMaterial("data/TransparentShaderMaterial_almostsemi.lua");
 		s_StaticTransparentObjects[1].m_position.x = -1.0f;
-		s_StaticTransparentObjects[1].m_position.z = 1.0f;
 
 		return true;
 	}

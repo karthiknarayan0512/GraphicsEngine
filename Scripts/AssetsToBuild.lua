@@ -5,10 +5,10 @@ return
 		buildTool = "MeshBuilder.exe",
 		assets = 
 		{
-			"Football.lua",
 			"Floor.lua",
-			"Pipe.lua",
-			"Dodec.lua"
+			"Sphere.lua",
+			"Box.lua",
+			"Plane.lua"
 		},
 		source = "",
 		destination = "",
@@ -66,8 +66,22 @@ return
 			"OpaqueShaderMaterial.lua",
 			"OpaqueShaderMaterial_blue.lua",
 			"OpaqueShaderMaterial_red.lua",
+			"OpaqueShaderMaterial_eae6320Image.lua",
+			"OpaqueShaderMaterial_alphaImage.lua",
 		},
 		source = "",
 		destination = "",
-	}
+	},
+	textures = 
+	{
+		buildTool = "TextureBuilder.exe",
+		assets = 
+		{
+			"alpha.png",
+			"eae6320.png",
+			"Brick.jpg"
+		},
+		source = "",
+		destination = "",
+	},
 }

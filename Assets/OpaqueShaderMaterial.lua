@@ -9,4 +9,11 @@ return
 			shaderType = "fragment"
 		}
 	},
+	textures =
+	{
+		{
+			samplerName = "textureSampler",
+			path = "data/Brick.jpg"
+		}
+	}
 }

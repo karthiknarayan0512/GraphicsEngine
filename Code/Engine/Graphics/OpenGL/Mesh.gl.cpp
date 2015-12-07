@@ -247,7 +247,48 @@ namespace eae6320
 						goto OnExit;
 					}
 				}
-			}
+				// Texture Coordinates (2)
+				// 2 floats == 8 bytes
+				// Offset = 16
+				{
+					const GLuint vertexElementLocation = 2;
+					const GLint elementCount = 2;
+					// Each element will be sent to the GPU as an unsigned byte in the range [0,255]
+					// but these values should be understood as representing [0,1] values
+					// and that is what the shader code will interpret them as
+					// (in other words, we could change the values provided here in C code
+					// to be floats and sent GL_FALSE instead and the shader code wouldn't need to change)
+					const GLboolean normalized = GL_FALSE;
+					glVertexAttribPointer(vertexElementLocation, elementCount, GL_FLOAT, normalized, stride, offset);
+					const GLenum errorCode = glGetError();
+					if (errorCode == GL_NO_ERROR)
+					{
+						glEnableVertexAttribArray(vertexElementLocation);
+						const GLenum errorCode = glGetError();
+						if (errorCode == GL_NO_ERROR)
+						{
+							offset = reinterpret_cast<GLvoid*>(reinterpret_cast<uint8_t*>(offset) + (elementCount * sizeof(uint8_t)));
+						}
+						else
+						{
+							wereThereErrors = true;
+							std::stringstream errorMessage;
+							errorMessage << "OpenGL failed to enable the COLOR0 vertex attribute: " <<
+								reinterpret_cast<const char*>(gluErrorString(errorCode));
+							eae6320::UserOutput::Print(errorMessage.str());
+							goto OnExit;
+						}
+					}
+					else
+					{
+						wereThereErrors = true;
+						std::stringstream errorMessage;
+						errorMessage << "OpenGL failed to set the COLOR0 vertex attribute: " <<
+							reinterpret_cast<const char*>(gluErrorString(errorCode));
+						eae6320::UserOutput::Print(errorMessage.str());
+						goto OnExit;
+					}
+				}			}
 
 			// Create an index buffer object and make it active
 			{

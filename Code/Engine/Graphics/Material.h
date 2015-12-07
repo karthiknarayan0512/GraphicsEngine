@@ -4,6 +4,7 @@
 #include "Effect.h"
 #include "Includes.h"
 #include "Camera.h"
+#include "Texture.h"
 #include "../Math/cMatrix_transformation.h"
 
 namespace eae6320
@@ -15,7 +16,7 @@ namespace eae6320
 		public:
 			struct sParameterToSet
 			{
-				Effect::tUniformHandle uniformHandle;
+				tUniformHandle uniformHandle;
 				ShaderTypes::eShaderType shaderType;
 				float values[4];
 				uint8_t valueCountToSet;
@@ -27,6 +28,8 @@ namespace eae6320
 			Effect m_Effect;
 			sParameterToSet *m_Uniforms;
 			uint8_t m_UniformCount;
+			uint8_t m_TextureCount;
+			Texture* m_Textures;
 		};
 	}
 }

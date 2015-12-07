@@ -5,7 +5,7 @@ return
 	{
 		{
 			name = "g_color",
-			values = {1, 0, 0},
+			values = {1, 1, 1},
 			shaderType = "fragment"
 		}
 	},
@@ -13,7 +13,7 @@ return
 	{
 		{
 			samplerName = "textureSampler",
-			path = "data/Brick.jpg"
+			path = "data/eae6320.png"
 		}
 	}
 }
