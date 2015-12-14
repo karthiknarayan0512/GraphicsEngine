@@ -748,7 +748,7 @@ namespace
 						<< -i_vertexBuffer[i].z << "},\n"
 						"\t\t\tcolor = { " << i_vertexBuffer[i].r << ", " << i_vertexBuffer[i].g
 						<< ", " << i_vertexBuffer[i].b << ", " << i_vertexBuffer[i].a << "},\n"
-						"\t\t\ttexcoords = { " << i_vertexBuffer[i].u << ", " << i_vertexBuffer[i].v << "},\n"
+						"\t\t\ttexcoords = { " << i_vertexBuffer[i].u << ", " << 1.0f - i_vertexBuffer[i].v << "},\n"
 						<< "\t\t},\n";
 				}
 				fout << "\t},\n"

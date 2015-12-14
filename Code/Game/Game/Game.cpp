@@ -504,19 +504,19 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 					{
 						if (eae6320::UserInput::IsKeyPressed(VK_LEFT))
 						{
-							offset.x -= 1.0f;
+							offset.x -= 2.0f;
 						}
 						if (eae6320::UserInput::IsKeyPressed(VK_RIGHT))
 						{
-							offset.x += 1.0f;
+							offset.x += 2.0f;
 						}
 						if (eae6320::UserInput::IsKeyPressed(VK_UP))
 						{
-							offset.y += 1.0f;
+							offset.y += 2.0f;
 						}
 						if (eae6320::UserInput::IsKeyPressed(VK_DOWN))
 						{
-							offset.y -= 1.0f;
+							offset.y -= 2.0f;
 						}
 						if (eae6320::UserInput::IsKeyPressed(0x41))
 						{
@@ -545,14 +545,7 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 					cameraOffset.y *= unitsToMove;
 				}
 
-				int length;
-				eae6320::Graphics::Renderable *userControlledRenderables = eae6320::Graphics::getUserControlledRenderables(length);
-				
-				for (int i = 0; i < length; i++)
-				{
-					userControlledRenderables->m_position.x += offset.x;
-					userControlledRenderables->m_position.y += offset.y;
-				}
+				eae6320::Graphics::movePlayer(offset.x, offset.y);
 
 				eae6320::Graphics::Camera *userCamera = eae6320::Graphics::getCamera();
 				userCamera->UpdateCameraPosition(cameraOffset.x, cameraOffset.y);

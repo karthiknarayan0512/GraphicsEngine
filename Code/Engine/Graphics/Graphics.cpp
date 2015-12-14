@@ -5,6 +5,8 @@
 #include "Context.h"
 #include "Material.h"
 
+#include <vector>
+
 // Static Data Initialization
 //===========================
 
@@ -13,16 +15,25 @@ namespace
 	// User Controlled Camera
 	eae6320::Graphics::Camera *s_Camera;
 
-	// A list of input controlled renderables;
-	eae6320::Graphics::Renderable *s_UserControlledObjects;
+	// Player
+	eae6320::Graphics::Renderable s_Player;
 
-	// A list of static opaque renderables;
-	eae6320::Graphics::Renderable *s_StaticOpaqueObjects;
+	// Collectibles
+	eae6320::Graphics::Renderable s_Pig[6];
+	eae6320::Graphics::Renderable s_Coconut[6];
+	eae6320::Graphics::Renderable s_Banana[6];
 
-	// A list of static transparent renderables;
-	eae6320::Graphics::Renderable *s_StaticTransparentObjects;
+	// Main Cube
+	eae6320::Graphics::Renderable s_Cube;
 
-	eae6320::Graphics::Material testMaterial;
+	size_t currentFace = 0;
+
+	bool bPigCollected;
+	bool bCoconutCollected;
+	bool bBananaCollected;
+
+	bool bCubeRotating;
+	float angleRotated = 0.0f;
 }
 
 // Helper Function Declarations
@@ -32,15 +43,16 @@ namespace
 {
 	bool CreateRenderables();
 	bool CreateCamera();
+	bool CollisionCheck(eae6320::Math::cVector i_firstObject, eae6320::Math::cVector i_secondObject, float distanceCheck);
 }
 
 // Interface
 //==========
 
-eae6320::Graphics::Renderable* eae6320::Graphics::getUserControlledRenderables(int &i_length)
+void eae6320::Graphics::movePlayer(float i_offsetX, float i_offsetY)
 {
-	i_length = 1;
-	return s_UserControlledObjects;
+	s_Player.m_position.x += i_offsetX;
+	s_Player.m_position.y += i_offsetY;
 }
 
 eae6320::Graphics::Camera* eae6320::Graphics::getCamera()
@@ -68,6 +80,47 @@ OnError:
 	return false;
 }
 
+void RotateCube()
+{
+	switch (currentFace)
+	{
+	case 0:
+	case 1:
+	case 2:
+		angleRotated += 0.0174533f;
+		if (angleRotated < 1.5708f)
+		{
+			s_Cube.m_orientation = eae6320::Math::cQuaternion(angleRotated, eae6320::Math::cVector(0.0f, 1.0f, 0.0f));
+			bCubeRotating = true;
+		}
+		else
+			bCubeRotating = false;
+		break;
+	case 3:
+		angleRotated += 0.0174533f;
+		if (angleRotated < 1.5708f)
+		{
+			s_Cube.m_orientation = eae6320::Math::cQuaternion(angleRotated, eae6320::Math::cVector(1.0f, 0.0f, 0.0f));
+			bCubeRotating = true;
+		}
+		else
+			bCubeRotating = false;
+		break;
+	case 4:
+		angleRotated += 0.0174533f;
+		if (angleRotated < 3.1416f)
+		{
+			s_Cube.m_orientation = eae6320::Math::cQuaternion(angleRotated, eae6320::Math::cVector(1.0f, 0.0f, 0.0f));
+			bCubeRotating = true;
+		}
+		else
+			bCubeRotating = false;
+		break;
+	default:
+		break;
+	}
+}
+
 void eae6320::Graphics::Render()
 {
 	// Clear Buffers
@@ -76,12 +129,167 @@ void eae6320::Graphics::Render()
 	{
 		Context::BeginRender();
 		{
-			for (int i = 0; i < 1; i++)
-				s_UserControlledObjects[i].Render(*s_Camera);
-			for (int i = 0; i < 5; i++)
-				s_StaticOpaqueObjects[i].Render(*s_Camera);
-			for (int i = 0; i < 2; i++)
-				s_StaticTransparentObjects[i].Render(*s_Camera);
+			s_Cube.Render(*s_Camera);
+			if (!bCubeRotating)
+			{
+				s_Player.m_position.z = 3.0f;
+				s_Player.Render(*s_Camera);
+
+				switch (currentFace)
+				{
+				case 0:
+					if (!bPigCollected)
+					{
+						s_Pig[currentFace].m_position.y = 2.3f;
+						s_Pig[currentFace].m_position.x = -2.2f;
+						s_Pig[currentFace].Render(*s_Camera);
+						bPigCollected = CollisionCheck(s_Pig[currentFace].m_position, s_Player.m_position, 1.0f);
+					}
+					if (!bCoconutCollected)
+					{
+						s_Coconut[currentFace].m_position.x = 0.0f;
+						s_Coconut[currentFace].m_position.y = -2.3f;
+						s_Coconut[currentFace].Render(*s_Camera);
+						bCoconutCollected = CollisionCheck(s_Coconut[currentFace].m_position, s_Player.m_position, 1.0f);
+					}
+					if (!bBananaCollected)
+					{
+						s_Banana[currentFace].m_position.x = 2.3f;
+						s_Banana[currentFace].m_position.y = 1.8f;
+						s_Banana[currentFace].Render(*s_Camera);
+						bBananaCollected = CollisionCheck(s_Banana[currentFace].m_position, s_Player.m_position, 1.0f);
+					}
+					break;
+				case 1:
+					if (!bPigCollected)
+					{
+						s_Pig[currentFace].m_position.y = 2.3f;
+						s_Pig[currentFace].m_position.x = 2.2f;
+						s_Pig[currentFace].Render(*s_Camera);
+						bPigCollected = CollisionCheck(s_Pig[currentFace].m_position, s_Player.m_position, 1.0f);
+					}
+					if (!bCoconutCollected)
+					{
+						s_Coconut[currentFace].m_position.x = -2.5f;
+						s_Coconut[currentFace].m_position.y = 0.0f;
+						s_Coconut[currentFace].Render(*s_Camera);
+						bCoconutCollected = CollisionCheck(s_Coconut[currentFace].m_position, s_Player.m_position, 1.0f);
+					}
+					if (!bBananaCollected)
+					{
+						s_Banana[currentFace].m_position.x = 2.3f;
+						s_Banana[currentFace].m_position.y = -2.5f;
+						s_Banana[currentFace].Render(*s_Camera);
+						bBananaCollected = CollisionCheck(s_Banana[currentFace].m_position, s_Player.m_position, 1.0f);
+					}
+					break;
+				case 2:
+					if (!bPigCollected)
+					{
+						s_Pig[currentFace].m_position.y = 2.3f;
+						s_Pig[currentFace].m_position.x = 0.0f;
+						s_Pig[currentFace].Render(*s_Camera);
+						bPigCollected = CollisionCheck(s_Pig[currentFace].m_position, s_Player.m_position, 1.0f);
+					}
+					if (!bCoconutCollected)
+					{
+						s_Coconut[currentFace].m_position.x = 0.0f;
+						s_Coconut[currentFace].m_position.y = 0.0f;
+						s_Coconut[currentFace].Render(*s_Camera);
+						bCoconutCollected = CollisionCheck(s_Coconut[currentFace].m_position, s_Player.m_position, 1.0f);
+					}
+					if (!bBananaCollected)
+					{
+						s_Banana[currentFace].m_position.x = 0.0f;
+						s_Banana[currentFace].m_position.y = -2.5f;
+						s_Banana[currentFace].Render(*s_Camera);
+						bBananaCollected = CollisionCheck(s_Banana[currentFace].m_position, s_Player.m_position, 1.0f);
+					}
+					break;
+				case 3:
+					if (!bPigCollected)
+					{
+						s_Pig[currentFace].m_position.y = 0.0f;
+						s_Pig[currentFace].m_position.x = 2.2f;
+						s_Pig[currentFace].Render(*s_Camera);
+						bPigCollected = CollisionCheck(s_Pig[currentFace].m_position, s_Player.m_position, 1.0f);
+					}
+					if (!bCoconutCollected)
+					{
+						s_Coconut[currentFace].m_position.x = -2.5f;
+						s_Coconut[currentFace].m_position.y = 0.0f;
+						s_Coconut[currentFace].Render(*s_Camera);
+						bCoconutCollected = CollisionCheck(s_Coconut[currentFace].m_position, s_Player.m_position, 1.0f);
+					}
+					if (!bBananaCollected)
+					{
+						s_Banana[currentFace].m_position.x = 0.0f;
+						s_Banana[currentFace].m_position.y = 0.0f;
+						s_Banana[currentFace].Render(*s_Camera);
+						bBananaCollected = CollisionCheck(s_Banana[currentFace].m_position, s_Player.m_position, 1.0f);
+					}
+					break;
+				case 4:
+					if (!bPigCollected)
+					{
+						s_Pig[currentFace].m_position.y = 2.3f;
+						s_Pig[currentFace].m_position.x = -2.2f;
+						s_Pig[currentFace].Render(*s_Camera);
+						bPigCollected = CollisionCheck(s_Pig[currentFace].m_position, s_Player.m_position, 1.0f);
+					}
+					if (!bCoconutCollected)
+					{
+						s_Coconut[currentFace].m_position.x = 0.0f;
+						s_Coconut[currentFace].m_position.y = 0.0f;
+						s_Coconut[currentFace].Render(*s_Camera);
+						bCoconutCollected = CollisionCheck(s_Coconut[currentFace].m_position, s_Player.m_position, 1.0f);
+					}
+					if (!bBananaCollected)
+					{
+						s_Banana[currentFace].m_position.x = 2.3f;
+						s_Banana[currentFace].m_position.y = -2.5f;
+						s_Banana[currentFace].Render(*s_Camera);
+						bBananaCollected = CollisionCheck(s_Banana[currentFace].m_position, s_Player.m_position, 1.0f);
+					}
+					break;
+				case 5:
+					if (!bPigCollected)
+					{
+						s_Pig[currentFace].m_position.y = 2.3f;
+						s_Pig[currentFace].m_position.x = 2.2f;
+						s_Pig[currentFace].Render(*s_Camera);
+						bPigCollected = CollisionCheck(s_Pig[currentFace].m_position, s_Player.m_position, 1.0f);
+					}
+					if (!bCoconutCollected)
+					{
+						s_Coconut[currentFace].m_position.x = 0.0f;
+						s_Coconut[currentFace].m_position.y = 0.0f;
+						s_Coconut[currentFace].Render(*s_Camera);
+						bCoconutCollected = CollisionCheck(s_Coconut[currentFace].m_position, s_Player.m_position, 1.0f);
+					}
+					if (!bBananaCollected)
+					{
+						s_Banana[currentFace].m_position.x = -2.3f;
+						s_Banana[currentFace].m_position.y = -2.5f;
+						s_Banana[currentFace].Render(*s_Camera);
+						bBananaCollected = CollisionCheck(s_Banana[currentFace].m_position, s_Player.m_position, 1.0f);
+					}
+					break;
+				}
+			}
+
+			if (bPigCollected && bCoconutCollected && bBananaCollected)
+			{
+				RotateCube();
+				if (!bCubeRotating)
+				{
+					currentFace++;
+					bPigCollected = false;
+					bBananaCollected = false;
+					bCoconutCollected = false;
+					angleRotated = 0.0f;
+				}
+			}
 		}
 		Context::EndRender();
 	}
@@ -93,7 +301,6 @@ bool eae6320::Graphics::ShutDown()
 {
 	return Context::Shutdown();
 }
-
 // Helper Function Definitions
 //============================
 
@@ -101,66 +308,47 @@ namespace
 {
 	bool CreateRenderables()
 	{
-		s_UserControlledObjects = new eae6320::Graphics::Renderable[1];
-		for (int i = 0; i < 1; i++)
+		// Create Player
+		s_Player.m_Mesh.LoadMeshFromFile("data/Player.lua");
+		s_Player.m_Material.LoadMaterial("data/PlayerMaterial.lua");
+
+		// Create taro collectibles
+		for (int i = 0; i < 6; i++)
 		{
-			if (!s_UserControlledObjects[i].m_Mesh.LoadMeshFromFile("data/Box.lua"))
-				return false;
-			s_UserControlledObjects[i].m_Material.LoadMaterial("data/OpaqueShaderMaterial.lua");
-				
-			s_UserControlledObjects[i].m_position.z = -2.0f;
-			s_UserControlledObjects[i].m_position.y = 3.0f;
-			s_UserControlledObjects[i].m_position.x = -1.0f;
+			s_Pig[i].m_Mesh.LoadMeshFromFile("data/Pig.lua");
+			s_Pig[i].m_Material.LoadMaterial("data/PigMaterial.lua");
+			s_Pig[i].m_position.z = 3.0f;
 		}
 
-		s_StaticOpaqueObjects = new eae6320::Graphics::Renderable[5];
+		// Create coconut collectibles
+		for (int i = 0; i < 6; i++)
 		{
-			if (!s_StaticOpaqueObjects[0].m_Mesh.LoadMeshFromFile("data/Floor.lua"))
-				return false;
-			s_StaticOpaqueObjects[0].m_Material.LoadMaterial("data/OpaqueShaderMaterial.lua");
-				
-			if (!s_StaticOpaqueObjects[1].m_Mesh.LoadMeshFromFile("data/Sphere.lua"))
-				return false;
-			s_StaticOpaqueObjects[1].m_Material.LoadMaterial("data/OpaqueShaderMaterial_blue.lua");
-
-			s_StaticOpaqueObjects[1].m_position.x = 1.5f;
-
-			if (!s_StaticOpaqueObjects[2].m_Mesh.LoadMeshFromFile("data/Sphere.lua"))
-				return false;
-			s_StaticOpaqueObjects[2].m_Material.LoadMaterial("data/OpaqueShaderMaterial_red.lua");
-
-			s_StaticOpaqueObjects[2].m_position.x = 3.5f;
-
-			if (!s_StaticOpaqueObjects[3].m_Mesh.LoadMeshFromFile("data/Plane.lua"))
-				return false;
-			s_StaticOpaqueObjects[3].m_Material.LoadMaterial("data/OpaqueShaderMaterial_eae6320Image.lua");
-
-			s_StaticOpaqueObjects[3].m_position.z = 0.0f;
-			s_StaticOpaqueObjects[3].m_position.x = -4.0f;
-			s_StaticOpaqueObjects[3].m_position.y = -4.0f;
-
-			if (!s_StaticOpaqueObjects[4].m_Mesh.LoadMeshFromFile("data/Plane.lua"))
-				return false;
-			s_StaticOpaqueObjects[4].m_Material.LoadMaterial("data/OpaqueShaderMaterial_alphaImage.lua");
-
-			s_StaticOpaqueObjects[4].m_position.z = 0.0f;
-			s_StaticOpaqueObjects[4].m_position.x = 4.0f;
-			s_StaticOpaqueObjects[4].m_position.y = -4.0f;
+			s_Coconut[i].m_Mesh.LoadMeshFromFile("data/Coconut.lua");
+			s_Coconut[i].m_Material.LoadMaterial("data/CoconutMaterial.lua");
+			s_Coconut[i].m_position.z = 3.0f;
 		}
 
-		s_StaticTransparentObjects = new eae6320::Graphics::Renderable[2];
+		// Create coconut collectibles
+		for (int i = 0; i < 6; i++)
+		{
+			s_Banana[i].m_Mesh.LoadMeshFromFile("data/Banana.lua");
+			s_Banana[i].m_Material.LoadMaterial("data/BananaMaterial.lua");
+			s_Banana[i].m_position.z = 3.5f;
+		}
 
-		if (!s_StaticTransparentObjects[0].m_Mesh.LoadMeshFromFile("data/Sphere.lua"))
-			return false;
-		s_StaticTransparentObjects[0].m_Material.LoadMaterial("data/TransparentShaderMaterial_semi.lua");
-		s_StaticTransparentObjects[0].m_position.x = -3.0f;
-
-		if (!s_StaticTransparentObjects[1].m_Mesh.LoadMeshFromFile("data/Sphere.lua"))
-			return false;
-		s_StaticTransparentObjects[1].m_Material.LoadMaterial("data/TransparentShaderMaterial_almostsemi.lua");
-		s_StaticTransparentObjects[1].m_position.x = -1.0f;
+		// Create main cube
+		s_Cube.m_Mesh.LoadMeshFromFile("data/Cube.lua");
+		s_Cube.m_Material.LoadMaterial("data/CubeMaterial.lua");
 
 		return true;
+	}
+
+	bool CollisionCheck(eae6320::Math::cVector i_firstObject, eae6320::Math::cVector i_secondObject, float distanceCheck)
+	{
+		if ((i_firstObject - i_secondObject).GetLength() < distanceCheck)
+			return true;
+
+		return false;
 	}
 
 	bool CreateCamera()

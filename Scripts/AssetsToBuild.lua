@@ -5,10 +5,11 @@ return
 		buildTool = "MeshBuilder.exe",
 		assets = 
 		{
-			"Floor.lua",
-			"Sphere.lua",
-			"Box.lua",
-			"Plane.lua"
+			"Pig.lua",
+			"Cube.lua",
+			"Coconut.lua",
+			"Banana.lua",
+			"Player.lua"
 		},
 		source = "",
 		destination = "",
@@ -61,13 +62,11 @@ return
 		buildTool = "MaterialBuilder.exe",
 		assets = 
 		{
-			"TransparentShaderMaterial_almostsemi.lua",
-			"TransparentShaderMaterial_semi.lua",
-			"OpaqueShaderMaterial.lua",
-			"OpaqueShaderMaterial_blue.lua",
-			"OpaqueShaderMaterial_red.lua",
-			"OpaqueShaderMaterial_eae6320Image.lua",
-			"OpaqueShaderMaterial_alphaImage.lua",
+			"PigMaterial.lua",
+			"CubeMaterial.lua",
+			"CoconutMaterial.lua",
+			"BananaMaterial.lua",
+			"PlayerMaterial.lua"
 		},
 		source = "",
 		destination = "",
@@ -77,9 +76,11 @@ return
 		buildTool = "TextureBuilder.exe",
 		assets = 
 		{
-			"alpha.png",
-			"eae6320.png",
-			"Brick.jpg"
+			"pig.png",
+			"Water.jpg",
+			"banana.png",
+			"coconuts.png",
+			"PlayerTexture.png"
 		},
 		source = "",
 		destination = "",

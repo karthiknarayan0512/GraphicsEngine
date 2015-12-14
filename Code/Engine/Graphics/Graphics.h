@@ -26,7 +26,7 @@ namespace eae6320
 		void Render();
 		bool ShutDown();
 
-		Renderable* getUserControlledRenderables(int &i_length);
+		void movePlayer(float i_offsetX, float i_offsetY);
 		Camera* getCamera();
 	}
 }

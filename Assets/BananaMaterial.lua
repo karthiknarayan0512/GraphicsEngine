@@ -13,7 +13,7 @@ return
 	{
 		{
 			samplerName = "textureSampler",
-			path = "data/eae6320.png"
+			path = "data/banana.png"
 		}
 	}
 }

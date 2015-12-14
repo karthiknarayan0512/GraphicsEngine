@@ -13,6 +13,42 @@
 // Build
 //------
 
+void RunBuildTool(const char *buildToolPath, const char *arguments)
+{
+	char *buildCommandLine = new char[strlen(buildToolPath) + strlen(arguments) + 1];
+	strcat_s(buildCommandLine, strlen(buildToolPath) + strlen(arguments) + 1, buildToolPath);
+	strcat_s(buildCommandLine, strlen(buildToolPath) + strlen(arguments) + 1, arguments);
+
+	STARTUPINFO si;
+	PROCESS_INFORMATION pi;
+
+	ZeroMemory(&si, sizeof(si));
+	si.cb = sizeof(si);
+	ZeroMemory(&pi, sizeof(pi));
+
+	if(!CreateProcess(NULL,   // No module name (use command line)
+		buildCommandLine,        // Command line
+		NULL,           // Process handle not inheritable
+		NULL,           // Thread handle not inheritable
+		FALSE,          // Set handle inheritance to FALSE
+		0,              // No creation flags
+		NULL,           // Use parent's environment block
+		NULL,           // Use parent's starting directory 
+		&si,            // Pointer to STARTUPINFO structure
+		&pi)           // Pointer to PROCESS_INFORMATION structure
+		)
+	{
+		return;
+	}
+
+	// Wait until process exits.
+	WaitForSingleObject(pi.hProcess, INFINITE);
+
+	// Close process and thread handles. 
+	CloseHandle(pi.hProcess);
+	CloseHandle(pi.hThread);
+}
+
 bool eae6320::cMaterialBuilder::Build(const std::vector<std::string>& i_arguments)
 {
 	bool wereThereErrors = false;
@@ -207,11 +243,15 @@ bool eae6320::cMaterialBuilder::Build(const std::vector<std::string>& i_argument
 			const char *texturePath = lua_tostring(luaState, -1);
 			materialBinary.write(texturePath, strlen(texturePath) + 1);
 
+			RunBuildTool("TextureBuilder.exe", texturePath);
+
 			lua_pop(luaState, 1);
 
 			lua_pop(luaState, 1);
 		}
 	}
+	else
+		materialBinary.write("\0", 1);
 
 	lua_pop(luaState, 1);
 
