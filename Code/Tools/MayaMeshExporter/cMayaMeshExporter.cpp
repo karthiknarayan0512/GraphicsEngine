@@ -731,48 +731,55 @@ namespace
 		//
 		//	* triangle index order	-> index_0, index_2, index_1
 
-		std::ofstream fout( i_fileName.asChar() );
-		if ( fout.is_open() )
+		// Write out the materials
+		for (size_t k = 0; k < i_materialInfo.size(); k++)
 		{
-			// Open table
-			fout << "return\n"
-				"{\n";
-			{
-			fout<<"\tvertices =\n"
-				"\t{\n";
-				for (size_t i = 0; i < i_vertexBuffer.size(); i++)
-				{
-					fout << "\t\t{\n"
-						"\t\t\tposition = { " << i_vertexBuffer[i].x << ", "
-						<< i_vertexBuffer[i].y << ", "
-						<< -i_vertexBuffer[i].z << "},\n"
-						"\t\t\tcolor = { " << i_vertexBuffer[i].r << ", " << i_vertexBuffer[i].g
-						<< ", " << i_vertexBuffer[i].b << ", " << i_vertexBuffer[i].a << "},\n"
-						"\t\t\ttexcoords = { " << i_vertexBuffer[i].u << ", " << 1.0f - i_vertexBuffer[i].v << "},\n"
-						<< "\t\t},\n";
-				}
-				fout << "\t},\n"
-					"\t\n"
-					"\tindices = \n"
-					"\t{\n";
-				for (size_t i = 0; i < i_indexBuffer.size(); i+=3)
-				{
-					fout << "\t\t{ " << i_indexBuffer[i] << ", "
-						<< i_indexBuffer[i+2] << ", "
-						<< i_indexBuffer[i+1] << " },\n";
-				}
-				fout << "\t}\n";
-			}
-			// Close table
-			fout << "}\n";
-			fout.close();
+			MString materialFile("C:\\Users\\juliu_000\\Documents\\Visual Studio 2015\\Projects\\narayan_karthik\\Assets\\");
+			materialFile += (i_materialInfo[k].nodeName + ".material");
 
-			return MStatus::kSuccess;
+			std::ofstream fout(materialFile.asChar());
+			if (fout.is_open())
+			{
+				// Open table
+				fout << "return\n"
+					"{\n";
+				{
+					fout << "\tvertices =\n"
+						"\t{\n";
+					for (size_t i = i_materialInfo[k].vertexRange.first; i < i_materialInfo[k].vertexRange.last; i++)
+					{
+						fout << "\t\t{\n"
+							"\t\t\tposition = { " << i_vertexBuffer[i].x << ", "
+							<< i_vertexBuffer[i].y << ", "
+							<< -i_vertexBuffer[i].z << "},\n"
+							"\t\t\tcolor = { " << i_vertexBuffer[i].r << ", " << i_vertexBuffer[i].g
+							<< ", " << i_vertexBuffer[i].b << ", " << i_vertexBuffer[i].a << "},\n"
+							"\t\t\ttexcoords = { " << i_vertexBuffer[i].u << ", " << 1.0f - i_vertexBuffer[i].v << "},\n"
+							<< "\t\t},\n";
+					}
+					fout << "\t},\n"
+						"\t\n"
+						"\tindices = \n"
+						"\t{\n";
+					for (size_t i = i_materialInfo[k].indexRange.first; i < i_materialInfo[k].indexRange.last; i += 3)
+					{
+						fout << "\t\t{ " << i_indexBuffer[i] - i_materialInfo[k].vertexRange.first << ", "
+							<< i_indexBuffer[i + 2] - i_materialInfo[k].vertexRange.first << ", "
+							<< i_indexBuffer[i + 1] - i_materialInfo[k].vertexRange.first << " },\n";
+					}
+					fout << "\t}\n";
+				}
+				// Close table
+				fout << "}\n";
+				fout.close();
+			}
+			else
+			{
+				MGlobal::displayError(MString("Couldn't open ") + materialFile + " for writing");
+				return MStatus::kFailure;
+			}
 		}
-		else
-		{
-			MGlobal::displayError( MString( "Couldn't open " ) + i_fileName + " for writing" );
-			return MStatus::kFailure;
-		}
+
+		return MStatus::kSuccess;
 	}
 }

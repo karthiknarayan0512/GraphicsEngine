@@ -11,7 +11,7 @@ namespace eae6320
 		void Camera::UpdateCameraPosition(float &i_positionOffset_x, float &i_positionOffset_z)
 		{
 			m_Position.x += i_positionOffset_x;
-			m_Position.y += i_positionOffset_z;
+			m_Position.z += i_positionOffset_z;
 		}
 	}
 }

@@ -520,19 +520,19 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 						}
 						if (eae6320::UserInput::IsKeyPressed(0x41))
 						{
-							cameraOffset.x -= 1.0f;
+							cameraOffset.x -= 100.0f;
 						}
 						if (eae6320::UserInput::IsKeyPressed(0x44))
 						{
-							cameraOffset.x += 1.0f;
+							cameraOffset.x += 100.0f;
 						}
 						if (eae6320::UserInput::IsKeyPressed(0x57))
 						{
-							cameraOffset.y -= 1.0f;
+							cameraOffset.y -= 100.0f;
 						}
 						if (eae6320::UserInput::IsKeyPressed(0x53))
 						{
-							cameraOffset.y += 1.0f;
+							cameraOffset.y += 100.0f;
 						}
 					}
 					// Get the speed
@@ -544,8 +544,6 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 					cameraOffset.x *= unitsToMove;
 					cameraOffset.y *= unitsToMove;
 				}
-
-				eae6320::Graphics::movePlayer(offset.x, offset.y);
 
 				eae6320::Graphics::Camera *userCamera = eae6320::Graphics::getCamera();
 				userCamera->UpdateCameraPosition(cameraOffset.x, cameraOffset.y);

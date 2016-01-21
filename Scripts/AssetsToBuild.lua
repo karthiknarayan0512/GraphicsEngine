@@ -5,11 +5,7 @@ return
 		buildTool = "MeshBuilder.exe",
 		assets = 
 		{
-			"Pig.lua",
-			"Cube.lua",
-			"Coconut.lua",
-			"Banana.lua",
-			"Player.lua"
+			"railing_m.material"
 		},
 		source = "",
 		destination = "",
@@ -62,11 +58,7 @@ return
 		buildTool = "MaterialBuilder.exe",
 		assets = 
 		{
-			"PigMaterial.lua",
-			"CubeMaterial.lua",
-			"CoconutMaterial.lua",
-			"BananaMaterial.lua",
-			"PlayerMaterial.lua"
+			"railing.material"
 		},
 		source = "",
 		destination = "",
@@ -76,11 +68,7 @@ return
 		buildTool = "TextureBuilder.exe",
 		assets = 
 		{
-			"pig.png",
-			"Water.jpg",
-			"banana.png",
-			"coconuts.png",
-			"PlayerTexture.png"
+			"railing.png"
 		},
 		source = "",
 		destination = "",

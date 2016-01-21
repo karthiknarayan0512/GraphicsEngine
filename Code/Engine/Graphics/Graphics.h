@@ -26,7 +26,6 @@ namespace eae6320
 		void Render();
 		bool ShutDown();
 
-		void movePlayer(float i_offsetX, float i_offsetY);
 		Camera* getCamera();
 	}
 }

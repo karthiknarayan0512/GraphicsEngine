@@ -203,7 +203,7 @@ namespace eae6320
 
 			Math::cMatrix_transformation i_ViewToScreenTransform;
 			float i_FOV_y = Math::ConvertDegreesToRadians(60);
-			i_ViewToScreenTransform = Math::cMatrix_transformation::CreateViewToScreenTransform(i_FOV_y, Context::getAspectRatio(), 0.1F, 100.0F);
+			i_ViewToScreenTransform = Math::cMatrix_transformation::CreateViewToScreenTransform(i_FOV_y, Context::getAspectRatio(), 0.1F, 100000000000000.0F);
 			result = m_vertexShaderConstantTable->SetMatrixTranspose(direct3DDevice, m_ViewToScreenTransform,
 				reinterpret_cast<const D3DXMATRIX*>(&i_ViewToScreenTransform));
 			assert(SUCCEEDED(result));
