@@ -17,6 +17,11 @@ namespace
 
 	// Railing
 	eae6320::Graphics::Renderable s_Railing;
+	eae6320::Graphics::Renderable s_Metal;
+	eae6320::Graphics::Renderable s_Ceiling;
+	eae6320::Graphics::Renderable s_Cement;
+	eae6320::Graphics::Renderable s_Walls;
+	eae6320::Graphics::Renderable s_Floor;
 }
 
 // Helper Function Declarations
@@ -66,6 +71,11 @@ void eae6320::Graphics::Render()
 		Context::BeginRender();
 		{
 			s_Railing.Render(*s_Camera);
+			s_Ceiling.Render(*s_Camera);
+			s_Cement.Render(*s_Camera);
+			s_Metal.Render(*s_Camera);
+			s_Floor.Render(*s_Camera);
+			s_Walls.Render(*s_Camera);
 		}
 		Context::EndRender();
 	}
@@ -85,8 +95,23 @@ namespace
 	bool CreateRenderables()
 	{
 		// Create Railing
-		s_Railing.m_Mesh.LoadMeshFromFile("data/railing_m.material");
+		s_Railing.m_Mesh.LoadMeshFromFile("data/railing_m.mesh");
 		s_Railing.m_Material.LoadMaterial("data/railing.material");
+
+		s_Ceiling.m_Mesh.LoadMeshFromFile("data/ceiling_m.mesh");
+		s_Ceiling.m_Material.LoadMaterial("data/cement.material");
+
+		s_Cement.m_Mesh.LoadMeshFromFile("data/cement_m.mesh");
+		s_Cement.m_Material.LoadMaterial("data/cement.material");
+
+		s_Metal.m_Mesh.LoadMeshFromFile("data/metal_m.mesh");
+		s_Metal.m_Material.LoadMaterial("data/metal.material");
+
+		s_Floor.m_Mesh.LoadMeshFromFile("data/floor_m.mesh");
+		s_Floor.m_Material.LoadMaterial("data/floor.material");
+
+		s_Walls.m_Mesh.LoadMeshFromFile("data/walls_m.mesh");
+		s_Walls.m_Material.LoadMaterial("data/wall.material");
 
 		return true;
 	}

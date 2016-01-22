@@ -5,7 +5,12 @@ return
 		buildTool = "MeshBuilder.exe",
 		assets = 
 		{
-			"railing_m.material"
+			"railing_m.mesh",
+			"ceiling_m.mesh",
+			"cement_m.mesh",
+			"floor_m.mesh",
+			"metal_m.mesh",
+			"walls_m.mesh",
 		},
 		source = "",
 		destination = "",
@@ -58,7 +63,11 @@ return
 		buildTool = "MaterialBuilder.exe",
 		assets = 
 		{
-			"railing.material"
+			"railing.material",
+			"cement.material",
+			"floor.material",
+			"wall.material",
+			"metal.material",
 		},
 		source = "",
 		destination = "",
@@ -68,7 +77,11 @@ return
 		buildTool = "TextureBuilder.exe",
 		assets = 
 		{
-			"railing.png"
+			"railing.png",
+			"floor.png",
+			"cement_wall.png",
+			"wall.png",
+			"metal_brace.png",
 		},
 		source = "",
 		destination = "",

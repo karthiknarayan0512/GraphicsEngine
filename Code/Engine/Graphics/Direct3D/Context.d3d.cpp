@@ -47,7 +47,7 @@ namespace eae6320
 					presentationParameters.hDeviceWindow = s_renderingWindow;
 					presentationParameters.Windowed = TRUE;
 					presentationParameters.EnableAutoDepthStencil = TRUE;
-					presentationParameters.AutoDepthStencilFormat = D3DFMT_D16;
+					presentationParameters.AutoDepthStencilFormat = D3DFMT_D24S8;
 					presentationParameters.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
 				}
 				HRESULT result = s_direct3dInterface->CreateDevice(useDefaultDevice, useHardwareRendering,

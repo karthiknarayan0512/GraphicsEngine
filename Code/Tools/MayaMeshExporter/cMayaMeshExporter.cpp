@@ -734,8 +734,8 @@ namespace
 		// Write out the materials
 		for (size_t k = 0; k < i_materialInfo.size(); k++)
 		{
-			MString materialFile("C:\\Users\\juliu_000\\Documents\\Visual Studio 2015\\Projects\\narayan_karthik\\Assets\\");
-			materialFile += (i_materialInfo[k].nodeName + ".material");
+			MString materialFile("C:\\Users\\u0950014\\Documents\\Visual Studio 2015\\Projects\\narayan_karthik\\Assets\\");
+			materialFile += (i_materialInfo[k].nodeName + ".mesh");
 
 			std::ofstream fout(materialFile.asChar());
 			if (fout.is_open())
@@ -746,7 +746,7 @@ namespace
 				{
 					fout << "\tvertices =\n"
 						"\t{\n";
-					for (size_t i = i_materialInfo[k].vertexRange.first; i < i_materialInfo[k].vertexRange.last; i++)
+					for (size_t i = i_materialInfo[k].vertexRange.first; i <= i_materialInfo[k].vertexRange.last; i++)
 					{
 						fout << "\t\t{\n"
 							"\t\t\tposition = { " << i_vertexBuffer[i].x << ", "
@@ -761,7 +761,7 @@ namespace
 						"\t\n"
 						"\tindices = \n"
 						"\t{\n";
-					for (size_t i = i_materialInfo[k].indexRange.first; i < i_materialInfo[k].indexRange.last; i += 3)
+					for (size_t i = i_materialInfo[k].indexRange.first; i <= i_materialInfo[k].indexRange.last; i += 3)
 					{
 						fout << "\t\t{ " << i_indexBuffer[i] - i_materialInfo[k].vertexRange.first << ", "
 							<< i_indexBuffer[i + 2] - i_materialInfo[k].vertexRange.first << ", "
