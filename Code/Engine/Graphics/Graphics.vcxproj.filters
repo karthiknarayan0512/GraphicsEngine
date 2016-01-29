@@ -18,6 +18,11 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="DebugLine.h" />
+    <ClInclude Include="DebugEffect.h" />
+    <ClInclude Include="DebugSphere.h" />
+    <ClInclude Include="DebugShapeVertexStructure.h" />
+    <ClInclude Include="DebugCylinder.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Direct3D\Mesh.d3d.cpp">
@@ -49,5 +54,9 @@
     <ClCompile Include="Direct3D\Texture.gl.cpp">
       <Filter>OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="DebugLine.cpp" />
+    <ClCompile Include="DebugEffect.cpp" />
+    <ClCompile Include="DebugSphere.cpp" />
+    <ClCompile Include="DebugCylinder.cpp" />
   </ItemGroup>
 </Project>

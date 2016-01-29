@@ -17,13 +17,6 @@ namespace eae6320
 		{
 		}
 
-		Mesh::Mesh(IDirect3DDevice9* i_direct3dDevice) :
-			m_vertexDeclaration(NULL),
-			m_vertexBuffer(NULL),
-			m_indexBuffer(NULL)
-		{
-		}
-
 		Mesh::~Mesh()
 		{
 			IDirect3DDevice9* m_direct3dDevice = Context::getDirect3DDevice();
@@ -52,6 +45,7 @@ namespace eae6320
 
 		void Mesh::DrawMesh()
 		{
+			
 			IDirect3DDevice9* m_direct3dDevice = Context::getDirect3DDevice();
 			HRESULT result;
 			// Bind a specific vertex buffer to the device as a data source
@@ -78,6 +72,7 @@ namespace eae6320
 			// It's possible to start rendering primitives in the middle of the stream
 			const unsigned int indexOfFirstVertexToRender = 0;
 			const unsigned int indexOfFirstIndexToUse = 0;
+
 			// We are drawing a square
 			result = m_direct3dDevice->DrawIndexedPrimitive(primitiveType,
 				indexOfFirstVertexToRender, indexOfFirstVertexToRender, (UINT)m_verticesCount,

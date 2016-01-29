@@ -5,6 +5,13 @@
 #include "Context.h"
 #include "Material.h"
 
+#ifdef _DEBUG
+#include "DebugEffect.h"
+#include "DebugLine.h"
+#include "DebugSphere.h"
+#include "DebugCylinder.h"
+#endif
+
 #include <vector>
 
 // Static Data Initialization
@@ -22,6 +29,13 @@ namespace
 	eae6320::Graphics::Renderable s_Cement;
 	eae6320::Graphics::Renderable s_Walls;
 	eae6320::Graphics::Renderable s_Floor;
+
+#ifdef _DEBUG
+	eae6320::Graphics::DebugEffect s_DebugEffect;
+	eae6320::Graphics::DebugShapes::DebugLine s_DebugLine;
+	eae6320::Graphics::DebugShapes::DebugSphere s_DebugSphere;
+	eae6320::Graphics::DebugShapes::DebugCylinder s_DebugCylinder;
+#endif
 }
 
 // Helper Function Declarations
@@ -46,6 +60,26 @@ bool eae6320::Graphics::Initialize( const HWND i_renderingWindow )
 {
 	if (!Context::Initialize(i_renderingWindow))
 		goto OnError;
+
+	s_DebugEffect.CreateEffect("data/debugEffect.lua");
+	D3DVECTOR startPoint;
+	startPoint.x = 0.0f;
+	startPoint.y = 0.0f;
+	startPoint.z = 0.0f;
+
+	D3DVECTOR endPoint;
+	endPoint.x = 15.0f;
+	endPoint.y = 0.0f;
+	endPoint.z = 0.0f;
+
+	D3DVECTOR origin;
+	origin.x = 5.0f;
+	origin.y = 0.0f;
+	origin.z = 0.0f;
+
+	s_DebugLine.CreateLine(startPoint, endPoint, 0, 0, 255);
+	s_DebugSphere.CreateSphere(1.0f, 20, 20, 255, 0, 0, origin);
+	s_DebugCylinder.CreateCylinder(1.0f, 1.0f, 5.0f, 20, 20, 255, 0, 0, origin);
 
 	// Create the renderables
 	if (!CreateRenderables())
@@ -76,6 +110,12 @@ void eae6320::Graphics::Render()
 			s_Metal.Render(*s_Camera);
 			s_Floor.Render(*s_Camera);
 			s_Walls.Render(*s_Camera);
+
+#ifdef _DEBUG
+			s_DebugLine.AddLine();
+			s_DebugSphere.DrawSphere();
+			s_DebugCylinder.DrawCylinder();
+#endif
 		}
 		Context::EndRender();
 	}

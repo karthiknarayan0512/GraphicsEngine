@@ -21,6 +21,11 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Context.h" />
+    <ClInclude Include="DebugCylinder.h" />
+    <ClInclude Include="DebugEffect.h" />
+    <ClInclude Include="DebugLine.h" />
+    <ClInclude Include="DebugShapeVertexStructure.h" />
+    <ClInclude Include="DebugSphere.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Includes.h" />
@@ -31,6 +36,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="DebugCylinder.cpp" />
+    <ClCompile Include="DebugEffect.cpp" />
+    <ClCompile Include="DebugLine.cpp" />
     <ClCompile Include="Direct3D\Context.d3d.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -67,6 +75,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Renderable.cpp" />
+    <ClCompile Include="DebugSphere.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F723F575-2880-414B-81E2-91D5A94D6D78}</ProjectGuid>

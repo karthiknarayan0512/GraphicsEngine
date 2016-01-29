@@ -31,7 +31,8 @@ return
 		assets = 
 		{
 			"Effect.lua",
-			"TransparentEffect.lua"
+			"TransparentEffect.lua",
+			"debugEffect.lua"
 		},
 		source = "",
 		destination = "",
@@ -44,6 +45,8 @@ return
 			"vertex.shader",
 			"fragment.shader",
 			"transparent.shader",
+			"debugshapeFragment.shader",
+			"debugshapeVertex.shader"
 		},
 		source = "",
 		destination = "",
@@ -51,7 +54,9 @@ return
 		{
 			"vertex",
 			"fragment",
-			"fragment"
+			"fragment",
+			"fragment",
+			"vertex"
 		},
 		dependencies = 
 		{
