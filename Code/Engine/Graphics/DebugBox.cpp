@@ -1,4 +1,4 @@
-#include "DebugCylinder.h"
+#include "DebugBox.h"
 
 #include "DebugShapeVertexStructure.h"
 #include "Context.h"
@@ -12,25 +12,25 @@ namespace eae6320
 	{
 		namespace DebugShapes
 		{
-			void DebugCylinder::CreateCylinder(float radius1, float radius2, float length, UINT slices, UINT stacks, uint8_t r, uint8_t g, uint8_t b, D3DVECTOR origin)
+			void DebugBox::CreateBox(float width, float height, float depth, uint8_t r, uint8_t g, uint8_t b, D3DVECTOR origin)
 			{
 				IDirect3DDevice9 *pDirect3DDevice = eae6320::Graphics::Context::getDirect3DDevice();
 
 				// Create the sphere mesh
-				ID3DXMesh *pTempCylinderMesh;
-				ID3DXBuffer *pCylinderBuffer;
-				HRESULT result = D3DXCreateCylinder(pDirect3DDevice, radius1, radius2, length, slices, stacks, &pTempCylinderMesh, &pCylinderBuffer);
+				ID3DXMesh *pTempBoxMesh;
+				ID3DXBuffer *pBoxBuffer;
+				HRESULT result = D3DXCreateBox(pDirect3DDevice, width, height, depth, &pTempBoxMesh, &pBoxBuffer);
 				assert(SUCCEEDED(result));
 
 				// Clone the mesh to allow color
-				pTempCylinderMesh->CloneMeshFVF(0, D3DFVF_XYZ | D3DFVF_DIFFUSE, pDirect3DDevice, &m_cylinderMesh);
+				pTempBoxMesh->CloneMeshFVF(0, D3DFVF_XYZ | D3DFVF_DIFFUSE, pDirect3DDevice, &m_boxMesh);
 
-				if (SUCCEEDED(m_cylinderMesh->GetVertexBuffer(&m_cylinderVertexBuffer)))
+				if (SUCCEEDED(m_boxMesh->GetVertexBuffer(&m_boxVertexBuffer)))
 				{
-					int nNumVerts = m_cylinderMesh->GetNumVertices();
+					int nNumVerts = m_boxMesh->GetNumVertices();
 					sDebugVertex *pVertices = NULL;
 
-					m_cylinderVertexBuffer->Lock(0, 0, (void**)&pVertices, 0);
+					m_boxVertexBuffer->Lock(0, 0, (void**)&pVertices, 0);
 					{
 						for (int i = 0; i < nNumVerts; ++i)
 						{
@@ -44,13 +44,11 @@ namespace eae6320
 							pVertices[i].z += origin.z;
 						}
 					}
-					m_cylinderVertexBuffer->Unlock();
-
-					m_cylinderVertexBuffer->Release();
+					m_boxVertexBuffer->Unlock();
 				}
 			}
 
-			void DebugCylinder::DrawCylinder()
+			void DebugBox::DrawBox()
 			{
 				IDirect3DDevice9* m_direct3dDevice = Context::getDirect3DDevice();
 				HRESULT result;
@@ -62,17 +60,17 @@ namespace eae6320
 					const unsigned int bufferOffset = 0;
 					// The "stride" defines how large a single vertex is in the stream of data
 					const unsigned int bufferStride = sizeof(sDebugVertex);
-					result = m_direct3dDevice->SetStreamSource(streamIndex, m_cylinderVertexBuffer, bufferOffset, bufferStride);
+					result = m_direct3dDevice->SetStreamSource(streamIndex, m_boxVertexBuffer, bufferOffset, bufferStride);
 					assert(SUCCEEDED(result));
 				}
 
 				// Bind a specific index buffer to the device as a data source
 				{
-					IDirect3DIndexBuffer9 *pCylinderIndexBuffer;
-					result = m_cylinderMesh->GetIndexBuffer(&pCylinderIndexBuffer);
+					IDirect3DIndexBuffer9 *pBoxIndexBuffer;
+					result = m_boxMesh->GetIndexBuffer(&pBoxIndexBuffer);
 					assert(SUCCEEDED(result));
 
-					result = m_direct3dDevice->SetIndices(pCylinderIndexBuffer);
+					result = m_direct3dDevice->SetIndices(pBoxIndexBuffer);
 					assert(SUCCEEDED(result));
 				}
 
@@ -83,7 +81,7 @@ namespace eae6320
 				// It's possible to start rendering primitives in the middle of the stream
 				const unsigned int indexOfFirstVertexToRender = 0;
 				// We are drawing a square
-				result = m_direct3dDevice->DrawIndexedPrimitive(primitiveType, 0, 0, m_cylinderMesh->GetNumVertices(), 0, m_cylinderMesh->GetNumFaces());
+				result = m_direct3dDevice->DrawIndexedPrimitive(primitiveType, 0, 0, m_boxMesh->GetNumVertices(), 0, m_boxMesh->GetNumFaces());
 				assert(SUCCEEDED(result));
 			}
 		}

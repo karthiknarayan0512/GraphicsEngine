@@ -2,6 +2,8 @@
 //=============
 
 #include "cVector.h"
+#include "cQuaternion.h"
+#include "cMatrix_transformation.h"
 
 #include <cassert>
 #include <cmath>
@@ -62,6 +64,14 @@ eae6320::Math::cVector& eae6320::Math::cVector::operator *=( const float i_rhs )
 eae6320::Math::cVector operator *( const float i_lhs, const eae6320::Math::cVector& i_rhs )
 {
 	return i_rhs * i_lhs;
+}
+
+eae6320::Math::cVector operator *(const eae6320::Math::cVector& i_lhs, const eae6320::Math::cMatrix_transformation i_rhs)
+{
+	return eae6320::Math::cVector(
+		(i_lhs.x * i_rhs.m_00 + i_lhs.y * i_rhs.m_10 + i_lhs.z * i_rhs.m_20 + 1.0f * i_rhs.m_30),
+		(i_lhs.x * i_rhs.m_01 + i_lhs.y * i_rhs.m_11 + i_lhs.z * i_rhs.m_21 + 1.0f * i_rhs.m_31),
+		(i_lhs.x * i_rhs.m_02 + i_lhs.y * i_rhs.m_12 + i_lhs.z * i_rhs.m_22 + 1.0f * i_rhs.m_32));
 }
 
 // Division

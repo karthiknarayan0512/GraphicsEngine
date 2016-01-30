@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Context.h" />
+    <ClInclude Include="DebugBox.h" />
     <ClInclude Include="DebugCylinder.h" />
     <ClInclude Include="DebugEffect.h" />
     <ClInclude Include="DebugLine.h" />
@@ -36,6 +37,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="DebugBox.cpp" />
     <ClCompile Include="DebugCylinder.cpp" />
     <ClCompile Include="DebugEffect.cpp" />
     <ClCompile Include="DebugLine.cpp" />

@@ -496,57 +496,58 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 				struct
 				{
 					float x, y;
-				} offset, cameraOffset;
-				offset.x = offset.y = 0.0f;
+				} cameraOffset;
+
+				float angleRotation = 0.0f;
+
 				cameraOffset.x = cameraOffset.y = 0.0f;
 				{
 					// Get the direction
 					{
 						if (eae6320::UserInput::IsKeyPressed(VK_LEFT))
 						{
-							offset.x -= 2.0f;
+							angleRotation -= 0.0174533f;
 						}
 						if (eae6320::UserInput::IsKeyPressed(VK_RIGHT))
 						{
-							offset.x += 2.0f;
+							angleRotation += 0.0174533f;
 						}
-						if (eae6320::UserInput::IsKeyPressed(VK_UP))
-						{
-							offset.y += 2.0f;
-						}
-						if (eae6320::UserInput::IsKeyPressed(VK_DOWN))
-						{
-							offset.y -= 2.0f;
-						}
+						//if (eae6320::UserInput::IsKeyPressed(VK_UP))
+						//{
+						//	offset.y += 2.0f;
+						//}
+						//if (eae6320::UserInput::IsKeyPressed(VK_DOWN))
+						//{
+						//	offset.y -= 2.0f;
+						//}
 						if (eae6320::UserInput::IsKeyPressed(0x41))
 						{
-							cameraOffset.x -= 100.0f;
+							cameraOffset.x -= 10.0f;
 						}
 						if (eae6320::UserInput::IsKeyPressed(0x44))
 						{
-							cameraOffset.x += 100.0f;
+							cameraOffset.x += 10.0f;
 						}
 						if (eae6320::UserInput::IsKeyPressed(0x57))
 						{
-							cameraOffset.y -= 100.0f;
+							cameraOffset.y -= 10.0f;
 						}
 						if (eae6320::UserInput::IsKeyPressed(0x53))
 						{
-							cameraOffset.y += 100.0f;
+							cameraOffset.y += 10.0f;
 						}
 					}
 					// Get the speed
 					const float unitsPerSecond = 1.0f;	// This is arbitrary
 					const float unitsToMove = unitsPerSecond * eae6320::Time::GetSecondsElapsedThisFrame();	// This makes the speed frame-rate-independent
 					// Normalize the offset
-					offset.x *= unitsToMove;
-					offset.y *= unitsToMove;
 					cameraOffset.x *= unitsToMove;
 					cameraOffset.y *= unitsToMove;
 				}
 
 				eae6320::Graphics::Camera *userCamera = eae6320::Graphics::getCamera();
 				userCamera->UpdateCameraPosition(cameraOffset.x, cameraOffset.y);
+				userCamera->UpdateCameraOrientation(angleRotation, eae6320::Math::cVector(0.0f, 1.0f, 0.0f));
 
 				if (s_mainWindow != NULL)
 					eae6320::Graphics::Render();

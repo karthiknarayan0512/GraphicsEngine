@@ -23,6 +23,7 @@
     <ClInclude Include="DebugSphere.h" />
     <ClInclude Include="DebugShapeVertexStructure.h" />
     <ClInclude Include="DebugCylinder.h" />
+    <ClInclude Include="DebugBox.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Direct3D\Mesh.d3d.cpp">
@@ -58,5 +59,6 @@
     <ClCompile Include="DebugEffect.cpp" />
     <ClCompile Include="DebugSphere.cpp" />
     <ClCompile Include="DebugCylinder.cpp" />
+    <ClCompile Include="DebugBox.cpp" />
   </ItemGroup>
 </Project>

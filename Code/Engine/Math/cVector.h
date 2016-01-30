@@ -31,7 +31,6 @@ namespace eae6320
 			// Multiplication
 			cVector operator *( const float i_rhs ) const;
 			cVector& operator *=( const float i_rhs );
-			friend cVector operator *( const float i_lhs, const cVector& i_rhs );
 
 			// Division
 			cVector operator /( const float i_rhs ) const;
@@ -73,10 +72,12 @@ namespace eae6320
 		// Friend Function Declarations
 		//=============================
 
-		cVector operator *( const float i_lhs, const cVector& i_rhs );
 		float Dot( const cVector& i_lhs, const cVector& i_rhs );
 		cVector Cross( const cVector& i_lhs, const cVector& i_rhs );
 	}
 }
+
+eae6320::Math::cVector operator *(const eae6320::Math::cVector& i_lhs, const eae6320::Math::cMatrix_transformation i_rhs);
+
 
 #endif	// EAE6320_MATH_CVECTOR_H
