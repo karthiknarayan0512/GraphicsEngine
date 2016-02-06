@@ -24,7 +24,6 @@ namespace eae6320
 			const HRESULT result = D3DXCreateTextureFromFileEx(direct3dDevice, i_texturePath, useDimensionsFromFile, useDimensionsFromFile, useMipMapsFromFile,
 				staticTexture, useFormatFromFile, letD3dManageMemory, useDefaultFiltering, useDefaultFiltering, noColorKey, noSourceInfo, noColorPalette,
 				&m_Texture);
-
 			assert(SUCCEEDED(result));
 		}
 

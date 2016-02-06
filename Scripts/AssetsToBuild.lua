@@ -32,7 +32,7 @@ return
 		{
 			"Effect.lua",
 			"TransparentEffect.lua",
-			"debugEffect.lua"
+			"SpriteEffect.lua"
 		},
 		source = "",
 		destination = "",
@@ -45,8 +45,8 @@ return
 			"vertex.shader",
 			"fragment.shader",
 			"transparent.shader",
-			"debugshapeFragment.shader",
-			"debugshapeVertex.shader"
+			"SpriteVertex.shader",
+			"SpriteFragment.shader"
 		},
 		source = "",
 		destination = "",
@@ -55,8 +55,8 @@ return
 			"vertex",
 			"fragment",
 			"fragment",
-			"fragment",
-			"vertex"
+			"vertex",
+			"fragment"
 		},
 		dependencies = 
 		{
@@ -87,6 +87,7 @@ return
 			"cement_wall.png",
 			"wall.png",
 			"metal_brace.png",
+			"logo.png"
 		},
 		source = "",
 		destination = "",

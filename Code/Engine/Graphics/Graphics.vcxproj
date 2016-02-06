@@ -33,6 +33,7 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Renderable.h" />
+    <ClInclude Include="GameSprite.h" />
     <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
@@ -78,6 +79,7 @@
     </ClCompile>
     <ClCompile Include="Renderable.cpp" />
     <ClCompile Include="DebugSphere.cpp" />
+    <ClCompile Include="GameSprite.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F723F575-2880-414B-81E2-91D5A94D6D78}</ProjectGuid>

@@ -13,6 +13,8 @@
 #include "DebugBox.h"
 #endif
 
+#include "Sprite.h"
+
 #include <vector>
 
 // Static Data Initialization
@@ -20,6 +22,8 @@
 
 namespace
 {
+	bool s_SpritesDrawn = false;
+
 	// User Controlled Camera
 	eae6320::Graphics::Camera *s_Camera;
 
@@ -47,7 +51,6 @@ namespace
 {
 	bool CreateRenderables();
 	bool CreateCamera();
-	bool CollisionCheck(eae6320::Math::cVector i_firstObject, eae6320::Math::cVector i_secondObject, float distanceCheck);
 }
 
 // Interface
@@ -63,6 +66,7 @@ bool eae6320::Graphics::Initialize( const HWND i_renderingWindow )
 	if (!Context::Initialize(i_renderingWindow))
 		goto OnError;
 
+#ifdef _DEBUG
 	s_DebugEffect.CreateEffect("data/debugEffect.lua");
 	D3DVECTOR startPoint[2];
 	startPoint[0].x = -5.0f;
@@ -128,6 +132,7 @@ bool eae6320::Graphics::Initialize( const HWND i_renderingWindow )
 		s_DebugBox[0].CreateBox(1.0f, 1.0f, 1.0f, 125, 0, 0, boxOrigin[0]);
 		s_DebugBox[1].CreateBox(1.0f, 1.0f, 1.0f, 15, 125, 147, boxOrigin[1]);
 	}
+#endif
 
 	// Create the renderables
 	if (!CreateRenderables())
@@ -160,15 +165,16 @@ void eae6320::Graphics::Render()
 			s_Walls.Render(*s_Camera);
 
 #ifdef _DEBUG
-			s_DebugLine[0].AddLine();
-			s_DebugLine[1].AddLine();
-			s_DebugSphere[0].DrawSphere();
-			s_DebugSphere[1].DrawSphere();
-			s_DebugCylinder[0].DrawCylinder();
-			s_DebugCylinder[1].DrawCylinder();
-			s_DebugBox[0].DrawBox();
-			s_DebugBox[1].DrawBox();
+			//s_DebugLine[0].AddLine();
+			//s_DebugLine[1].AddLine();
+			//s_DebugSphere[0].DrawSphere();
+			//s_DebugSphere[1].DrawSphere();
+			//s_DebugCylinder[0].DrawCylinder();
+			//s_DebugCylinder[1].DrawCylinder();
+			//s_DebugBox[0].DrawBox();
+			//s_DebugBox[1].DrawBox();
 #endif
+
 		}
 		Context::EndRender();
 	}
@@ -207,14 +213,6 @@ namespace
 		s_Walls.m_Material.LoadMaterial("data/wall.material");
 
 		return true;
-	}
-
-	bool CollisionCheck(eae6320::Math::cVector i_firstObject, eae6320::Math::cVector i_secondObject, float distanceCheck)
-	{
-		if ((i_firstObject - i_secondObject).GetLength() < distanceCheck)
-			return true;
-
-		return false;
 	}
 
 	bool CreateCamera()
