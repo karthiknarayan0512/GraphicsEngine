@@ -18,6 +18,7 @@ namespace
 	LARGE_INTEGER s_totalCountsElapsed_atInitializion = { 0 };
 	LARGE_INTEGER s_totalCountsElapsed_duringRun = { 0 };
 	LARGE_INTEGER s_totalCountsElapsed_previousFrame = { 0 };
+	float s_FrameRate;
 }
 
 // Helper Function Declarations
@@ -44,6 +45,11 @@ float eae6320::Time::GetTotalSecondsElapsed()
 	return static_cast<float>( static_cast<double>( s_totalCountsElapsed_duringRun.QuadPart ) * s_secondsPerCount );
 }
 
+float* eae6320::Time::GetFrameRate()
+{
+	return &s_FrameRate;
+}
+
 float eae6320::Time::GetSecondsElapsedThisFrame()
 {
 	{
@@ -51,9 +57,13 @@ float eae6320::Time::GetSecondsElapsedThisFrame()
 		assert( result );
 	}
 
-	return static_cast<float>(
+	float secondsElapsedThisFrame = static_cast<float>(
 		static_cast<double>( s_totalCountsElapsed_duringRun.QuadPart - s_totalCountsElapsed_previousFrame.QuadPart )
 		* s_secondsPerCount );
+
+	s_FrameRate = (1.0f / secondsElapsedThisFrame);
+
+	return secondsElapsedThisFrame;
 }
 
 void eae6320::Time::OnNewFrame()

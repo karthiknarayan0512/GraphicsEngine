@@ -376,6 +376,9 @@ LRESULT CALLBACK OnMessageReceived( HWND i_window, UINT i_message, WPARAM i_wPar
 			// but it is a convenient way to handle an exit key
 			// (The WPARAM input parameter indicates which key was pressed,
 			// but this example program only cares about the escape key)
+			if (i_wParam == VK_SPACE)
+				eae6320::Graphics::UpdateAllSpriteAtlases();
+
 			if ( i_wParam == VK_ESCAPE )
 			{
 				// You do _not_ need to do this in your game,
@@ -512,6 +515,10 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 						{
 							angleRotation += 0.0174533f;
 						}
+						//if (eae6320::UserInput::IsKeyPressed(VK_NEXT))
+						//{
+						//	eae6320::Graphics::UpdateAllSpriteAtlases();
+						//}
 						//if (eae6320::UserInput::IsKeyPressed(VK_UP))
 						//{
 						//	offset.y += 2.0f;

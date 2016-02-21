@@ -17,6 +17,7 @@ void main(
 	// Whatever arbitrary data (i.e. everything excluding position) was output from the vertex shader
 	// will be interpolated across the triangle and given as input to the fragment shader
 
+	in float4 i_color : COLOR0,
 	in float2 i_texcoords : TEXCOORD0,
 
 	// Output
@@ -31,5 +32,6 @@ void main(
 	// (where color is represented by 4 floats representing "RGBA" == "Red/Green/Blue/Alpha")
 	{
 		o_color = tex2D(textureSampler, i_texcoords);
+		o_color.rgb *= i_color.rgb;
 	}
 }

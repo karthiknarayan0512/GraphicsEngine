@@ -22,8 +22,6 @@
 
 namespace
 {
-	bool s_SpritesDrawn = false;
-
 	// User Controlled Camera
 	eae6320::Graphics::Camera *s_Camera;
 
@@ -34,6 +32,10 @@ namespace
 	eae6320::Graphics::Renderable s_Cement;
 	eae6320::Graphics::Renderable s_Walls;
 	eae6320::Graphics::Renderable s_Floor;
+
+	// UI Sprites
+	eae6320::Graphics::Sprite m_StaticSprite;
+	eae6320::Graphics::Sprite m_DynamicSprite;
 
 #ifdef _DEBUG
 	eae6320::Graphics::DebugEffect s_DebugEffect;
@@ -59,6 +61,11 @@ namespace
 eae6320::Graphics::Camera* eae6320::Graphics::getCamera()
 {
 	return s_Camera;
+}
+
+void eae6320::Graphics::UpdateAllSpriteAtlases()
+{
+	m_DynamicSprite.UpdateUVs(0.1f, 0.0f);
 }
 
 bool eae6320::Graphics::Initialize( const HWND i_renderingWindow )
@@ -134,6 +141,9 @@ bool eae6320::Graphics::Initialize( const HWND i_renderingWindow )
 	}
 #endif
 
+	m_StaticSprite.CreateTexture("data/texture.material", 0.5f, 1.0f, 1.0f, 0.5f, 1.0f, 1.0f);
+	m_DynamicSprite.CreateTexture("data/numbers.material", 0.6f, 0.8f, -0.5f, -0.9f, 0.1f, 1.0f);
+
 	// Create the renderables
 	if (!CreateRenderables())
 		goto OnError;
@@ -163,6 +173,9 @@ void eae6320::Graphics::Render()
 			s_Metal.Render(*s_Camera);
 			s_Floor.Render(*s_Camera);
 			s_Walls.Render(*s_Camera);
+
+			m_StaticSprite.SetSprite(*s_Camera);
+			m_DynamicSprite.SetSprite(*s_Camera);
 
 #ifdef _DEBUG
 			//s_DebugLine[0].AddLine();

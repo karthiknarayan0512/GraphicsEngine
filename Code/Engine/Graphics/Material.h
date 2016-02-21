@@ -23,7 +23,7 @@ namespace eae6320
 			};
 
 			void LoadMaterial(const char *i_materialPath);
-			void SetMaterial(Math::cMatrix_transformation i_localToWorldTransform, Camera &i_Camera);
+			void SetMaterial(Math::cMatrix_transformation i_localToWorldTransform, Camera &i_Camera, bool bSetTransforms = true);
 		private:
 			Effect m_Effect;
 			sParameterToSet *m_Uniforms;

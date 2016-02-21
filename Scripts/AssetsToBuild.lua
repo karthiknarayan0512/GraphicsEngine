@@ -46,7 +46,7 @@ return
 			"fragment.shader",
 			"transparent.shader",
 			"SpriteVertex.shader",
-			"SpriteFragment.shader"
+			"SpriteFragment.shader",
 		},
 		source = "",
 		destination = "",
@@ -73,6 +73,8 @@ return
 			"floor.material",
 			"wall.material",
 			"metal.material",
+			"texture.material",
+			"numbers.material"
 		},
 		source = "",
 		destination = "",
@@ -87,7 +89,8 @@ return
 			"cement_wall.png",
 			"wall.png",
 			"metal_brace.png",
-			"logo.png"
+			"logo.png",
+			"numbers.png"
 		},
 		source = "",
 		destination = "",

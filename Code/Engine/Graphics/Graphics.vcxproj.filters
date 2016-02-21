@@ -24,7 +24,9 @@
     <ClInclude Include="DebugShapeVertexStructure.h" />
     <ClInclude Include="DebugCylinder.h" />
     <ClInclude Include="DebugBox.h" />
-    <ClInclude Include="GameSprite.h" />
+    <ClInclude Include="Sprite.h" />
+    <ClInclude Include="DebugMenu.h" />
+    <ClInclude Include="UIElement.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Direct3D\Mesh.d3d.cpp">
@@ -61,6 +63,7 @@
     <ClCompile Include="DebugSphere.cpp" />
     <ClCompile Include="DebugCylinder.cpp" />
     <ClCompile Include="DebugBox.cpp" />
-    <ClCompile Include="GameSprite.cpp" />
+    <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="DebugMenu.cpp" />
   </ItemGroup>
 </Project>

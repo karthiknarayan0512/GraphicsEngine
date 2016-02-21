@@ -52,10 +52,11 @@ void eae6320::Graphics::Material::LoadMaterial(const char *i_materialPath)
 	}
 }
 
-void eae6320::Graphics::Material::SetMaterial(Math::cMatrix_transformation i_localToWorldTransform, Camera &i_Camera)
+void eae6320::Graphics::Material::SetMaterial(Math::cMatrix_transformation i_localToWorldTransform, Camera &i_Camera, bool bSetTransforms)
 {
 	m_Effect.SetEffect();
-	m_Effect.SetTransforms(i_localToWorldTransform, i_Camera);
+	if(bSetTransforms)
+		m_Effect.SetTransforms(i_localToWorldTransform, i_Camera);
 
 	for (uint8_t i = 0; i < m_UniformCount; i++)
 		m_Effect.SetUniforms(m_Uniforms[i].shaderType, m_Uniforms[i].uniformHandle, m_Uniforms[i].values, m_Uniforms[i].valueCountToSet);

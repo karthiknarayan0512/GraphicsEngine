@@ -26,6 +26,8 @@ namespace eae6320
 		void Render();
 		bool ShutDown();
 
+		void UpdateAllSpriteAtlases();
+
 		Camera* getCamera();
 	}
 }

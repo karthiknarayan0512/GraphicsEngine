@@ -22,6 +22,7 @@ namespace eae6320
 
 		float GetTotalSecondsElapsed();
 		float GetSecondsElapsedThisFrame();
+		float* GetFrameRate();
 
 		void OnNewFrame();
 
