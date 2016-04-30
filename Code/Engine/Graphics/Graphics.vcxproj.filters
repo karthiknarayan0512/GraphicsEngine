@@ -27,6 +27,7 @@
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="DebugMenu.h" />
     <ClInclude Include="UIElement.h" />
+    <ClInclude Include="UIText.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Direct3D\Mesh.d3d.cpp">
@@ -65,5 +66,6 @@
     <ClCompile Include="DebugBox.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="DebugMenu.cpp" />
+    <ClCompile Include="UItext.cpp" />
   </ItemGroup>
 </Project>

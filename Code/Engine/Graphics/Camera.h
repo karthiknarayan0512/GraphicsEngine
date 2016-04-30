@@ -13,9 +13,12 @@ namespace eae6320
 		private:
 			Math::cVector m_Position;
 			Math::cQuaternion m_Orientation;
+
+			Math::cVector m_LeftVector;
 		public:
+			Math::cVector m_ForwardVector;
 			Camera::Camera(float i_x, float i_y, float i_z);
-			void UpdateCameraPosition(float &i_positionOffset_x, float &i_positionOffset_z);
+			void UpdateCameraPosition(Math::cVector &i_Position, bool bThirdPerson = false);
 			Math::cVector getCameraPosition() { return m_Position; }
 			Math::cQuaternion getCameraOrientation() { return m_Orientation; }
 			void UpdateCameraOrientation(float &i_angleInRadians, Math::cVector& i_axisNormalized);

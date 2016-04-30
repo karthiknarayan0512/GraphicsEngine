@@ -136,6 +136,12 @@ bool eae6320::Math::cVector::operator !=( const cVector& i_rhs ) const
 	return ( x != i_rhs.x ) | ( y != i_rhs.y ) | ( z != i_rhs.z );
 }
 
+eae6320::Math::cVector eae6320::Math::cVector::Lerp(const cVector& i_start, const cVector& i_end, const float& i_rate)
+{
+	cVector nextPoint = i_start + (i_end - i_start).CreateNormalized() * i_rate;
+	return nextPoint;
+}
+
 // Initialization / Shut Down
 //---------------------------
 

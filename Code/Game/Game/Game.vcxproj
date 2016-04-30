@@ -107,7 +107,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Graphics.lib;UserInput.lib;Time.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Graphics.lib;UserInput.lib;Physics.lib;Time.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(TargetPath)" "$(GameDir)$(TargetFileName)"</Command>
@@ -119,11 +119,12 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(DXSDK_DIR)Include\;$(SolutionDir)Code\Engine\Graphics;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Graphics.lib;UserInput.lib;d3dx9.lib;d3d9.lib;Time.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Graphics.lib;UserInput.lib;RakNet.lib;Physics.lib;d3dx9.lib;d3d9.lib;Time.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -144,7 +145,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Graphics.lib;UserInput.lib;Time.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Graphics.lib;UserInput.lib;Physics.lib;Time.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(TargetPath)" "$(GameDir)$(TargetFileName)"</Command>
@@ -164,7 +165,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Graphics.lib;UserInput.lib;d3dx9.lib;d3d9.lib;Time.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Graphics.lib;UserInput.lib;Physics.lib;d3dx9.lib;d3d9.lib;Time.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>

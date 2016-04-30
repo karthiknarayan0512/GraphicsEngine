@@ -53,6 +53,11 @@ namespace eae6320
 			bool LoadMeshFromFile(const char* i_FilePath);
 			void LoadVertexAndIndicesData(sVertex* vertices, uint32_t* i_indexData, int vertexCount, int triangleCount);
 
+			IDirect3DVertexBuffer9* GetVertexBuffer() { return m_vertexBuffer; }
+			IDirect3DIndexBuffer9* GetIndexBuffer() { return m_indexBuffer; }
+			int getVertexCount() { return m_verticesCount; }
+			int getIndicesCount() { return m_indicesCount; }
+
 		private:
 			int m_verticesCount;
 			int m_indicesCount;

@@ -8,3 +8,6 @@
 *.obj
 *.vcxproj.user
 temp/
+*.swatch
+*.opendb
+*.htm

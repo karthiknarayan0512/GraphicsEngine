@@ -14,6 +14,7 @@ namespace eae6320
 		{
 			void DebugSphere::CreateSphere(float radius, UINT slices, UINT stacks, uint8_t r, uint8_t g, uint8_t b, D3DVECTOR origin)
 			{
+				m_origin = origin;
 				IDirect3DDevice9 *pDirect3DDevice = eae6320::Graphics::Context::getDirect3DDevice();
 
 				// Create the sphere mesh
@@ -48,6 +49,28 @@ namespace eae6320
 
 					m_sphereVertexBuffer->Release();
 				}
+			}
+
+			void DebugSphere::MoveSphere(float i_x, float i_y, float i_z)
+			{
+				m_origin.x += i_x;
+				m_origin.y += i_y;
+				m_origin.z += i_z;
+
+				int nNumVerts = m_sphereMesh->GetNumVertices();
+				sDebugVertex *pVertices = NULL;
+
+				m_sphereVertexBuffer->Lock(0, 0, (void**)&pVertices, 0);
+				{
+					for (int i = 0; i < nNumVerts; ++i)
+					{
+						pVertices[i].x += i_x;
+						pVertices[i].y += i_y;
+						pVertices[i].z += i_z;
+					}
+				}
+				m_sphereVertexBuffer->Unlock();
+
 			}
 
 			void DebugSphere::DrawSphere()

@@ -41,6 +41,8 @@ namespace eae6320
 			float Normalize();
 			cVector CreateNormalized() const;
 
+			static cVector Lerp(const cVector& i_start, const cVector& i_end, const float& i_rate);
+
 			// Products
 			friend float Dot( const cVector& i_lhs, const cVector& i_rhs );
 			friend cVector Cross( const cVector& i_lhs, const cVector& i_rhs );

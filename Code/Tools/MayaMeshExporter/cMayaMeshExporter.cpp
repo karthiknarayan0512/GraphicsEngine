@@ -734,10 +734,13 @@ namespace
 		// Write out the materials
 		for (size_t k = 0; k < i_materialInfo.size(); k++)
 		{
-			MString materialFile("C:\\Users\\u0950014\\Documents\\Visual Studio 2015\\Projects\\narayan_karthik\\Assets\\");
-			materialFile += (i_materialInfo[k].nodeName + ".mesh");
+			std::string filePath = i_fileName.asChar();
+			filePath = filePath.substr(0, filePath.find_last_of('/') + 1);
 
-			std::ofstream fout(materialFile.asChar());
+			MString meshFile(filePath.c_str());
+			meshFile += (i_materialInfo[k].nodeName + ".mesh");
+
+			std::ofstream fout(meshFile.asChar());
 			if (fout.is_open())
 			{
 				// Open table
@@ -775,8 +778,36 @@ namespace
 			}
 			else
 			{
-				MGlobal::displayError(MString("Couldn't open ") + materialFile + " for writing");
+				MGlobal::displayError(MString("Couldn't open ") + meshFile + " for writing");
 				return MStatus::kFailure;
+			}
+
+			MString materialFile(filePath.c_str());
+			materialFile += (i_materialInfo[k].nodeName + ".material");
+
+			fout.open(materialFile.asChar());
+			if (fout.is_open())
+			{
+				// Open table
+				fout << "return\n"
+					"{\n";
+				fout << "\teffect = \"data/Effect.lua\",\n"
+					"\tuniforms = \n"
+					"\t{\n"
+					"\t\t{\n"
+					"\t\t\tname = \"g_color\",\n"
+					"\t\t\tvalues = {1, 1, 1},\n"
+					"\t\t\tshaderType = \"fragment\"\n"
+					"\t\t}\n"
+					"\t},\n"
+					"\ttextures = \n"
+					"\t{\n"
+					"\t\t{\n"
+					"\t\t\tsamplerName = \"textureSampler\",\n"
+					"\t\t\tpath = \"data/" << i_materialInfo[k].nodeName << ".png\"\n"
+					"\t\t}\n"
+					"\t}\n"
+					"}\n";
 			}
 		}
 

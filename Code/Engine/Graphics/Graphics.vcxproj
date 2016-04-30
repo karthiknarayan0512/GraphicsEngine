@@ -37,6 +37,7 @@
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="UIElement.h" />
+    <ClInclude Include="UIText.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
@@ -83,6 +84,7 @@
     <ClCompile Include="Renderable.cpp" />
     <ClCompile Include="DebugSphere.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="UItext.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F723F575-2880-414B-81E2-91D5A94D6D78}</ProjectGuid>

@@ -19,6 +19,12 @@
 #include "..\Time\Time.h"
 #include "..\UserInput\UserInput.h"
 
+#include "../Physics/Physics.h"
+
+#define MAX_CLIENTS 10
+#define SERVER_PORT 60000
+
+#include "../RakNet/RakPeerInterface.h"
 // Static Data Initialization
 //===========================
 
@@ -496,65 +502,80 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 				// The following is an array of two floats,
 				// but defined as a struct so that I can reference them with the human-readable "x" and "y"
 				// rather than the less-descriptive [0] and [1]:
-				struct
-				{
-					float x, y;
-				} cameraOffset;
+				eae6320::Math::cVector cameraOffset;
 
 				float angleRotation = 0.0f;
+				bool bThirdPerson = true;
 
-				cameraOffset.x = cameraOffset.y = 0.0f;
+				static bool bFlyCam = false;
+
+				cameraOffset.x = cameraOffset.z = 0.0f;
+				cameraOffset.y = -10.0f;
 				{
 					// Get the direction
 					{
 						if (eae6320::UserInput::IsKeyPressed(VK_LEFT))
 						{
 							angleRotation -= 0.0174533f;
+							bThirdPerson = false;
 						}
 						if (eae6320::UserInput::IsKeyPressed(VK_RIGHT))
 						{
 							angleRotation += 0.0174533f;
+							bThirdPerson = false;
 						}
-						//if (eae6320::UserInput::IsKeyPressed(VK_NEXT))
-						//{
-						//	eae6320::Graphics::UpdateAllSpriteAtlases();
-						//}
-						//if (eae6320::UserInput::IsKeyPressed(VK_UP))
-						//{
-						//	offset.y += 2.0f;
-						//}
-						//if (eae6320::UserInput::IsKeyPressed(VK_DOWN))
-						//{
-						//	offset.y -= 2.0f;
-						//}
-						if (eae6320::UserInput::IsKeyPressed(0x41))
+						if (eae6320::UserInput::IsKeyPressed('A'))
 						{
+							angleRotation -= 0.0174533f;
 							cameraOffset.x -= 10.0f;
+							bThirdPerson = true;
 						}
-						if (eae6320::UserInput::IsKeyPressed(0x44))
+						if (eae6320::UserInput::IsKeyPressed('D'))
 						{
+							angleRotation += 0.0174533f;
 							cameraOffset.x += 10.0f;
+							bThirdPerson = true;
 						}
-						if (eae6320::UserInput::IsKeyPressed(0x57))
+						if (eae6320::UserInput::IsKeyPressed('W'))
 						{
-							cameraOffset.y -= 10.0f;
+							cameraOffset.z -= 10.0f;
+							bThirdPerson = true;
 						}
-						if (eae6320::UserInput::IsKeyPressed(0x53))
+						if (eae6320::UserInput::IsKeyPressed('S'))
 						{
-							cameraOffset.y += 10.0f;
+							cameraOffset.z += 10.0f;
+							bThirdPerson = true;
+						}
+						if (eae6320::UserInput::IsKeyPressed('C'))
+						{
+							bFlyCam = !bFlyCam;
 						}
 					}
+
 					// Get the speed
-					const float unitsPerSecond = 1.0f;	// This is arbitrary
+					const float unitsPerSecond = 5.0f;	// This is arbitrary
 					const float unitsToMove = unitsPerSecond * eae6320::Time::GetSecondsElapsedThisFrame();	// This makes the speed frame-rate-independent
 					// Normalize the offset
 					cameraOffset.x *= unitsToMove;
 					cameraOffset.y *= unitsToMove;
+					cameraOffset.z *= unitsToMove;
 				}
 
 				eae6320::Graphics::Camera *userCamera = eae6320::Graphics::getCamera();
-				userCamera->UpdateCameraPosition(cameraOffset.x, cameraOffset.y);
 				userCamera->UpdateCameraOrientation(angleRotation, eae6320::Math::cVector(0.0f, 1.0f, 0.0f));
+
+				if (!bFlyCam)
+				{
+					eae6320::Graphics::MovePlayer(cameraOffset);
+					if (bThirdPerson)
+						userCamera->UpdateCameraPosition(eae6320::Graphics::GetPlayerPosition(), bThirdPerson);
+					else
+						userCamera->UpdateCameraPosition(cameraOffset);
+				}
+				else
+				{
+					userCamera->UpdateCameraPosition(cameraOffset);
+				}
 
 				if (s_mainWindow != NULL)
 					eae6320::Graphics::Render();

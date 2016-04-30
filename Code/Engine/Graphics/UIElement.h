@@ -11,9 +11,11 @@ namespace eae6320
 			class UIElement
 			{
 			public:
-				virtual void Create(void *i_pObjectProperty) = 0;
+				virtual void Create(void *i_pObjectProperty, const char* i_pLabel) = 0;
 				virtual void Update() = 0;
 				virtual void Draw(LPRECT i_drawRect) = 0;
+
+				char *m_Label;
 			};
 		}
 	}

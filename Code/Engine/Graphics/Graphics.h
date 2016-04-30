@@ -26,6 +26,10 @@ namespace eae6320
 		void Render();
 		bool ShutDown();
 
+		void MovePlayer(eae6320::Math::cVector &);
+
+		Math::cVector GetPlayerPosition();
+
 		void UpdateAllSpriteAtlases();
 
 		Camera* getCamera();
