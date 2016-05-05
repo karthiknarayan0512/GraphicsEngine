@@ -12,7 +12,7 @@ namespace eae6320
 			{
 			public:
 				void Create(void *i_pObjectProperty, const char* i_pLabel);
-				void Draw(LPRECT i_drawRect);
+				void Draw(LPRECT i_drawRect, size_t r, size_t g, size_t b);
 				void Update();
 
 			private:

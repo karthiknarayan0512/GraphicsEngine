@@ -25,7 +25,9 @@ return
 			"phong10.mesh",
 			"BrownFlag.mesh",
 			"RailingFlag.mesh",
-			"FlagPole.mesh"
+			"FlagPole.mesh",
+			"RailingPlatform.mesh",
+			"BrownPlatform.mesh",
 		},
 		source = "",
 		destination = "",
@@ -110,7 +112,9 @@ return
 			"phong10.material",
 			"BrownFlag.material",
 			"RailingFlag.material",
-			"FlagPole.material"
+			"FlagPole.material",
+			"RailingPlatform.material",
+			"BrownPlatform.material",
 		},
 		source = "",
 		destination = "",

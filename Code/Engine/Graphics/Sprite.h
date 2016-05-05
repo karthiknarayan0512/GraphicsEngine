@@ -17,6 +17,7 @@ namespace eae6320
 			void CreateTexture(const char *i_MaterialPath, float left, float right, float top, float bottom, float u, float v);
 			void SetSprite(Camera &i_Camera);
 			void UpdateUVs(float i_URate, float i_vRate);
+			void UpdateTexture(float left, float right, float top, float bottom);
 		private:
 			Material m_textureMaterial;
 			Math::cVector m_position;

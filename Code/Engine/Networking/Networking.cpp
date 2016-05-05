@@ -32,6 +32,10 @@ namespace eae6320
 
 		bool bPlayerCreated;
 
+		bool m_ResetFlag;
+
+		Math::cVector m_EnemyFlagLocation;
+
 		Graphics::Renderable* m_ConnectedPlayers = new Graphics::Renderable[10];
 
 		void Initialize()
@@ -75,13 +79,32 @@ namespace eae6320
 			}
 		}
 
-		void SendPlayerPosition()
+		void SendFlagLocation()
 		{
 			RakNet::BitStream bsOut;
+			bsOut.Write((RakNet::MessageID)ID_ENEMY_FLAG_LOCATION);
+			bsOut.Write(Graphics::GetFlagLocation().x);
+			bsOut.Write(Graphics::GetFlagLocation().y);
+			bsOut.Write(Graphics::GetFlagLocation().z);
+			m_Peer->Send(&bsOut, HIGH_PRIORITY, RELIABLE_ORDERED, 0, !m_IsServer ? m_ServerAddress : RakNet::AddressOrGUID(), m_IsServer);
+		}
+
+		void SendPlayerPosition()
+		{
+			Math::cVector playerLocation = Graphics::GetPlayerPosition();
+
+			RakNet::BitStream bsOut;
 			bsOut.Write((RakNet::MessageID)ID_PLAYER_LOCATION);
-			bsOut.Write(Graphics::GetPlayerPosition().x);
-			bsOut.Write(Graphics::GetPlayerPosition().y);
-			bsOut.Write(Graphics::GetPlayerPosition().z);
+			bsOut.Write(playerLocation.x);
+			bsOut.Write(playerLocation.y);
+			bsOut.Write(playerLocation.z);
+			m_Peer->Send(&bsOut, HIGH_PRIORITY, RELIABLE_ORDERED, 0, !m_IsServer ? m_ServerAddress : RakNet::AddressOrGUID(), m_IsServer);
+		}
+
+		void TagBitch()
+		{
+			RakNet::BitStream bsOut;
+			bsOut.Write((RakNet::MessageID)ID_TAG_BITCH);
 			m_Peer->Send(&bsOut, HIGH_PRIORITY, RELIABLE_ORDERED, 0, !m_IsServer ? m_ServerAddress : RakNet::AddressOrGUID(), m_IsServer);
 		}
 
@@ -95,13 +118,63 @@ namespace eae6320
 			return m_IsServer;
 		}
 
+		bool DidIGetTagged()
+		{
+			bool returnFlag = m_ResetFlag;
+			m_ResetFlag = false;
+			return returnFlag;
+		}
+
+		void SendScore(int i_Score)
+		{
+			RakNet::BitStream bsOut;
+			bsOut.Write((RakNet::MessageID)ID_ENEMY_SCORE);
+			bsOut.Write(i_Score);
+			m_Peer->Send(&bsOut, HIGH_PRIORITY, RELIABLE_ORDERED, 0, !m_IsServer ? m_ServerAddress : RakNet::AddressOrGUID(), m_IsServer);
+		}
+
 		void Update()
 		{
+			// Check if we are tagging enemy
+			{
+				if (m_ConnectedPlayers != NULL)
+				{
+					float length = (m_ConnectedPlayers->m_position - eae6320::Graphics::GetPlayerPosition()).GetLength();
+					if (length < 100.0f)
+					{
+						eae6320::Graphics::ResetFlag();
+						eae6320::Graphics::ResetEnemyFlag();
+						eae6320::Networking::TagBitch();
+					}
+				}
+			}
+
 			RakNet::Packet *packet;
 			for (packet = m_Peer->Receive(); packet; m_Peer->DeallocatePacket(packet), packet = m_Peer->Receive())
 			{
 				switch (packet->data[0])
 				{
+				case ID_ENEMY_SCORE:
+				{
+					RakNet::BitStream bsIn(packet->data, packet->length, false);
+					bsIn.IgnoreBytes(sizeof(RakNet::MessageID));
+					int Score;
+					bsIn.Read(Score);
+
+					eae6320::Graphics::SetEnemyScore(Score);
+				}
+					break;
+				case ID_ENEMY_FLAG_LOCATION:
+				{
+					RakNet::BitStream bsIn(packet->data, packet->length, false);
+					bsIn.IgnoreBytes(sizeof(RakNet::MessageID));
+					bsIn.Read(m_EnemyFlagLocation.x);
+					bsIn.Read(m_EnemyFlagLocation.y);
+					bsIn.Read(m_EnemyFlagLocation.z);
+
+					eae6320::Graphics::SetEnemyFlagLocation(m_EnemyFlagLocation);
+				}
+					break;
 				case ID_REMOTE_DISCONNECTION_NOTIFICATION:
 					UserOutput::Print("Another client has disconnected.\n");
 					break;
@@ -152,9 +225,12 @@ namespace eae6320
 						m_ConnectedPlayers[i].m_position.y = y;
 						m_ConnectedPlayers[i].m_position.z = z;
 					}
-					
 				}
-					break;
+				break;
+				case ID_TAG_BITCH:
+				{
+					m_ResetFlag = true;
+				}
 				break;
 				case ID_CONNECTION_LOST:
 					if (m_IsServer) {
@@ -166,7 +242,7 @@ namespace eae6320
 					break;
 				default:
 					char buf[100];
-					sprintf(buf, "Message with identifier %i has arrived.\n", packet->data[0]);
+					sprintf_s(buf, "Message with identifier %i has arrived.\n", packet->data[0]);
 					UserOutput::Print(buf);
 					break;
 				}

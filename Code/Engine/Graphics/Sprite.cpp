@@ -100,6 +100,64 @@ namespace eae6320
 			}
 		}
 
+		void Sprite::UpdateTexture(float left, float right, float top, float bottom)
+		{
+			{
+				// Before the vertex buffer can be changed it must be "locked"
+				Mesh::sVertex* vertexData = new Mesh::sVertex[6];
+				{
+					const unsigned int lockEntireBuffer = 0;
+					const DWORD useDefaultLockingBehavior = 0;
+					const HRESULT result = m_VertexBuffer->Lock(lockEntireBuffer, lockEntireBuffer,
+						reinterpret_cast<void**>(&vertexData), useDefaultLockingBehavior);
+					if (FAILED(result))
+					{
+						eae6320::UserOutput::Print("Direct3D failed to lock the vertex buffer");
+					}
+				}
+				// Fill the buffer
+				{
+					// You will need to fill in two pieces of information for each vertex:
+					//	* 2 floats for the POSITION
+					//	* 4 uint8_ts for the COLOR
+
+					// The floats for POSITION are for the X and Y coordinates, like in Assignment 02.
+					// The difference this time is that there should be fewer (because we are sharing data).
+
+					// The uint8_ts for COLOR are "RGBA", where "RGB" stands for "Red Green Blue" and "A" for "Alpha".
+					// Conceptually each of these values is a [0,1] value, but we store them as an 8-bit value to save space
+					// (color doesn't need as much precision as position),
+					// which means that the data we send to the GPU will be [0,255].
+					// For now the alpha value should _always_ be 255, and so you will choose color by changing the first three RGB values.
+					// To make white you should use (255, 255, 255), to make black (0, 0, 0).
+					// To make pure red you would use the max for R and nothing for G and B, so (1, 0, 0).
+					// Experiment with other values to see what happens!
+
+					vertexData[0].x = left;
+					vertexData[0].y = bottom;
+					vertexData[1].x = right;
+					vertexData[1].y = top;
+					vertexData[2].x = right;
+					vertexData[2].y = bottom;
+
+					vertexData[3].x = left;
+					vertexData[3].y = bottom;
+					vertexData[4].x = left;
+					vertexData[4].y = top;
+					vertexData[5].x = right;
+					vertexData[5].y = top;
+				}
+				// The buffer must be "unlocked" before it can be used
+				{
+					const HRESULT result = m_VertexBuffer->Unlock();
+					if (FAILED(result))
+					{
+						eae6320::UserOutput::Print("Direct3D failed to unlock the vertex buffer");
+					}
+				}
+			}
+		}
+
 		void Sprite::CreateTexture(const char *i_MaterialPath, float left, float right, float top, float bottom, float u, float v)
 		{
 			m_u = u;

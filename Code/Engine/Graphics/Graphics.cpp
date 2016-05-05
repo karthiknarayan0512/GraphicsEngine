@@ -2,6 +2,7 @@
 //=============
 
 #include "Graphics.h"
+#include "../Networking/Networking.h"
 #include "Context.h"
 #include "Material.h"
 #include "../../Engine/Physics/Physics.h"
@@ -34,8 +35,17 @@ namespace
 
 	bool s_TeamRailing;
 
+	float currentStamina = 1.0f;
+
 	bool FlagCarrying;
-	char teamScore = '0';
+
+	int nTeamScore = 0;
+	char *teamScore = new char[2];
+	
+	int nEnemyScore = 0;
+	char *enemyScore = new char[2];
+
+	bool m_ScoreUpdate;
 
 	// Railing
 	eae6320::Graphics::Renderable s_Railing;
@@ -50,12 +60,17 @@ namespace
 	eae6320::Graphics::Renderable *s_RedFlags = new eae6320::Graphics::Renderable[2];
 	eae6320::Graphics::Renderable *s_BlueFlags = new eae6320::Graphics::Renderable[2];
 
+	// Score Zones
+	eae6320::Graphics::Renderable s_RedZone;
+	eae6320::Graphics::Renderable s_BlueZone;
+
 	// Player
 	eae6320::Graphics::Renderable *s_Player = new eae6320::Graphics::Renderable[10];
 
-	// Player
+	// Score
 	eae6320::Graphics::UI::UIText s_FrameRate;
 	eae6320::Graphics::UI::UIText s_PlayerScore;
+	eae6320::Graphics::UI::UIText s_EnemyScore;
 
 	// UI Sprites
 	eae6320::Graphics::Sprite m_StaticSprite;
@@ -82,6 +97,33 @@ namespace
 
 // Interface
 //==========
+
+int eae6320::Graphics::GetScore()
+{
+	return nTeamScore;
+}
+
+void eae6320::Graphics::SetEnemyScore(int i_EnemyScore)
+{
+	nEnemyScore = i_EnemyScore;
+}
+
+void eae6320::Graphics::ResetEnemyFlag()
+{
+	if (s_TeamRailing)
+	{
+		s_BlueFlags[1].m_position = eae6320::Math::cVector(1511.959, -69.069, 1.966);
+	}
+	else
+	{
+		s_RedFlags[1].m_position = eae6320::Math::cVector(-510.237, -69.700, -701.690);
+	}
+}
+
+void eae6320::Graphics::ResetFlag()
+{
+	FlagCarrying = false;
+}
 
 eae6320::Graphics::Camera* eae6320::Graphics::getCamera()
 {
@@ -128,6 +170,13 @@ void eae6320::Graphics::MovePlayer(eae6320::Math::cVector &i_Position)
 	}
 }
 
+bool eae6320::Graphics::CheckScoreZoneProximity()
+{
+	float length = (eae6320::Graphics::GetPlayerPosition() - (s_TeamRailing ? s_RedZone.m_position : s_BlueZone.m_position)).GetLength();
+
+	return length < 200.0f;
+}
+
 bool CheckFlagProximity()
 {
 	float length = (eae6320::Graphics::GetPlayerPosition() - (s_TeamRailing ? s_RedFlags[0].m_position : s_BlueFlags[0].m_position)).GetLength();
@@ -151,11 +200,11 @@ bool eae6320::Graphics::Initialize( const HWND i_renderingWindow )
 		goto OnError;
 
 	s_FrameRate.Create(eae6320::Time::GetFrameRate(), "Frame Rate");
-	s_PlayerScore.Create(&teamScore, "Score");
+	s_PlayerScore.Create(teamScore, "Score");
+	s_EnemyScore.Create(enemyScore, "Score");
 	eae6320::Graphics::DebugMenu::CreateDebugMenuFont();
 
-	m_StaticSprite.CreateTexture("data/texture.material", 0.5f, 1.0f, 1.0f, 0.5f, 1.0f, 1.0f);
-	m_DynamicSprite.CreateTexture("data/numbers.material", 0.6f, 0.8f, -0.5f, -0.9f, 0.1f, 1.0f);
+	m_StaminaSprite.CreateTexture("data/Stamina.material", 0.9f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f);
 
 	// Create the renderables
 	if (!CreateRenderables())
@@ -172,13 +221,34 @@ OnError:
 	return false;
 }
 
+float eae6320::Graphics::UpdateStaminaMeter(bool bDecreaseStamina)
+{
+	if (bDecreaseStamina)
+	{
+		currentStamina = currentStamina - Time::GetSecondsElapsedThisFrame();
+		if (currentStamina < 0.0f)
+			currentStamina = 0.0f;
+	}
+	else
+	{
+		currentStamina = currentStamina + (Time::GetSecondsElapsedThisFrame() / 3.0f);
+		if (currentStamina > 1.0f)
+			currentStamina = 1.0f;
+	}
 
+	m_StaminaSprite.UpdateTexture(0.9f, 1.0f, currentStamina, 0.0f);
+	return currentStamina;
+}
+
+bool eae6320::Graphics::ShouldSendScoreUpdate()
+{
+	return m_ScoreUpdate;
+}
 
 void eae6320::Graphics::Render(Renderable *i_ConnectedPlayers)
 {
 	// Clear Buffers
 	Context::ClearBuffers();
-
 	{
 		Context::BeginRender();
 		{
@@ -197,6 +267,14 @@ void eae6320::Graphics::Render(Renderable *i_ConnectedPlayers)
 				{
 					s_BlueFlags[1].m_position = GetPlayerPosition() + Math::cVector(0.0f, 30.0f, 0.0f);
 				}
+				if (CheckScoreZoneProximity())
+				{
+					nTeamScore++;
+					m_ScoreUpdate = true;
+					ResetFlag();
+					ResetEnemyFlag();
+					Networking::TagBitch();
+				}
 			}
 			else
 			{
@@ -210,11 +288,19 @@ void eae6320::Graphics::Render(Renderable *i_ConnectedPlayers)
 				}
 			}
 
-			RECT rect, scoreRect;
+			RECT rect, scoreRect, enemyScoreRect;
+
 			SetRect(&rect, 0, 0, 10, 10);
-			s_FrameRate.Draw(&rect);
+			s_FrameRate.Draw(&rect, 0, 255, 0);
+
+			sprintf(teamScore, "%d", nTeamScore);
 			SetRect(&scoreRect, 0, 20, 10, 10);
-			s_PlayerScore.Draw(&scoreRect);
+			s_PlayerScore.Draw(&scoreRect, 0, 255, 0);
+
+			sprintf(enemyScore, "%d", nEnemyScore);
+			SetRect(&enemyScoreRect, 700, 20, 10, 10);
+			s_EnemyScore.Draw(&enemyScoreRect, 255, 0, 0);
+
 			s_Railing.Render(*s_Camera);
 			s_Ceiling.Render(*s_Camera);
 			s_Cement.Render(*s_Camera);
@@ -222,6 +308,11 @@ void eae6320::Graphics::Render(Renderable *i_ConnectedPlayers)
 			s_Floor.Render(*s_Camera);
 			s_Walls.Render(*s_Camera);
 			s_Boxes.Render(*s_Camera);
+
+			s_RedZone.Render(*s_Camera);
+			s_BlueZone.Render(*s_Camera);
+
+			m_StaminaSprite.SetSprite(*s_Camera);
 
 			for (int i = 0; i < 10; i++)
 				s_Player[i].Render(*s_Camera);
@@ -244,9 +335,38 @@ void eae6320::Graphics::Render(Renderable *i_ConnectedPlayers)
 	Context::SwapBuffers();
 }
 
+bool eae6320::Graphics::IsFlagCarried()
+{
+	return FlagCarrying;
+}
+
+bool eae6320::Graphics::IsEnemyFlagCarried()
+{
+	Renderable enemyFlag;
+	Math::cVector enemyFlagPosition;
+
+	enemyFlag = s_TeamRailing ? s_BlueFlags[1] : s_RedFlags[1];
+	enemyFlagPosition = s_TeamRailing ? eae6320::Math::cVector(1511.959, -69.069, 1.966) : eae6320::Math::cVector(-510.237, -69.700, -701.690);
+
+	return enemyFlag.m_position != enemyFlagPosition;
+}
+
+eae6320::Math::cVector eae6320::Graphics::GetFlagLocation()
+{
+	return s_TeamRailing ? s_RedFlags[1].m_position : s_BlueFlags[1].m_position;
+}
+
 bool eae6320::Graphics::ShutDown()
 {
 	return Context::Shutdown();
+}
+
+void eae6320::Graphics::SetEnemyFlagLocation(Math::cVector & i_EnemyFlagLocation)
+{
+	if (s_TeamRailing)
+		s_BlueFlags[1].m_position = i_EnemyFlagLocation;
+	else
+		s_RedFlags[1].m_position = i_EnemyFlagLocation;
 }
 // Helper Function Definitions
 //============================
@@ -307,6 +427,15 @@ namespace
 		s_BlueFlags[1].m_Mesh.LoadMeshFromFile("data/BrownFlag.mesh");
 		s_BlueFlags[1].m_Material.LoadMaterial("data/BrownFlag.material");
 		s_BlueFlags[1].m_position = eae6320::Math::cVector(1511.959, -69.069, 1.966);
+
+		// Create Score Zones
+		s_RedZone.m_Mesh.LoadMeshFromFile("data/RailingPlatform.mesh");
+		s_RedZone.m_Material.LoadMaterial("data/RailingPlatform.material");
+		s_RedZone.m_position = eae6320::Math::cVector(264.878, -248.062, -1248.545);
+
+		s_BlueZone.m_Mesh.LoadMeshFromFile("data/BrownPlatform.mesh");
+		s_BlueZone.m_Material.LoadMaterial("data/BrownPlatform.material");
+		s_BlueZone.m_position = eae6320::Math::cVector(-389.561, -239.811, 1397.616);
 
 		return true;
 	}

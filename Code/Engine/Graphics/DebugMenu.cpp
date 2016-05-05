@@ -18,7 +18,7 @@ namespace eae6320
 			void DrawUIElements()
 			{
 				for (size_t i = 0; i < s_UIElements.size(); i++)
-					s_UIElements[i]->Draw(NULL);
+					s_UIElements[i]->Draw(NULL, 0, 255, 0);
 			}
 
 			void AddUIElement(eae6320::Graphics::UI::UIElement * i_pUIElement)

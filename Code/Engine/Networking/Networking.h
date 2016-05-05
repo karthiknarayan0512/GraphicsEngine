@@ -11,6 +11,10 @@ namespace eae6320
 		Graphics::Renderable* GetConnectedPlayers();
 		bool IsServer();
 		void SendPlayerPosition();
+		void SendFlagLocation();
 		bool IsInitialized();
+		bool DidIGetTagged();
+		void TagBitch();
+		void SendScore(int i_Score);
 	}
 }

@@ -34,7 +34,29 @@ namespace eae6320
 
 		Camera* getCamera();
 
+		float UpdateStaminaMeter(bool bDecreaseStamina = true);
+
 		void SetTeamRailing();
+
+		void ResetFlag();
+
+		void ResetEnemyFlag();
+
+		bool IsEnemyFlagCarried();
+
+		bool IsFlagCarried();
+
+		void SetEnemyFlagLocation(Math::cVector &);
+
+		Math::cVector GetFlagLocation();
+		
+		bool CheckScoreZoneProximity();
+
+		int GetScore();
+
+		void SetEnemyScore(int i_EnemyScore);
+
+		bool ShouldSendScoreUpdate();
 	}
 }
 

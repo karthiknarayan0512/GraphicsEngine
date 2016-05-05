@@ -507,8 +507,12 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 			if (!hasWindowsSentAMessage)
 			{
 				// Networking Update
-				if(eae6320::Networking::IsInitialized())
+				if (eae6320::Networking::IsInitialized())
+				{
 					eae6320::Networking::Update();
+					if (eae6320::Graphics::ShouldSendScoreUpdate())
+						eae6320::Networking::SendScore(eae6320::Graphics::GetScore());
+				}
 
 				// Usually there will be no messages in the queue, and the game can run
 				eae6320::Time::OnNewFrame();
@@ -561,6 +565,12 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 						{
 							bFlyCam = !bFlyCam;
 						}
+						if (eae6320::UserInput::IsKeyPressed(0xA0) && GetForegroundWindow() == s_mainWindow)
+						{
+							eae6320::Graphics::UpdateStaminaMeter();
+						}
+						else
+							eae6320::Graphics::UpdateStaminaMeter(false);
 					}
 
 					// Get the speed
@@ -577,10 +587,17 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 
 				if (!bFlyCam)
 				{
+					eae6320::Math::cVector oldLocation = eae6320::Graphics::GetPlayerPosition();
 					eae6320::Graphics::MovePlayer(cameraOffset);
 					if (cameraOffset.x != 0.0f || cameraOffset.y != 0.0f || cameraOffset.z != 0.0f)
-						if(eae6320::Networking::IsInitialized())
-							eae6320::Networking::SendPlayerPosition();
+						if (eae6320::Networking::IsInitialized())
+						{
+							if(oldLocation != eae6320::Graphics::GetPlayerPosition())
+								eae6320::Networking::SendPlayerPosition();
+
+							if(eae6320::Graphics::IsFlagCarried())
+								eae6320::Networking::SendFlagLocation();
+						}
 
 					if (bThirdPerson)
 						userCamera->UpdateCameraPosition(eae6320::Graphics::GetPlayerPosition(), bThirdPerson);
@@ -596,8 +613,14 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 					userCamera->UpdateCameraPosition(cameraOffset);
 				}
 
+				eae6320::Graphics::Renderable *connectedPlayers = eae6320::Networking::GetConnectedPlayers();
+
 				if (s_mainWindow != NULL)
-					eae6320::Graphics::Render(eae6320::Networking::IsInitialized() ? eae6320::Networking::GetConnectedPlayers() : NULL);
+				{
+					if (eae6320::Networking::DidIGetTagged())
+						eae6320::Graphics::ResetFlag();
+					eae6320::Graphics::Render(eae6320::Networking::IsInitialized() ? connectedPlayers : NULL);
+				}
 
 				// (This example program has nothing to do,
 				// and so it will just constantly run this while loop using up CPU cycles.
