@@ -21,10 +21,12 @@
 
 #include "../Physics/Physics.h"
 
-#define MAX_CLIENTS 10
-#define SERVER_PORT 60000
-
 #include "../RakNet/RakPeerInterface.h"
+
+#include "../Networking/Networking.h"
+
+#include "Context.h"
+
 // Static Data Initialization
 //===========================
 
@@ -144,7 +146,14 @@ HWND CreateMainWindowHandle( const HINSTANCE i_thisInstanceOfTheProgram, const i
 	{
 		// The window's "caption"
 		// (The text that is displayed in the title bar)
-		const char* windowCaption = "Karthik Narayan's EAE6320 Game";
+		const char* windowCaption;
+		if (eae6320::Networking::IsServer())
+		{
+			windowCaption = "Karthik Narayan's EAE6320 Game Server";
+			eae6320::Graphics::SetTeamRailing();
+		}
+		else
+			windowCaption = "Karthik Narayan's EAE6320 Game Client";
 		// The window's style
 		const DWORD windowStyle =
 			// "Overlapped" is basically the same as "top-level"
@@ -465,6 +474,7 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 {
 	// Any time something happens that Windows cares about, it will send the main window a message.
 
+
 	// One of the messages it sends is that the application should quit;
 	// this can be sent when a user closes the window
 	// (e.g. presses the X in the upper-right corner),
@@ -496,6 +506,10 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 			}
 			if (!hasWindowsSentAMessage)
 			{
+				// Networking Update
+				if(eae6320::Networking::IsInitialized())
+					eae6320::Networking::Update();
+
 				// Usually there will be no messages in the queue, and the game can run
 				eae6320::Time::OnNewFrame();
 
@@ -510,50 +524,47 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 				static bool bFlyCam = false;
 
 				cameraOffset.x = cameraOffset.z = 0.0f;
-				cameraOffset.y = -10.0f;
 				{
 					// Get the direction
 					{
-						if (eae6320::UserInput::IsKeyPressed(VK_LEFT))
+						if (eae6320::UserInput::IsKeyPressed(VK_LEFT) && GetForegroundWindow() == s_mainWindow)
 						{
 							angleRotation -= 0.0174533f;
 							bThirdPerson = false;
 						}
-						if (eae6320::UserInput::IsKeyPressed(VK_RIGHT))
+						if (eae6320::UserInput::IsKeyPressed(VK_RIGHT) && GetForegroundWindow() == s_mainWindow)
 						{
 							angleRotation += 0.0174533f;
 							bThirdPerson = false;
 						}
-						if (eae6320::UserInput::IsKeyPressed('A'))
+						if (eae6320::UserInput::IsKeyPressed('A') && GetForegroundWindow() == s_mainWindow)
 						{
 							angleRotation -= 0.0174533f;
-							cameraOffset.x -= 10.0f;
 							bThirdPerson = true;
 						}
-						if (eae6320::UserInput::IsKeyPressed('D'))
+						if (eae6320::UserInput::IsKeyPressed('D') && GetForegroundWindow() == s_mainWindow)
 						{
 							angleRotation += 0.0174533f;
-							cameraOffset.x += 10.0f;
 							bThirdPerson = true;
 						}
-						if (eae6320::UserInput::IsKeyPressed('W'))
+						if (eae6320::UserInput::IsKeyPressed('W') && GetForegroundWindow() == s_mainWindow)
 						{
 							cameraOffset.z -= 10.0f;
 							bThirdPerson = true;
 						}
-						if (eae6320::UserInput::IsKeyPressed('S'))
+						if (eae6320::UserInput::IsKeyPressed('S') && GetForegroundWindow() == s_mainWindow)
 						{
 							cameraOffset.z += 10.0f;
 							bThirdPerson = true;
 						}
-						if (eae6320::UserInput::IsKeyPressed('C'))
+						if (eae6320::UserInput::IsKeyPressed('C') && GetForegroundWindow() == s_mainWindow)
 						{
 							bFlyCam = !bFlyCam;
 						}
 					}
 
 					// Get the speed
-					const float unitsPerSecond = 5.0f;	// This is arbitrary
+					const float unitsPerSecond = 20.0f;	// This is arbitrary
 					const float unitsToMove = unitsPerSecond * eae6320::Time::GetSecondsElapsedThisFrame();	// This makes the speed frame-rate-independent
 					// Normalize the offset
 					cameraOffset.x *= unitsToMove;
@@ -567,18 +578,26 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 				if (!bFlyCam)
 				{
 					eae6320::Graphics::MovePlayer(cameraOffset);
+					if (cameraOffset.x != 0.0f || cameraOffset.y != 0.0f || cameraOffset.z != 0.0f)
+						if(eae6320::Networking::IsInitialized())
+							eae6320::Networking::SendPlayerPosition();
+
 					if (bThirdPerson)
 						userCamera->UpdateCameraPosition(eae6320::Graphics::GetPlayerPosition(), bThirdPerson);
 					else
+					{
+						cameraOffset.y = 0.0f;
 						userCamera->UpdateCameraPosition(cameraOffset);
+					}
 				}
 				else
 				{
+					cameraOffset.y = 0.0f;
 					userCamera->UpdateCameraPosition(cameraOffset);
 				}
 
 				if (s_mainWindow != NULL)
-					eae6320::Graphics::Render();
+					eae6320::Graphics::Render(eae6320::Networking::IsInitialized() ? eae6320::Networking::GetConnectedPlayers() : NULL);
 
 				// (This example program has nothing to do,
 				// and so it will just constantly run this while loop using up CPU cycles.

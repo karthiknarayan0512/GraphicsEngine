@@ -21,15 +21,15 @@ namespace eae6320
 			{
 				eae6320::Math::cMatrix_transformation i_localToWorldTransformBB8 = eae6320::Math::cMatrix_transformation(m_Orientation, i_Position);
 
-				eae6320::Math::cVector camOffset = eae6320::Math::cVector(0, 10, 50);
+				eae6320::Math::cVector camOffset = eae6320::Math::cVector(0, 10, 100);
 				eae6320::Math::cVector val = camOffset * i_localToWorldTransformBB8;
 				eae6320::Math::cVector newPosition = m_Position + (val - m_Position) * eae6320::Time::GetSecondsElapsedThisFrame() * 5;
 
 				eae6320::Math::cVector intersectionPoint;
-				if (Physics::CheckCollisions(newPosition, i_Position, intersectionPoint))
-				{
-					newPosition = intersectionPoint;
-				}
+				//if (Physics::CheckCollisions(newPosition, i_Position, intersectionPoint))
+				//{
+				//	newPosition = intersectionPoint;
+				//}
 				m_Position = newPosition;
 			}
 			else

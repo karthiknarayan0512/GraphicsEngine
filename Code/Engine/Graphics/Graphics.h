@@ -23,7 +23,7 @@ namespace eae6320
 	namespace Graphics
 	{
 		bool Initialize( const HWND i_renderingWindow );
-		void Render();
+		void Render(Renderable *i_ConnectedPlayers);
 		bool ShutDown();
 
 		void MovePlayer(eae6320::Math::cVector &);
@@ -33,6 +33,8 @@ namespace eae6320
 		void UpdateAllSpriteAtlases();
 
 		Camera* getCamera();
+
+		void SetTeamRailing();
 	}
 }
 

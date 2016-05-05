@@ -13,6 +13,8 @@
 // in your solution uses.
 #include "Windows/WindowsIncludes.h"
 
+#include "../Networking/Networking.h"
+
 // Entry Point
 //============
 
@@ -37,8 +39,16 @@ int WINAPI WinMain(
 	// A Windows program doesn't actually need any windows at all
 	// but in most cases there will be a single "main" window
 	// and when it is closed the program will exit
-	
+
+	if (strcmp(i_commandLineArguments, "-C") == 0)
+		eae6320::Networking::CreateClient();
+	if (strcmp(i_commandLineArguments, "-S") == 0)
+		eae6320::Networking::CreateServer();
+
 	const int exitCode = CreateMainWindowAndReturnExitCodeWhenItCloses( i_thisInstanceOfTheProgram, i_initialWindowDisplayState );
+
+	eae6320::Networking::Destroy();
+
 	// Unlike standard C/C++ programs there is no standardized return value
 	// to indicate that the program "succeeded".
 	// Windows itself completely ignores the value that the program returns,

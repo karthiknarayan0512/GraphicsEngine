@@ -111,9 +111,31 @@ void GetVerticesFromMeshFile(lua_State* luaState, eae6320::Graphics::Mesh::sVert
 				vertices[i - 1].v = static_cast<float>(lua_tonumber(luaState, -1));
 				lua_pop(luaState, 1);
 			}
-
-
 			lua_pop(luaState, 1);
+
+			const char* const normalkey = "normal";
+			lua_pushstring(luaState, normalkey);
+			lua_gettable(luaState, -2);
+
+			if (lua_istable(luaState, -1))
+			{
+				lua_pushinteger(luaState, 1);
+				lua_gettable(luaState, -2);
+				vertices[i - 1].nx = static_cast<float>(lua_tonumber(luaState, -1));
+				lua_pop(luaState, 1);
+
+				lua_pushinteger(luaState, 2);
+				lua_gettable(luaState, -2);
+				vertices[i - 1].ny = static_cast<float>(lua_tonumber(luaState, -1));
+				lua_pop(luaState, 1);
+
+				lua_pushinteger(luaState, 3);
+				lua_gettable(luaState, -2);
+				vertices[i - 1].nz = static_cast<float>(lua_tonumber(luaState, -1));
+				lua_pop(luaState, 1);
+			}
+			lua_pop(luaState, 1);
+
 			lua_pop(luaState, 1);
 		}
 	}

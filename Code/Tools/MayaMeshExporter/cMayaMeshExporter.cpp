@@ -754,10 +754,13 @@ namespace
 						fout << "\t\t{\n"
 							"\t\t\tposition = { " << i_vertexBuffer[i].x << ", "
 							<< i_vertexBuffer[i].y << ", "
-							<< -i_vertexBuffer[i].z << "},\n"
+							<< i_vertexBuffer[i].z << " },\n"
+							"\t\t\tnormal = { " << i_vertexBuffer[i].nx << ", "
+							<< i_vertexBuffer[i].ny << ", "
+							<< i_vertexBuffer[i].nz << " },\n"
 							"\t\t\tcolor = { " << i_vertexBuffer[i].r << ", " << i_vertexBuffer[i].g
-							<< ", " << i_vertexBuffer[i].b << ", " << i_vertexBuffer[i].a << "},\n"
-							"\t\t\ttexcoords = { " << i_vertexBuffer[i].u << ", " << 1.0f - i_vertexBuffer[i].v << "},\n"
+							<< ", " << i_vertexBuffer[i].b << ", " << i_vertexBuffer[i].a << " },\n"
+							"\t\t\ttexcoords = { " << i_vertexBuffer[i].u << ", " << i_vertexBuffer[i].v << " },\n"
 							<< "\t\t},\n";
 					}
 					fout << "\t},\n"
@@ -767,8 +770,8 @@ namespace
 					for (size_t i = i_materialInfo[k].indexRange.first; i <= i_materialInfo[k].indexRange.last; i += 3)
 					{
 						fout << "\t\t{ " << i_indexBuffer[i] - i_materialInfo[k].vertexRange.first << ", "
-							<< i_indexBuffer[i + 2] - i_materialInfo[k].vertexRange.first << ", "
-							<< i_indexBuffer[i + 1] - i_materialInfo[k].vertexRange.first << " },\n";
+							<< i_indexBuffer[i + 1] - i_materialInfo[k].vertexRange.first << ", "
+							<< i_indexBuffer[i + 2] - i_materialInfo[k].vertexRange.first << " },\n";
 					}
 					fout << "\t}\n";
 				}

@@ -124,7 +124,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Graphics.lib;UserInput.lib;RakNet.lib;Physics.lib;d3dx9.lib;d3d9.lib;Time.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Graphics.lib;UserInput.lib;Networking.lib;Physics.lib;d3dx9.lib;d3d9.lib;Time.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>

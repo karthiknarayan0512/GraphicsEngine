@@ -37,6 +37,11 @@ namespace eae6320
 				// 2 floats == 8 bytes
 				// Offset = 16
 				float u, v;
+
+				// NORMALS
+				// 3 floats == 12 bytes
+				// Offset = 24
+				float nx, ny, nz;
 			};
 
 			// Default Constructor for the Mesh class
