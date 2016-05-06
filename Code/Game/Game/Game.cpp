@@ -7,6 +7,8 @@
 
 #include "Game.h"
 
+#include "../Audio/AudioControl.h"
+
 // Resource.h contains the #defines for the icon resources
 // that the main window will use
 #include "Resources/Resource.h"
@@ -29,6 +31,9 @@
 
 // Static Data Initialization
 //===========================
+
+// Get the speed
+float unitsPerSecond = 20.0f;	// This is arbitrary
 
 namespace
 {
@@ -482,6 +487,20 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 	// (e.g. from an in-game menu)
 
 	// Enter an infinite loop that will continue until a quit message (WM_QUIT) is received from Windows
+
+	eae6320::Audio::Initialize();
+	eae6320::Audio::AddAudioFile("data/GameMusic.wav", true, 0.2f);
+	eae6320::Audio::AddAudioFile("data/EnemyPickUpFlag.wav");
+	eae6320::Audio::AddAudioFile("data/PickUpFlag.wav");
+	eae6320::Audio::AddAudioFile("data/ResetFlag.wav");
+	eae6320::Audio::AddAudioFile("data/Scored.wav");
+	eae6320::Audio::AddAudioFile("data/WalkingGround.wav", true);
+	eae6320::Audio::AddAudioFile("data/WalkingUp.wav", true);
+	eae6320::Audio::AddAudioFile("data/EnemyScored.wav");
+	eae6320::Audio::AddAudioFile("data/Sprint.wav", true);
+
+	/*eae6320::Audio::PlayAudio(0);*/
+
 	MSG message = { 0 };
 	if (!eae6320::Graphics::Initialize(s_mainWindow))
 		PostQuitMessage(-1);
@@ -511,7 +530,9 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 				{
 					eae6320::Networking::Update();
 					if (eae6320::Graphics::ShouldSendScoreUpdate())
+					{
 						eae6320::Networking::SendScore(eae6320::Graphics::GetScore());
+					}
 				}
 
 				// Usually there will be no messages in the queue, and the game can run
@@ -567,14 +588,19 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 						}
 						if (eae6320::UserInput::IsKeyPressed(0xA0) && GetForegroundWindow() == s_mainWindow)
 						{
-							eae6320::Graphics::UpdateStaminaMeter();
+							float currentStamina = eae6320::Graphics::UpdateStaminaMeter();
+							if(currentStamina > 0.0f)
+								unitsPerSecond++;
 						}
 						else
+						{
 							eae6320::Graphics::UpdateStaminaMeter(false);
+							unitsPerSecond--;
+							if (unitsPerSecond < 20.0f)
+								unitsPerSecond = 20.0f;
+						}
 					}
 
-					// Get the speed
-					const float unitsPerSecond = 20.0f;	// This is arbitrary
 					const float unitsToMove = unitsPerSecond * eae6320::Time::GetSecondsElapsedThisFrame();	// This makes the speed frame-rate-independent
 					// Normalize the offset
 					cameraOffset.x *= unitsToMove;
@@ -590,14 +616,52 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 					eae6320::Math::cVector oldLocation = eae6320::Graphics::GetPlayerPosition();
 					eae6320::Graphics::MovePlayer(cameraOffset);
 					if (cameraOffset.x != 0.0f || cameraOffset.y != 0.0f || cameraOffset.z != 0.0f)
+					{
 						if (eae6320::Networking::IsInitialized())
 						{
-							if(oldLocation != eae6320::Graphics::GetPlayerPosition())
+							if (oldLocation != eae6320::Graphics::GetPlayerPosition())
+							{
+								if (eae6320::Graphics::GetPlayerPosition().y <= -235.0f)
+								{
+									eae6320::Audio::StopAudio(6);
+									if (unitsPerSecond > 20.0f)
+									{
+										eae6320::Audio::StopAudio(5);
+										eae6320::Audio::PlayAudio(8);
+									}
+									else
+									{
+										eae6320::Audio::StopAudio(8);
+										eae6320::Audio::PlayAudio(5);
+									}
+								}
+								else
+								{
+									eae6320::Audio::StopAudio(5);
+									if (unitsPerSecond > 20.0f)
+									{
+										eae6320::Audio::StopAudio(6);
+										eae6320::Audio::PlayAudio(8);
+									}
+									else
+									{
+										eae6320::Audio::StopAudio(8);
+										eae6320::Audio::PlayAudio(6);
+									}
+								}
 								eae6320::Networking::SendPlayerPosition();
+							}
+							else
+							{
+								eae6320::Audio::StopAudio(5);
+								eae6320::Audio::StopAudio(6);
+								eae6320::Audio::StopAudio(8);
+							}
 
-							if(eae6320::Graphics::IsFlagCarried())
+							if (eae6320::Graphics::IsFlagCarried())
 								eae6320::Networking::SendFlagLocation();
 						}
+					}
 
 					if (bThirdPerson)
 						userCamera->UpdateCameraPosition(eae6320::Graphics::GetPlayerPosition(), bThirdPerson);
@@ -618,7 +682,10 @@ bool WaitForMainWindowToClose( int& o_exitCode )
 				if (s_mainWindow != NULL)
 				{
 					if (eae6320::Networking::DidIGetTagged())
+					{
+						eae6320::Audio::PlayAudio(3);
 						eae6320::Graphics::ResetFlag();
+					}
 					eae6320::Graphics::Render(eae6320::Networking::IsInitialized() ? connectedPlayers : NULL);
 				}
 

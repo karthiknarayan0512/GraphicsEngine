@@ -6,6 +6,7 @@
 #include "../RakNet/RakNetTypes.h"
 
 #include "../UserOutput/UserOutput.h"
+#include "../Audio/AudioControl.h"
 
 enum GameMessages
 {
@@ -139,7 +140,8 @@ namespace eae6320
 			{
 				if (m_ConnectedPlayers != NULL)
 				{
-					float length = (m_ConnectedPlayers->m_position - eae6320::Graphics::GetPlayerPosition()).GetLength();
+					float length = (m_ConnectedPlayers->m_position - Graphics::GetPlayerPosition()).GetLength();
+					Audio::SetVolume(length, 400.0f, 100.0f);
 					if (length < 100.0f)
 					{
 						eae6320::Graphics::ResetFlag();
@@ -162,6 +164,7 @@ namespace eae6320
 					bsIn.Read(Score);
 
 					eae6320::Graphics::SetEnemyScore(Score);
+					Audio::PlayAudio(7);
 				}
 					break;
 				case ID_ENEMY_FLAG_LOCATION:

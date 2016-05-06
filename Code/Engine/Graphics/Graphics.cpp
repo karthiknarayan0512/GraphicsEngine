@@ -9,6 +9,8 @@
 
 #include "Player.h"
 
+#include "../Audio/AudioControl.h"
+
 #ifdef _DEBUG
 #include "DebugEffect.h"
 #include "DebugLine.h"
@@ -255,6 +257,7 @@ void eae6320::Graphics::Render(Renderable *i_ConnectedPlayers)
 			if (CheckFlagProximity() && !FlagCarrying)
 			{
 				FlagCarrying = true;
+				Audio::PlayAudio(2);
 			}
 
 			if (FlagCarrying)
@@ -269,11 +272,13 @@ void eae6320::Graphics::Render(Renderable *i_ConnectedPlayers)
 				}
 				if (CheckScoreZoneProximity())
 				{
+					eae6320::Audio::PlayAudio(4);
 					nTeamScore++;
 					m_ScoreUpdate = true;
 					ResetFlag();
 					ResetEnemyFlag();
-					Networking::TagBitch();
+					if(Networking::IsInitialized())
+						Networking::TagBitch();
 				}
 			}
 			else
